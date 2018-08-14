@@ -1,0 +1,90 @@
+[worldserver]
+#########################################################
+#
+#    ANTI MULTI ACCOUNT SYSTEM (AMAS)
+#
+#	AMAS.Enable
+#     	Description: Enable or disable this system.
+#     	Default: 1 - Enable
+#
+
+AMAS.Enable = 1
+
+#
+#	SYSTEM SETTINGS: MINIMUM
+#
+#	AMAS.Min.Total.Time.Account
+#		Description: Minimum playing time for the account, so as not to cause suspicion (sec)
+#		Default: 86400 (1 day)
+#
+#	AMAS.Min.Average.Ilvl
+#		Description: Minimum item level for player, so as not to cause suspicion
+#		Default: 50
+#
+#	AMAS.Min.Quest.Rewarded.Count
+#		Description: Minimum quest rewarded count for player, so as not to cause suspicion
+#		Default: 10
+#
+#	AMAS.Min.Friend.Count
+#		Description: Minimum friend count for player, so as not to cause suspicion
+#		Default: 2
+#
+#	AMAS.Max.Count.Money
+#		Description: Maxminun money count (gold) for player, so as not to cause suspicion
+#		Default: 2
+#
+
+AMAS.Min.Total.Time.Account = 86400
+AMAS.Min.Average.Ilvl = 50
+AMAS.Min.Quest.Rewarded.Count = 10
+AMAS.Min.Friend.Count = 2
+AMAS.Max.Count.Money = 10000
+
+#
+#	SYSTEM SETTINGS: WARNING POINT
+#
+#	AMAS.Warning.Point.Total.Time.Account
+#		Description: Warning point at check AMAS.Min.Total.Time.Account
+#		Default: 10
+#
+#	AMAS.Warning.Point.Average.Ilvl
+#		Description: Warning point at check AMAS.Min.Average.Ilvl
+#		Default: 10
+#
+#	AMAS.Warning.Point.Free.Talent
+#		Description: Warning point at check free talent
+#		Default: 5
+#
+#	AMAS.Warning.Point.Quest.Rewarded.Count
+#		Description: Warning point at check AMAS.Min.Quest.Rewarded.Count
+#		Default: 10
+#
+#	AMAS.Warning.Point.Min.Friend
+#		Description: Warning point at check AMAS.Min.Friend.Count
+#		Default: 5
+#
+#	AMAS.Warning.Point.More.IP
+#		Description: Warning point at check all playes ip in world > 1
+#		Default: 5
+#
+#	AMAS.Warning.Point.Max.Count.Money
+#		Description: Warning point at check AMAS.Max.Count.Money
+#		Default: 5
+
+AMAS.Warning.Point.Total.Time.Account = 10
+AMAS.Warning.Point.Average.Ilvl = 10
+AMAS.Warning.Point.Free.Talent = 5
+AMAS.Warning.Point.Quest.Rewarded.Count = 10
+AMAS.Warning.Point.Min.Friend = 5
+AMAS.Warning.Point.NULL.Honor.And.Kills = 10
+AMAS.Warning.Point.More.IP = 20
+AMAS.Warning.Point.Max.Count.Money = 10
+
+#
+#	SYSTEM SETTINGS: OTHER
+#
+
+AMAS.Min.Point.For.Warning.Account = 5
+
+#
+###################################################################################################
