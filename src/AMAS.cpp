@@ -7,14 +7,14 @@
 #include "Configuration/Config.h"
 #include "AMAS.h"
 
-#define KARGATUM_LANG_ANNOUNCE_GLOBAL_GM_PLAYER_WARNING 40037
+#define LANG_ANNOUNCE_GLOBAL_GM_PLAYER_WARNING 40037
 
-KargatumAMAS::KargatumAMAS()
+AMAS::AMAS()
 {
     _warningPointStore.clear();
 }
 
-KargatumAMAS::~KargatumAMAS()
+AMAS::~AMAS()
 {
     while (!_warningPointStore.empty())
     {
@@ -22,7 +22,7 @@ KargatumAMAS::~KargatumAMAS()
     }
 }
 
-void KargatumAMAS::CheckTotalTimeAccount(Player * player)
+void AMAS::CheckTotalTimeAccount(Player * player)
 {
     uint32 TotalTimeAccount = player->GetSession()->GetTotalTime();
     uint32 MinTimeAccount = sConfigMgr->GetIntDefault("AMAS.Min.Total.Time.Account", DAY);
@@ -32,7 +32,7 @@ void KargatumAMAS::CheckTotalTimeAccount(Player * player)
         this->AddWarningPoint(player, PointWarning);
 }
 
-void KargatumAMAS::CheckAverageItemLevel(Player * player)
+void AMAS::CheckAverageItemLevel(Player * player)
 {
     uint32 AVGILvl = player->GetAverageItemLevel();
     uint32 MinAVGILvl = sConfigMgr->GetIntDefault("AMAS.Min.Average.Ilvl", 50);
@@ -42,7 +42,7 @@ void KargatumAMAS::CheckAverageItemLevel(Player * player)
         this->AddWarningPoint(player, PointWarning);
 }
 
-void KargatumAMAS::CheckFreeTalent(Player * player)
+void AMAS::CheckFreeTalent(Player * player)
 {
     uint32 FreeTalent = player->GetFreeTalentPoints();
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Free.Talent", 5);
@@ -51,7 +51,7 @@ void KargatumAMAS::CheckFreeTalent(Player * player)
         this->AddWarningPoint(player, PointWarning);
 }
 
-void KargatumAMAS::CheckRewardedQuestCount(Player * player)
+void AMAS::CheckRewardedQuestCount(Player * player)
 {
     uint32 TotalRewardQuest = player->GetRewardedQuestCount();
     uint32 MinQuestCount = sConfigMgr->GetIntDefault("AMAS.Min.Quest.Rewarded.Count", 20);
@@ -61,7 +61,7 @@ void KargatumAMAS::CheckRewardedQuestCount(Player * player)
         this->AddWarningPoint(player, PointWarning);
 }
 
-void KargatumAMAS::CheckFriend(Player * player)
+void AMAS::CheckFriend(Player * player)
 {
     uint32 FriendCount = 0;
 
@@ -76,7 +76,7 @@ void KargatumAMAS::CheckFriend(Player * player)
         this->AddWarningPoint(player, PointWarning);
 }
 
-void KargatumAMAS::CheckMoney(Player * player)
+void AMAS::CheckMoney(Player * player)
 {
     uint32 TotalMoney = player->GetMoney();
     uint32 MaxMoneyCount = sConfigMgr->GetIntDefault("AMAS.Max.Count.Money", 100000) * GOLD;
@@ -86,7 +86,7 @@ void KargatumAMAS::CheckMoney(Player * player)
         this->AddWarningPoint(player, PointWarning);
 }
 
-void KargatumAMAS::CheckHonorAndKills(Player * player)
+void AMAS::CheckHonorAndKills(Player * player)
 {
     uint32 TotalHonorPoint = player->GetHonorPoints();
     uint32 TotalKill = player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS);
@@ -96,7 +96,7 @@ void KargatumAMAS::CheckHonorAndKills(Player * player)
         this->AddWarningPoint(player, PointWarning);
 }
 
-void KargatumAMAS::CheckIP(Player * player)
+void AMAS::CheckIP(Player * player)
 {
     uint8 IPCount = 1;
     std::string PlayerIP = player->GetSession()->GetRemoteAddress();
@@ -117,7 +117,7 @@ void KargatumAMAS::CheckIP(Player * player)
         this->AddWarningPoint(player, PointWarning);
 }
 
-void KargatumAMAS::StartCheck(Player * player)
+void AMAS::StartCheck(Player * player)
 {
     if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
         return;
@@ -132,7 +132,7 @@ void KargatumAMAS::StartCheck(Player * player)
     this->CheckIP(player);
 }
 
-uint32 KargatumAMAS::GetWarningPoint(Player * player)
+uint32 AMAS::GetWarningPoint(Player * player)
 {
     WarningPointContainer::const_iterator itr = _warningPointStore.find(player->GetGUID());
     if (itr != _warningPointStore.end())
@@ -141,21 +141,21 @@ uint32 KargatumAMAS::GetWarningPoint(Player * player)
     return 0;
 }
 
-void KargatumAMAS::AddWarningPoint(Player * player, uint32 SetPointWarning)
+void AMAS::AddWarningPoint(Player * player, uint32 SetPointWarning)
 {
     _warningPointStore[player->GetGUID()] = _warningPointStore[player->GetGUID()] + SetPointWarning;
 }
 
-void KargatumAMAS::ClearWarningPoint(Player * player)
+void AMAS::ClearWarningPoint(Player * player)
 {
     _warningPointStore.erase(player->GetGUID());
 }
 
 // AMAS SC
-class Anti_Multi_Account_System : public PlayerScript
+class AMAS_SC : public PlayerScript
 {
 public:
-    Anti_Multi_Account_System() : PlayerScript("Anti_Multi_Account_System") { }    
+    AMAS_SC() : PlayerScript("AMAS_SC") { }    
 
     void OnLogin(Player* player) override
     {
@@ -168,7 +168,7 @@ public:
         uint32 PlayerWarningPoint = sAMAS->GetWarningPoint(player);
 
         if (PlayerWarningPoint > MinWaringPoint)
-            sWorld->SendGMText(KARGATUM_LANG_ANNOUNCE_GLOBAL_GM_PLAYER_WARNING, player->GetName().c_str(), PlayerWarningPoint);
+            sWorld->SendGMText(LANG_ANNOUNCE_GLOBAL_GM_PLAYER_WARNING, player->GetName().c_str(), PlayerWarningPoint);
     }
 
     void OnLogout(Player* player) override
@@ -182,5 +182,5 @@ public:
 
 void AddAMASScripts() 
 {
-    new Anti_Multi_Account_System();
+    new AMAS_SC();
 }
