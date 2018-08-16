@@ -1,16 +1,16 @@
-#ifndef _KARGATUM_AMAS_H_
-#define _KARGATUM_AMAS_H_
+#ifndef _AMAS_H_
+#define _AMAS_H_
 
 #include "Common.h"
 #include <ace/Singleton.h>
 
-class KargatumAMAS
+class AMAS
 {
-    friend class ACE_Singleton<KargatumAMAS, ACE_Null_Mutex>;
+    friend class ACE_Singleton<AMAS, ACE_Null_Mutex>;
 
 public:
-    KargatumAMAS();
-    ~KargatumAMAS();
+    AMAS();
+    ~AMAS();
 
     uint32 GetWarningPoint(Player* player);
     void AddWarningPoint(Player* player, uint32 SetPointWarning);
@@ -18,7 +18,6 @@ public:
     void StartCheck(Player * player);
 
 private:
-    uint32 WarningPoint;
     typedef UNORDERED_MAP<uint64, uint32> WarningPointContainer;
     WarningPointContainer _warningPointStore;
 
@@ -32,6 +31,6 @@ private:
     void CheckIP(Player* player);    
 };
 
-#define sAMAS ACE_Singleton<KargatumAMAS, ACE_Null_Mutex>::instance()
+#define sAMAS ACE_Singleton<AMAS, ACE_Null_Mutex>::instance()
 
-#endif // _KARGATUM_AMAS_H_
+#endif // _AMAS_H_
