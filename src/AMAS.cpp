@@ -117,6 +117,95 @@ void AMAS::CheckIP(Player * player)
         this->AddWarningPoint(player, PointWarning);
 }
 
+void AMAS::CheckTrainerSpells(Player * player)
+{
+    std::vector<uint32> NpcTrainers =
+    {
+        0, // None
+        985, // Warrior
+        927, // Paladin
+        987, // Hunter
+        917, // Rogue
+        376, // Priest
+        28472, // Death knight
+        986, // Shaman
+        328, // Mage
+        906, // Warlock
+        0, // Monk (5.x)
+        3033, // Druid
+        0 // Demon hunter
+    };
+
+    uint8 PlayerClass = player->getClass();
+    int32 Count = 0;
+
+    if (auto spells = sObjectMgr->GetNpcTrainerSpells(NpcTrainers[PlayerClass]))
+    {
+        for (auto itr = spells->spellList.begin(); itr != spells->spellList.end(); itr++)
+        {
+            auto spell = &itr->second;
+
+            if (spell->spell > 0 && player->GetTrainerSpellState(spell) == TRAINER_SPELL_GREEN && !player->HasSpell(spell->spell))
+                Count++;
+        }
+    }
+
+    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Trainer.Spells", 20);
+    if (Count > 1)
+        this->AddWarningPoint(player, PointWarning);
+}
+
+void AMAS::CheckWarningZone(Player * player)
+{
+    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Warning.Zone", 20);
+
+    if (this->IsWarningZone(player->GetZoneId()))
+        this->AddWarningPoint(player, PointWarning);
+}
+
+void AMAS::LoadWarningZone()
+{
+    if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
+        return;
+
+    uint32 oldMSTime = getMSTime();
+
+    _warningZoneStore.clear();
+
+    QueryResult result = CharacterDatabase.Query("SELECT ZoneID FROM `amas_warning_zone`");
+    if (!result)
+    {
+        sLog->outString(">> Loaded 0 zones. Table `amas_warning_zone` is empty.");
+        sLog->outString();
+        return;
+    }
+
+    int32 count = 0;
+
+    do
+    {
+        uint32 ZoneID = result->Fetch()->GetUInt32();
+        _warningZoneStore.push_back(ZoneID);
+        count++;
+
+    } while (result->NextRow());
+
+    sLog->outString(">> Loaded warning zones %i in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString();
+}
+
+bool AMAS::IsWarningZone(uint32 ZoneID)
+{
+    WarningZoneContainer& itr = _warningZoneStore;
+    for (auto VectorZone : itr)
+    {
+        if (VectorZone == ZoneID)
+            return true;
+    }
+
+    return false;
+}
+
 void AMAS::StartCheck(Player * player)
 {
     if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
@@ -130,6 +219,8 @@ void AMAS::StartCheck(Player * player)
     this->CheckMoney(player);
     this->CheckHonorAndKills(player);
     this->CheckIP(player);
+	this->CheckTrainerSpells(player);
+    this->CheckWarningZone(player);
 }
 
 uint32 AMAS::GetWarningPoint(Player * player)
@@ -180,7 +271,23 @@ public:
     }
 };
 
+class AMAS_SC_World : public WorldScript
+{
+public:
+    AMAS_SC_World() : WorldScript("AMAS_SC_World") { }
+
+    void OnLoadCustomDatabaseTable() override
+    {
+        if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
+            return;
+
+        sLog->outString("Loading warning zone for AMAS");
+        sAMAS->LoadWarningZone();
+    }
+};
+
 void AddAMASScripts() 
 {
     new AMAS_SC();
+    new AMAS_SC_World();
 }

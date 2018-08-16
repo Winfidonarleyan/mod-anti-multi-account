@@ -70,6 +70,15 @@ AMAS.Max.Count.Money = 10000
 #	AMAS.Warning.Point.Max.Count.Money
 #		Description: Warning point at check AMAS.Max.Count.Money
 #		Default: 5
+#
+#	AMAS.Warning.Point.Trainer.Spells
+#		Description: Warning point at check spell trainer (if > 1)
+#		Default: 30
+#
+#	AMAS.Warning.Point.Warning.Zone
+#		Description: Warning point at check warning zone (in DB amas_warning_zone)
+#		Default: 10
+#
 
 AMAS.Warning.Point.Total.Time.Account = 10
 AMAS.Warning.Point.Average.Ilvl = 10
@@ -79,6 +88,8 @@ AMAS.Warning.Point.Min.Friend = 5
 AMAS.Warning.Point.NULL.Honor.And.Kills = 10
 AMAS.Warning.Point.More.IP = 20
 AMAS.Warning.Point.Max.Count.Money = 10
+AMAS.Warning.Point.Trainer.Spells = 30
+AMAS.Warning.Point.Warning.Zone = 10
 
 #
 #	SYSTEM SETTINGS: OTHER
