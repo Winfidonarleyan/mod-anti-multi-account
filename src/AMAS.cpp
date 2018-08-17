@@ -131,9 +131,7 @@ void AMAS::CheckTrainerSpells(Player * player)
         986, // Shaman
         328, // Mage
         906, // Warlock
-        0, // Monk (5.x)
         3033, // Druid
-        0 // Demon hunter
     };
 
     uint8 PlayerClass = player->getClass();
