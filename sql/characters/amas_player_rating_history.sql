@@ -18,10 +18,10 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for amas_player_rating_histoty
+-- Table structure for amas_player_rating_history
 -- ----------------------------
-DROP TABLE IF EXISTS `amas_player_rating_histoty`;
-CREATE TABLE `amas_player_rating_histoty`  (
+DROP TABLE IF EXISTS `amas_player_rating_history`;
+CREATE TABLE `amas_player_rating_history`  (
   `PlayerGUID` int(20) NOT NULL,
   `WarningPointAll` float(20, 0) NOT NULL DEFAULT 0,
   `WarningPointTimeAcc` float(20, 0) NOT NULL,

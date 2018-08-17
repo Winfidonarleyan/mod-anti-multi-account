@@ -222,6 +222,7 @@ void AMAS::StartCheck(Player * player)
 	this->CheckTrainerSpells(player);
     this->CheckWarningZone(player);
 }
+
 float AMAS::GetWarningPoint(Player * player, amas::CheckType TypeCheck)
 {
     switch (TypeCheck)
@@ -333,7 +334,7 @@ void AMAS::LogoutPlayer(Player * player)
     float WPIp = this->GetWarningPoint(player, amas::IP);
     float WPWarningZone = this->GetWarningPoint(player, amas::WARNING_ZONE);
 
-    CharacterDatabase.PExecute("INSERT INTO `amas_player_rating_histoty`(`PlayerGUID`, `WarningPointAll`, `WarningPointTimeAcc`, `WarningPointAverageIlvl`, `WarningPointFreeTalent`, `WarningPointCompletedQuest`, `WarningPointFriend`, `WarningPointMoney`, `WarningPointHonorAndKills`, `WarningPointTrainerSpells`, `WarningPointIp`, `WarningPointWarningZone`, `Date`) VALUES (%u, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, NOW())",
+    CharacterDatabase.PExecute("INSERT INTO `amas_player_rating_history`(`PlayerGUID`, `WarningPointAll`, `WarningPointTimeAcc`, `WarningPointAverageIlvl`, `WarningPointFreeTalent`, `WarningPointCompletedQuest`, `WarningPointFriend`, `WarningPointMoney`, `WarningPointHonorAndKills`, `WarningPointTrainerSpells`, `WarningPointIp`, `WarningPointWarningZone`, `Date`) VALUES (%u, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, NOW())",
         PlayerGUID, AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPIp, WPWarningZone);
 
     this->ClearWarningPoint(player);
