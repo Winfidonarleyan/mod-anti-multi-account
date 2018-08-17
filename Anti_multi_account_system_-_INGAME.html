@@ -4,14 +4,14 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <meta name="generator" content="http://www.nongnu.org/elyxer/"/>
-<meta name="create-date" content="2018-08-13"/>
+<meta name="create-date" content="2018-08-18"/>
 <link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
-<title>Anti multi account</title>
+<title>YHOOL - Anti-Multi Account (System)</title>
 </head>
 <body>
 <div id="globalWrapper">
 <h1 class="title">
-Anti multi account
+YHOOL - Anti-Multi Account (System)
 </h1>
 <h1 class="Section">
 <a class="toc" name="toc-Section-1">1</a> Concept
@@ -68,7 +68,7 @@ I guess all these checks might affect performance but well we’ll see lol.
 
 </ol>
 <h1 class="Section">
-<a class="toc" name="toc-Section-3">3</a> Things to store in the DB that are not already in the core
+<a class="toc" name="toc-Section-3">3</a> Things to add to AzerothCore
 </h1>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-3.1">3.1</a> Zones where players stay the most
@@ -84,6 +84,18 @@ Actually, it’s calculated by querying ALL the characters played time together 
 </div>
 <div class="Indented">
 Shouldn’t be hard anyway.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.3">3.3</a> Autoban at random intervals function
+</h2>
+<div class="Unindented">
+I think we should have this function in the CORE directly because then we can call it for every module, script etc... It can be used for anticheat for example. It can be used for an anti spam script too. This is very useful because if the interval is random, the banned guy has no idea why he got banned.
+</div>
+<div class="Indented">
+So something like &ldquo;autoban(interval_1,interval_2,ban_reason)&rdquo; or &ldquo;autoban(intervals,ban_reason)&rdquo; and then in each script we can use it and change the interval as we want, and we replace by our own configuration interval if needed, and our own ban_reason. Default ban_reason = empty
+</div>
+<div class="Indented">
+<b>This function can be public for all AC users.</b>
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-4">4</a> Checks to perform - for ingame stuff
@@ -118,6 +130,9 @@ If he has visited only the minimal amount of zones to reach the bank (we’ll ju
 <div class="Indented">
 Might be a good idea to compare against the average amount of zones discovered by all players as well and give points depending on that.
 </div>
+<div class="Indented">
+In the Characters DB, in the table characters, in the column exploredZones.
+</div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-4.3">4.3</a> Gear evaluation
 </h2>
@@ -128,13 +143,19 @@ If the character on the account has the base gear (from the starting vendors), n
 Maybe we can evaluate the gear with a gearscore calculation.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-4.4">4.4</a> Skills evaluation
+<a class="toc" name="toc-Subsection-4.4">4.4</a> Spells evaluation
 </h2>
 <div class="Unindented">
-If the character has not trained any skill (not even bandaging). If he’s lacking some skills or not training them at all.
+If the character has not trained all his spells. If he’s lacking some spells or not training them at all.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-4.5">4.5</a> Talents evaluation
+<a class="toc" name="toc-Subsection-4.5">4.5</a> Skills evaluation
+</h2>
+<div class="Unindented">
+If the character has not learned his profession skills (mining, leatherworking, engineering etc) or trained any skill (not even bandaging). If he’s lacking some skills or not training them at all.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.6">4.6</a> Talents evaluation
 </h2>
 <div class="Unindented">
 No talent point used = 5 points
@@ -143,7 +164,7 @@ No talent point used = 5 points
 If he has set his talents = 0 pts
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-4.6">4.6</a> Friend list evaluation
+<a class="toc" name="toc-Subsection-4.7">4.7</a> Friend list evaluation
 </h2>
 <div class="Unindented">
 No friends = 5 points
@@ -158,7 +179,7 @@ Less than 5 friends = 2 points
 Less than 10 friends = 1 point
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-4.7">4.7</a> Quest evaluation
+<a class="toc" name="toc-Subsection-4.8">4.8</a> Quest evaluation
 </h2>
 <div class="Unindented">
 No quest done = 10 points
@@ -167,22 +188,31 @@ No quest done = 10 points
 Less than X quests done = Y points
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-4.8">4.8</a> Achievement evaluation
+<a class="toc" name="toc-Subsection-4.9">4.9</a> Achievement evaluation
 </h2>
 <div class="Unindented">
 Same concept though I don’t know much about achievements but it reflects the player’s activity.
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-4.9">4.9</a> Money evaluation
+<a class="toc" name="toc-Subsection-4.10">4.10</a> Money evaluation
 </h2>
 <div class="Unindented">
 If the character has a lot of gold on him (again needs to check against the average because it depends on the max level I’ll set the server at).
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-4.10">4.10</a> Honor evaluation
+<a class="toc" name="toc-Subsection-4.11">4.11</a> Honor evaluation
 </h2>
 <div class="Unindented">
 No honor = no kills = 5 points
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.12">4.12</a> Average play session time
+</h2>
+<div class="Unindented">
+Check if the average play session time of the player is really short (example: 5 min). If it’s very short, it means he is probably just sending items to his alt or doing other weird stuff.
+</div>
+<div class="Indented">
+Maybe there should be a cooldown in case of constant connection/disconnection (internet problem?).
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-5">5</a> Checks to perform - for technical stuff
@@ -196,6 +226,247 @@ If IP is used on multiple accounts, it will give a high rating because it’s a 
 <div class="Indented">
 20 points.
 </div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-6">6</a> Player rating
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-6.1">6.1</a> Config options
+</h2>
+<pre class="LyX-Code">
+AMAS.SuspiciousAccountMinPoints = 15
+AMAS.SuspiciousAccount.MinPoints = 15
+AMAS.ConfirmedMultiAccount.MinPoints = 100
+AMAS.ConfirmedMultiAccount.Action = Ban|Warn GMs
+## This is a random interval to ban the account between X,Y seconds. Reason = Multiple account
+AMAS.ConfirmedMultiAccount.Action.Ban.RandomInterval = 86440,172880 (1 - 2 days)
+AMAS.ConfirmedMultiAccount.Action.Ban.Reason = &ldquo;This account has been banned for using multiple accounts, which is against the rules of this server. Do it again and we will ban your IPs&rdquo; (or empty)
+AMAS.LowGMLevel = 2
+AMAS.HighGMLevel = 3
+AMAS.WarningInterval = 1800 (30 min by default)
+</pre>
+<div class="Unindented">
+<b>Note: for the autoban at random interval, see 3.3</b>
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-6.2">6.2</a> Actions
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-6.2.1">6.2.1</a> General
+</h3>
+<div class="Unindented">
+GM with GM level &gt;= AMAS.LowGMLevel is warned of all the suspicious accounts (command .amas list) :
+</div>
+<ul>
+<li>
+On connection (when he enters the game)
+</li>
+<li>
+Every X minutes
+</li>
+
+</ul>
+<div class="Unindented">
+There is also a string saying &ldquo;Here are all the suspicious accounts to review.&rdquo;
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-6.2.2">6.2.2</a> If player_rating &lt; AMAS.SuspiciousAccountMinPoints
+</h3>
+<ul>
+<li>
+DO NOT SAVE (saves resources and space).
+</li>
+
+</ul>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-6.2.3">6.2.3</a> If player_rating &gt;= AMAS.SuspiciousAccountMinPoints
+</h3>
+<ul>
+<li>
+SAVE to DB when the character logs out (only one rating per day, overwrites the previous rating if multiple log out per day to save space). Or better, only ONCE PER DAY (to save resources if possible).
+</li>
+<li>
+Send a message to GM with GM level &gt;= AMAS.LowGMLevel to warn them when the character enters the game. So the GM can spy on the player and confirm or not
+</li>
+<li>
+Do the action in AMAS.ConfirmedMultiAccount.Action
+</li>
+
+</ul>
+<h1 class="Section">
+<a class="toc" name="toc-Section-7">7</a> GM commands
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-7.1">7.1</a> All commands
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-7.1.1">7.1.1</a> Base
+</h3>
+<ul>
+<li>
+.amas -&gt; list all subcommands below if NO PLAYER SELECTED
+</li>
+<li>
+.amas help -&gt; list all subcommands below
+</li>
+
+</ul>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-7.1.2">7.1.2</a> List
+</h3>
+<ul>
+<li>
+.amas list -&gt; list ALL suspicious account names + id (more than AMAS.SuspiciousAccountMinPoints). They are separated by OFFLINE and ONLINE
+</li>
+<li>
+.amas list online -&gt; list only the ONLINE suspicious accounts (more than AMAS.SuspiciousAccountMinPoints)
+</li>
+<li>
+.amas list offline -&gt; list only the OFFLINE suspicious accounts (more than AMAS.SuspiciousAccountMinPoints)
+</li>
+
+</ul>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-7.1.3">7.1.3</a> Zone
+</h3>
+<ul>
+<li>
+.amas zone -&gt; list all subcommands below
+</li>
+<li>
+.amas zone list -&gt; list all suspicious zones
+</li>
+<li>
+.amas zone add -&gt; add the current zone to the suspicious zone table
+</li>
+<li>
+.amas zone delete -&gt; delete the zone from the table
+</li>
+<li>
+.amas zone reload -&gt; reload the table
+</li>
+
+</ul>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-7.1.4">7.1.4</a> Info
+</h3>
+<ul>
+<li>
+.amas -&gt; IF PLAYER SELECTED WITH THE MOUSE, show rating of the selected player’s account
+</li>
+<li>
+.amas account_name -&gt; show rating, see <a class="FlexURL" href="#toc-Subsection-7.1">#toc-Subsection-7.1</a>
+</li>
+<li>
+.amas account_id -&gt; same (you should add a variable that creates the subcommand with both account_name and account_id I think)
+</li>
+
+</ul>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-7.1.5">7.1.5</a> Comment
+</h3>
+<ul>
+<li>
+.amas account_name comment -&gt; list subcommands below
+</li>
+<li>
+.amas account_name comment add -&gt; add extra comment (for example if the GM thinks this account is NOT a multi account). This only appends extra comment and when you press enter, you see the result of the comment (so you can edit it if it’s wrong). 
+</li>
+<li>
+.amas account_name comment delete -&gt; delete comment
+</li>
+<li>
+.amas account_name comment edit -&gt; delete the comment and add your new comment (it’s a mix of the two other commands)
+</li>
+
+</ul>
+<div class="Unindented">
+Add these columns in the player rating table: comment | comment_date | commenter_id | commenter_gm_lvl
+</div>
+<div class="Indented">
+comment = maybe a limit of characters (I don’t remember the mySQL data types but i have done it several times), if you write a too long comment, the core tells you it’s too long
+</div>
+<div class="Indented">
+comment_date = date in unixtime I guess
+</div>
+<div class="Indented">
+commenter_id = account_id of the gm
+</div>
+<div class="Indented">
+commenter_gm_lvl = gm level
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-7.2">7.2</a> .amas account_name
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-7.2.1">7.2.1</a> If AMAS.<b>High</b>GMLevel =&lt;<b> GM Level</b> &gt;= AMAS.<b>Low</b>GMLevel 
+</h3>
+<div class="Unindented">
+Then show simple rating for that account.
+</div>
+<div class="Indented">
+<b>Example:</b>
+</div>
+<pre class="LyX-Code">
+Barbz: 100 pts
+</pre>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-7.2.2">7.2.2</a> If <b>GM Level</b> &gt;= AMAS.<b>High</b>GMLevel
+</h3>
+<div class="Unindented">
+Then show detailed rating.
+</div>
+<div class="Indented">
+<b>Example:</b>
+</div>
+<pre class="LyX-Code">
+Barbz: 100 pts
+Average Ilevel: 25
+IP: xxx.xxx.xxx.xxx (Same as account: Winfi)
+Friends: 1
+Unused talents: 10
+Money: 15000g (plz convert gold/silver/copper :P)
+Completed Quests: 0
+Total time played: 6h (plz convert to days/hours/min/sec, there is probably a function already done for that, maybe a native c++ function)
+Zones discovered: 5
+Honor/Kills: 0/0
+Suspicious zones: yes (lol dunno for this one)
+Average play session: 5m
+Missing spells: 15
+Profession learned: 2 (count because I can set the number in the worldserver.conf to 3/4/5/6 professions :P)
+Other checks??
+</pre>
+<h3 class="Subsubsection-">
+<a class="toc" name="toc-Subsubsection--1"></a>Emails exchanged
+</h3>
+<div class="Unindented">
+For YHOOL, one of the main thing is to find &ldquo;mule reroll&rdquo;/&rdquo;alt mules&rdquo; (characters to store items in bank, mails, auction house etc).
+</div>
+<div class="Indented">
+To know to which people he sent messages. This should be presented like this with the command .amas account_name :
+</div>
+<pre class="LyX-Code">
+recipient_name:
+  money: number_of_mails_with_money
+  item: number_of_mails_with_items
+  only_text: number_of_mails_with_only_text
+  auction_house: number_of_mails_received_from_auction_house
+  account_name: acc_name
+  account_id: acc_id
+  IP: recipient_ip + notification if it’s same IP (or very similar IP, like 192.168.0.0/24) as the email sender
+</pre>
+<div class="Unindented">
+Example:
+</div>
+<pre class="LyX-Code">
+barbz:
+  money: 10
+  item: 9
+  only_text: 0
+  auction_house: 25
+  account_name: barbz
+  account_id: 1
+  IP: 192.168.0.1 (MATCH: same IP as sender)
+</pre>
 
 </div>
 </body>
