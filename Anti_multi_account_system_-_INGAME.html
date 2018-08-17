@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="generator" content="http://www.nongnu.org/elyxer/"/>
+<meta name="create-date" content="2018-08-13"/>
+<link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
+<title>Anti multi account</title>
+</head>
+<body>
+<div id="globalWrapper">
+<h1 class="title">
+Anti multi account
+</h1>
+<h1 class="Section">
+<a class="toc" name="toc-Section-1">1</a> Concept
+</h1>
+<div class="Unindented">
+Detect multi account users because multi account completely ruins the immersion and the gameplay.
+</div>
+<div class="Indented">
+The system must perform checks on certain data and attribute a rating to the result (in the form of points).
+</div>
+<div class="Indented">
+The points should be easily configurable/tweakable in a config file or in the db.
+</div>
+<div class="Indented">
+After all checks have been done, an account which have a rating of 110 points means it’s a highly suspicious account (suspected of multi account usage) and a warning is sent to GMs and stored in the DB. We might even automatically ban accounts with high rating but we wont tell the player the exact reasons of the ban of course.
+</div>
+<div class="Indented">
+If the account has a rating of 50, the account might be on watch.
+</div>
+<div class="Indented">
+If the account has a rating of 10 points, it probably is a normal account, so no problem.
+</div>
+<div class="Indented">
+We should find a formula for most checks to compare to an average or a predetermined value.
+</div>
+<div class="Indented">
+That’s the idea.
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-2">2</a> Things to remember
+</h1>
+<ol>
+<li>
+The server is YHOOL: http://yhool.gg
+</li>
+<li>
+It has permanent death, so only 1 life
+</li>
+<li>
+There is only one character per account on YHOOL.
+</li>
+<li>
+There is no flight master actually, so can’t check which flight paths have been discovered.
+</li>
+<li>
+Some skills are automatically learnt on character creation on YHOOL (like defense, weapons and maybe later some crafting skills).
+</li>
+<li>
+There will also be another system which will prevent certain things from being done on new accounts (or not very active accounts) like sending mails, trading, yelling, speaking in general chat etc...
+</li>
+<li>
+I guess all these checks might affect performance but well we’ll see lol.
+</li>
+
+</ol>
+<h1 class="Section">
+<a class="toc" name="toc-Section-3">3</a> Things to store in the DB that are not already in the core
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.1">3.1</a> Zones where players stay the most
+</h2>
+<div class="Unindented">
+Hm
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.2">3.2</a> Total time played on the ACCOUNT
+</h2>
+<div class="Unindented">
+Actually, it’s calculated by querying ALL the characters played time together (I did not verify but I’m confident it is this way). It means that if a character is deleted, all the time played will disappear for this character. So we need to keep track of the time played on each character. There is a custom module for keeping achievement on the account instead of the character (by Conan) so I suppose it could serve as a base for this.
+</div>
+<div class="Indented">
+Shouldn’t be hard anyway.
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-4">4</a> Checks to perform - for ingame stuff
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.1">4.1</a> Total time played on the ACCOUNT
+</h2>
+<div class="Unindented">
+If a player has a low amount of time played on a character, it means it’s a bank account/character certainly.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.2">4.2</a> Zones analysis
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-4.2.1">4.2.1</a> If a character always stay in the same zone.
+</h3>
+<div class="Unindented">
+Especially in zones with banks and Auction Houses (capital cities, goblins cities and zones where I’ll add a new AH).
+</div>
+<div class="Indented">
+Example:
+</div>
+<div class="Indented">
+Regularly store the position of a character in an array (every X minutes or everytime he changes from a big zone to another big zone), and when the character logs out, store it in the DB then calculate the most visited zone in the last X days and compare it to the total visited zones
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-4.2.2">4.2.2</a> Which zones the character has visited/discovered
+</h3>
+<div class="Unindented">
+If he has visited only the minimal amount of zones to reach the bank (we’ll just test the path ourselves from the starting zone to orgrimmar or ratchet for example), he gets 10 points.
+</div>
+<div class="Indented">
+Might be a good idea to compare against the average amount of zones discovered by all players as well and give points depending on that.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.3">4.3</a> Gear evaluation
+</h2>
+<div class="Unindented">
+If the character on the account has the base gear (from the starting vendors), no gear at all or always the same for a long period of time.
+</div>
+<div class="Indented">
+Maybe we can evaluate the gear with a gearscore calculation.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.4">4.4</a> Skills evaluation
+</h2>
+<div class="Unindented">
+If the character has not trained any skill (not even bandaging). If he’s lacking some skills or not training them at all.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.5">4.5</a> Talents evaluation
+</h2>
+<div class="Unindented">
+No talent point used = 5 points
+</div>
+<div class="Indented">
+If he has set his talents = 0 pts
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.6">4.6</a> Friend list evaluation
+</h2>
+<div class="Unindented">
+No friends = 5 points
+</div>
+<div class="Indented">
+Less than 3 friends = 3 points
+</div>
+<div class="Indented">
+Less than 5 friends = 2 points
+</div>
+<div class="Indented">
+Less than 10 friends = 1 point
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.7">4.7</a> Quest evaluation
+</h2>
+<div class="Unindented">
+No quest done = 10 points
+</div>
+<div class="Indented">
+Less than X quests done = Y points
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.8">4.8</a> Achievement evaluation
+</h2>
+<div class="Unindented">
+Same concept though I don’t know much about achievements but it reflects the player’s activity.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.9">4.9</a> Money evaluation
+</h2>
+<div class="Unindented">
+If the character has a lot of gold on him (again needs to check against the average because it depends on the max level I’ll set the server at).
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.10">4.10</a> Honor evaluation
+</h2>
+<div class="Unindented">
+No honor = no kills = 5 points
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-5">5</a> Checks to perform - for technical stuff
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-5.1">5.1</a> IP
+</h2>
+<div class="Unindented">
+If IP is used on multiple accounts, it will give a high rating because it’s a huge warning (most of the time it will mean it’s the same user but I know some students use the same network for example, or guys in the same family).
+</div>
+<div class="Indented">
+20 points.
+</div>
+
+</div>
+</body>
+</html>
