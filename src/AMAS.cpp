@@ -11,25 +11,26 @@
 
 AMAS::AMAS()
 {
-    _warningPointStore.clear();
+    _playerWarningPointStore.clear();
 }
 
 AMAS::~AMAS()
 {
-    while (!_warningPointStore.empty())
+    while (!_playerWarningPointStore.empty())
     {
-        _warningPointStore.erase(_warningPointStore.begin());
+        _playerWarningPointStore.erase(_playerWarningPointStore.begin());
     }
 }
 
 void AMAS::CheckTotalTimeAccount(Player * player)
 {
-    uint32 TotalTimeAccount = player->GetSession()->GetTotalTime();
-    uint32 MinTimeAccount = sConfigMgr->GetIntDefault("AMAS.Min.Total.Time.Account", DAY);
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Total.Time.Account", 10);
+    float TotalTimeAccount = player->GetSession()->GetTotalTime();
+    float MinTimeAccount = sConfigMgr->GetIntDefault("AMAS.Min.Total.Time.Account", DAY);
+    float PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Total.Time.Account", 10);
 
-    if (TotalTimeAccount < MinTimeAccount)
-        this->AddWarningPoint(player, PointWarning);
+    float TotalPointWarning = (PointWarning / MinTimeAccount) / (TotalTimeAccount / DAY);
+
+    this->AddWarningPoint(player, amas::TIME_ACCOUNT, TotalPointWarning);
 }
 
 void AMAS::CheckAverageItemLevel(Player * player)
@@ -39,7 +40,7 @@ void AMAS::CheckAverageItemLevel(Player * player)
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Average.Ilvl", 10);
 
     if (AVGILvl < MinAVGILvl)
-        this->AddWarningPoint(player, PointWarning);
+        this->AddWarningPoint(player, amas::AVERAGE_ITEM_LEVEL, float(PointWarning));
 }
 
 void AMAS::CheckFreeTalent(Player * player)
@@ -48,17 +49,17 @@ void AMAS::CheckFreeTalent(Player * player)
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Free.Talent", 5);
 
     if (FreeTalent > 0)
-        this->AddWarningPoint(player, PointWarning);
+        this->AddWarningPoint(player, amas::FREE_TALENT, float(PointWarning));
 }
 
-void AMAS::CheckRewardedQuestCount(Player * player)
+void AMAS::CheckCompletedQuestCount(Player * player)
 {
     uint32 TotalRewardQuest = player->GetRewardedQuestCount();
     uint32 MinQuestCount = sConfigMgr->GetIntDefault("AMAS.Min.Quest.Rewarded.Count", 20);
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Quest.Rewarded.Count", 10);
 
     if (TotalRewardQuest < MinQuestCount)
-        this->AddWarningPoint(player, PointWarning);
+        this->AddWarningPoint(player, amas::COMPLETED_QUEST, float(PointWarning));
 }
 
 void AMAS::CheckFriend(Player * player)
@@ -73,7 +74,7 @@ void AMAS::CheckFriend(Player * player)
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Min.Friend", 5);
 
     if (FriendCount < MinFriendCount)
-        this->AddWarningPoint(player, PointWarning);
+        this->AddWarningPoint(player, amas::FRIEND, float(PointWarning));
 }
 
 void AMAS::CheckMoney(Player * player)
@@ -83,7 +84,7 @@ void AMAS::CheckMoney(Player * player)
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Max.Count.Money", 5);
 
     if (TotalMoney > MaxMoneyCount)
-        this->AddWarningPoint(player, PointWarning);
+        this->AddWarningPoint(player, amas::MONEY, float(PointWarning));
 }
 
 void AMAS::CheckHonorAndKills(Player * player)
@@ -93,12 +94,12 @@ void AMAS::CheckHonorAndKills(Player * player)
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.NULL.Honor.And.Kills", 10);
 
     if (!TotalHonorPoint && !TotalKill)
-        this->AddWarningPoint(player, PointWarning);
+        this->AddWarningPoint(player, amas::HONOR_AND_KILLS, float(PointWarning));
 }
 
 void AMAS::CheckIP(Player * player)
 {
-    uint8 IPCount = 1;
+    uint8 IPCount = 0;
     std::string PlayerIP = player->GetSession()->GetRemoteAddress();
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.More.IP", 20);
 
@@ -114,7 +115,7 @@ void AMAS::CheckIP(Player * player)
     }
 
     if (IPCount > 1)
-        this->AddWarningPoint(player, PointWarning);
+        this->AddWarningPoint(player, amas::IP, float(PointWarning));
 }
 
 void AMAS::CheckTrainerSpells(Player * player)
@@ -131,6 +132,7 @@ void AMAS::CheckTrainerSpells(Player * player)
         986, // Shaman
         328, // Mage
         906, // Warlock
+        0, // UNKNOWN class in 3.3.5a
         3033, // Druid
     };
 
@@ -150,7 +152,7 @@ void AMAS::CheckTrainerSpells(Player * player)
 
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Trainer.Spells", 20);
     if (Count > 1)
-        this->AddWarningPoint(player, PointWarning);
+        this->AddWarningPoint(player, amas::TRAINER_SPELLS, float(PointWarning));
 }
 
 void AMAS::CheckWarningZone(Player * player)
@@ -158,7 +160,7 @@ void AMAS::CheckWarningZone(Player * player)
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Warning.Zone", 20);
 
     if (this->IsWarningZone(player->GetZoneId()))
-        this->AddWarningPoint(player, PointWarning);
+        this->AddWarningPoint(player, amas::WARNING_ZONE, float(PointWarning));
 }
 
 void AMAS::LoadWarningZone()
@@ -212,7 +214,7 @@ void AMAS::StartCheck(Player * player)
     this->CheckTotalTimeAccount(player);
     this->CheckAverageItemLevel(player);
     this->CheckFreeTalent(player);
-    this->CheckRewardedQuestCount(player);
+    this->CheckCompletedQuestCount(player);
     this->CheckFriend(player);
     this->CheckMoney(player);
     this->CheckHonorAndKills(player);
@@ -220,25 +222,128 @@ void AMAS::StartCheck(Player * player)
 	this->CheckTrainerSpells(player);
     this->CheckWarningZone(player);
 }
-
-uint32 AMAS::GetWarningPoint(Player * player)
+float AMAS::GetWarningPoint(Player * player, amas::CheckType TypeCheck)
 {
-    WarningPointContainer::const_iterator itr = _warningPointStore.find(player->GetGUID());
-    if (itr != _warningPointStore.end())
-        return itr->second;
-
-    return 0;
+    switch (TypeCheck)
+    {
+    case amas::TIME_ACCOUNT:
+        return _playerWarningPointStore[player->GetGUID()].TimeAccount;
+        break;
+    case amas::AVERAGE_ITEM_LEVEL:
+        return _playerWarningPointStore[player->GetGUID()].AverageIlvl;
+        break;
+    case amas::FREE_TALENT:
+        return _playerWarningPointStore[player->GetGUID()].FreeTalent;
+        break;
+    case amas::COMPLETED_QUEST:
+        return _playerWarningPointStore[player->GetGUID()].CompletedQuest;
+        break;
+    case amas::FRIEND:
+        return _playerWarningPointStore[player->GetGUID()].Friend;
+        break;
+    case amas::MONEY:
+        return _playerWarningPointStore[player->GetGUID()].Money;
+        break;
+    case amas::HONOR_AND_KILLS:
+        return _playerWarningPointStore[player->GetGUID()].HonorAndKills;
+        break;
+    case amas::TRAINER_SPELLS:
+        return _playerWarningPointStore[player->GetGUID()].TrainerSpells;
+        break;
+    case amas::IP:
+        return _playerWarningPointStore[player->GetGUID()].Ip;
+        break;
+    case amas::WARNING_ZONE:
+        return _playerWarningPointStore[player->GetGUID()].WarningZone;
+        break;
+    default:
+        return 0.0f;
+        break;
+    }
 }
 
-void AMAS::AddWarningPoint(Player * player, uint32 SetPointWarning)
+float AMAS::GetAllWarningPoint(Player * player)
 {
-    _warningPointStore[player->GetGUID()] = _warningPointStore[player->GetGUID()] + SetPointWarning;
+    return  _playerWarningPointStore[player->GetGUID()].TimeAccount +
+        _playerWarningPointStore[player->GetGUID()].AverageIlvl +
+        _playerWarningPointStore[player->GetGUID()].FreeTalent +
+        _playerWarningPointStore[player->GetGUID()].CompletedQuest +
+        _playerWarningPointStore[player->GetGUID()].Friend +
+        _playerWarningPointStore[player->GetGUID()].Money +
+        _playerWarningPointStore[player->GetGUID()].HonorAndKills +
+        _playerWarningPointStore[player->GetGUID()].TrainerSpells +
+        _playerWarningPointStore[player->GetGUID()].Ip +
+        _playerWarningPointStore[player->GetGUID()].WarningZone;
+}
+
+void AMAS::AddWarningPoint(Player * player, amas::CheckType TypeCheck, float SetPointWarning)
+{
+    if (TypeCheck > amas::CheckType::MAX_CHECK_TYPE)
+        return;
+
+    switch (TypeCheck)
+    {
+    case amas::TIME_ACCOUNT:
+        _playerWarningPointStore[player->GetGUID()].TimeAccount = _playerWarningPointStore[player->GetGUID()].TimeAccount + SetPointWarning;
+        break;
+    case amas::AVERAGE_ITEM_LEVEL:
+        _playerWarningPointStore[player->GetGUID()].AverageIlvl = _playerWarningPointStore[player->GetGUID()].AverageIlvl + SetPointWarning;
+        break;
+    case amas::FREE_TALENT:
+        _playerWarningPointStore[player->GetGUID()].FreeTalent = _playerWarningPointStore[player->GetGUID()].FreeTalent + SetPointWarning;
+        break;
+    case amas::COMPLETED_QUEST:
+        _playerWarningPointStore[player->GetGUID()].CompletedQuest = _playerWarningPointStore[player->GetGUID()].CompletedQuest + SetPointWarning;
+        break;
+    case amas::FRIEND:
+        _playerWarningPointStore[player->GetGUID()].Friend = _playerWarningPointStore[player->GetGUID()].Friend + SetPointWarning;
+        break;
+    case amas::MONEY:
+        _playerWarningPointStore[player->GetGUID()].Money = _playerWarningPointStore[player->GetGUID()].Money + SetPointWarning;
+        break;
+    case amas::HONOR_AND_KILLS:
+        _playerWarningPointStore[player->GetGUID()].HonorAndKills = _playerWarningPointStore[player->GetGUID()].HonorAndKills + SetPointWarning;
+        break;
+    case amas::TRAINER_SPELLS:
+        _playerWarningPointStore[player->GetGUID()].TrainerSpells = _playerWarningPointStore[player->GetGUID()].TrainerSpells + SetPointWarning;
+        break;
+    case amas::IP:
+        _playerWarningPointStore[player->GetGUID()].Ip = _playerWarningPointStore[player->GetGUID()].Ip + SetPointWarning;
+        break;
+    case amas::WARNING_ZONE:
+        _playerWarningPointStore[player->GetGUID()].WarningZone = _playerWarningPointStore[player->GetGUID()].WarningZone + SetPointWarning;
+        break;
+    default:
+        break;
+    }
+}
+
+void AMAS::LogoutPlayer(Player * player)
+{
+    uint64 PlayerGUID = player->GetGUID();
+    float AllWarningPoint = GetAllWarningPoint(player);
+    float WPTimeAcc = this->GetWarningPoint(player, amas::TIME_ACCOUNT);
+    float WPAverageIlvl = this->GetWarningPoint(player, amas::AVERAGE_ITEM_LEVEL);
+    float WPFreeTalent = this->GetWarningPoint(player, amas::FREE_TALENT);
+    float WPCompletedQuest = this->GetWarningPoint(player, amas::COMPLETED_QUEST);
+    float WPFriend = this->GetWarningPoint(player, amas::FRIEND);
+    float WPMoney = this->GetWarningPoint(player, amas::MONEY);
+    float WPHonorAndKills = this->GetWarningPoint(player, amas::HONOR_AND_KILLS);
+    float WPTrainerSpells = this->GetWarningPoint(player, amas::TRAINER_SPELLS);
+    float WPIp = this->GetWarningPoint(player, amas::IP);
+    float WPWarningZone = this->GetWarningPoint(player, amas::WARNING_ZONE);
+
+    CharacterDatabase.PExecute("INSERT INTO `amas_player_rating_histoty`(`PlayerGUID`, `WarningPointAll`, `WarningPointTimeAcc`, `WarningPointAverageIlvl`, `WarningPointFreeTalent`, `WarningPointCompletedQuest`, `WarningPointFriend`, `WarningPointMoney`, `WarningPointHonorAndKills`, `WarningPointTrainerSpells`, `WarningPointIp`, `WarningPointWarningZone`, `Date`) VALUES (%u, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, NOW())",
+        PlayerGUID, AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPIp, WPWarningZone);
+
+    this->ClearWarningPoint(player);
 }
 
 void AMAS::ClearWarningPoint(Player * player)
 {
-    _warningPointStore.erase(player->GetGUID());
+    _playerWarningPointStore.erase(player->GetGUID());
 }
+
 
 // AMAS SC
 class AMAS_SC : public PlayerScript
@@ -254,9 +359,9 @@ public:
         sAMAS->StartCheck(player);
 
         uint32 MinWaringPoint = sConfigMgr->GetIntDefault("AMAS.Min.Point.For.Warning.Account", 50);
-        uint32 PlayerWarningPoint = sAMAS->GetWarningPoint(player);
+        float PlayerWarningPoint = sAMAS->GetAllWarningPoint(player);
 
-        if (PlayerWarningPoint > MinWaringPoint)
+        if (PlayerWarningPoint > float(MinWaringPoint))
             sWorld->SendGMText(LANG_ANNOUNCE_GLOBAL_GM_PLAYER_WARNING, player->GetName().c_str(), PlayerWarningPoint);
     }
 
@@ -265,7 +370,7 @@ public:
         if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
             return;
 
-        sAMAS->ClearWarningPoint(player);
+        sAMAS->LogoutPlayer(player);
     }
 };
 

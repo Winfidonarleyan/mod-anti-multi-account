@@ -1,2 +1,5 @@
-INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc1`, `content_loc2`, `content_loc3`, `content_loc4`, `content_loc5`, `content_loc6`, `content_loc7`, `content_loc8`) VALUES 
-(40037, 'Player %s have %u point warning', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Игрок %s имеет %u очков подозрительности');
+DELETE FROM `trinity_string` WHERE `entry` IN (40037, 40038, 40039);
+INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES 
+(40037, 'Player %s have %u point warning', 'Игрок %s имеет %u очков подозрительности'),
+(40038, 'Player %s is offline', 'Игрок %s не в сети'),
+(40039, '%s\n- All: %.2f\n- Total account time: %.2f\n- Average item level: %.2f\n- Free talent: %.2f\n- Completed quest: %.2f\n- Friend list: %.2f\n- Money: %.2f\n- Honor and kills: %.2f\n- Trainer spells: %.2f\n- Warning zone: %.2f\n- Ip: %.2f', '%s\n- Всего: %.2f\n- Игровое время аккаунта: %.2f\n- Средний уровень предметов: %.2f\n- Не использованые таланты: %.2f\n- Завершённые квесты: %.2f\n- Список друзей: %.2f\n- Деньги: %.2f\n- Хонор и килы: %.2f\n- Обучение у тренера: %.2f\n- Подозрительная зона: %.2f\n- Айпи: %.2f');
