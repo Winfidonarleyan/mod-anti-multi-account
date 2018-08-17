@@ -8,6 +8,8 @@
 #include "AMAS.h"
 
 #define LANG_ANNOUNCE_GLOBAL_GM_PLAYER_WARNING 40037
+#define LANG_PLAYER_OFFLINE 40038
+#define LANG_AMAS_INFO_PLAYER_WARNING 40039
 
 AMAS::AMAS()
 {
@@ -345,7 +347,6 @@ void AMAS::ClearWarningPoint(Player * player)
     _playerWarningPointStore.erase(player->GetGUID());
 }
 
-
 // AMAS SC
 class AMAS_SC : public PlayerScript
 {
@@ -390,8 +391,72 @@ public:
     }
 };
 
+class CS_AMAS : public CommandScript
+{
+public:
+    CS_AMAS() : CommandScript("CS_AMAS") { }
+
+    std::vector<ChatCommand> GetCommands() const override
+    {
+        static std::vector<ChatCommand> CommandAMASTable = // .amas
+        {
+            { "player",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASPlayerInfo, 		   	    "" },
+            { "reload",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASWarningZoneReload, 		"" }
+        };       
+
+        static std::vector<ChatCommand> commandTable =
+        {  
+            { "amas",				SEC_ADMINISTRATOR, 		true, nullptr,             	   				"", CommandAMASTable }
+        };
+
+        return commandTable;
+    }
+
+    static bool HandleAMASWarningZoneReload(ChatHandler *handler, const char* /*args*/)
+    {
+        sLog->outString("Reload warning zone for AMAS...");
+        sAMAS->LoadWarningZone();
+        handler->SendGlobalGMSysMessage("|cff6C8CD5#|cFFFF0000 DB table|r `amas_warning_zone` |cFFFF0000reloading|r");
+        return true;
+    }
+
+    static bool HandleAMASPlayerInfo(ChatHandler *handler, const char *args)
+    {
+        Player* target;
+        uint64 targetGuid;
+        std::string targetName;
+        if (!handler->extractPlayerTarget((char*)args, &target, &targetGuid, &targetName))
+            return false;
+
+        if (!target)
+        {
+            handler->PSendSysMessage(LANG_PLAYER_OFFLINE, targetName.c_str());
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        float AllWarningPoint = sAMAS->GetAllWarningPoint(target);
+        float WPTimeAcc = sAMAS->GetWarningPoint(target, amas::TIME_ACCOUNT);
+        float WPAverageIlvl = sAMAS->GetWarningPoint(target, amas::AVERAGE_ITEM_LEVEL);
+        float WPFreeTalent = sAMAS->GetWarningPoint(target, amas::FREE_TALENT);
+        float WPCompletedQuest = sAMAS->GetWarningPoint(target, amas::COMPLETED_QUEST);
+        float WPFriend = sAMAS->GetWarningPoint(target, amas::FRIEND);
+        float WPMoney = sAMAS->GetWarningPoint(target, amas::MONEY);
+        float WPHonorAndKills = sAMAS->GetWarningPoint(target, amas::HONOR_AND_KILLS);
+        float WPTrainerSpells = sAMAS->GetWarningPoint(target, amas::TRAINER_SPELLS);
+        float WPWarningZone = sAMAS->GetWarningPoint(target, amas::WARNING_ZONE);
+        float WPIp = sAMAS->GetWarningPoint(target, amas::IP);
+
+        handler->PSendSysMessage(LANG_AMAS_INFO_PLAYER_WARNING,
+            target->GetName().c_str(), AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPWarningZone, WPIp);
+
+        return true;
+    }
+};
+
 void AddAMASScripts() 
 {
     new AMAS_SC();
     new AMAS_SC_World();
+    new CS_AMAS();
 }
