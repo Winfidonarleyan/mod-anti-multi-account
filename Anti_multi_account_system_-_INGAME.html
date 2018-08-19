@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <meta name="generator" content="http://www.nongnu.org/elyxer/"/>
-<meta name="create-date" content="2018-08-18"/>
+<meta name="create-date" content="2018-08-20"/>
 <link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
 <title>YHOOL - Anti-Multi Account (System)</title>
 </head>
@@ -213,6 +213,24 @@ Check if the average play session time of the player is really short (example: 5
 </div>
 <div class="Indented">
 Maybe there should be a cooldown in case of constant connection/disconnection (internet problem?).
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.13">4.13</a> Creation date
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-4.13.1">4.13.1</a> Account creation date
+</h3>
+<div class="Unindented">
+In the &ldquo;account&rdquo; table, there is the column &ldquo;joindate&rdquo;
+</div>
+<div class="Indented">
+This can be used as a check, if account is new, then it’s suspicious.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-4.13.2">4.13.2</a> Character creation date
+</h3>
+<div class="Unindented">
+I haven’t found a way to check this but it could be added to the core directly too. It would also be helpful for another module of mine (a module that will evaluate if an account/character is new or not).
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-5">5</a> Checks to perform - for technical stuff
