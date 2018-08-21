@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Configuration/Config.h"
 #include "AMAS.h"
+#include "Chat.h"
 
 #define LANG_ANNOUNCE_GLOBAL_GM_PLAYER_WARNING 40037
 #define LANG_PLAYER_OFFLINE 40038

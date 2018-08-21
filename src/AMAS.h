@@ -2,6 +2,8 @@
 #define _AMAS_H_
 
 #include "Common.h"
+#include "UnorderedMap.h"
+#include <vector>
 #include <ace/Singleton.h>
 
 namespace amas
