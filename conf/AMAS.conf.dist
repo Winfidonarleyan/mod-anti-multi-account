@@ -92,7 +92,7 @@ AMAS.Warning.Point.NULL.Honor.And.Kills = 10
 #	SYSTEM SETTINGS: MONEY
 #
 #	AMAS.Max.Count.Money
-#		Description: Maxminun money count (gold) for player, so as not to cause suspicion
+#		Description: Maximum money count (gold) for player, so as not to cause suspicion
 #		Default: 2
 #
 #	AMAS.Warning.Point.Max.Count.Money
@@ -106,11 +106,17 @@ AMAS.Warning.Point.Max.Count.Money = 10
 #
 #	SYSTEM SETTINGS: SPELLS
 #
-#	AMAS.Warning.Point.Trainer.Spells
-#		Description: Warning point at check spell trainer (if > 1)
-#		Default: 30
+#	AMAS.Min.Missing.Trainer.Spells
+#		Description: Minimum missing tainer spell for player, so as not to cause suspicion
+#		Default: 1
+#
+#	AMAS.Warning.Point.Missing.One.Trainer.Spell
+#		Description: Add warning point at check spell trainer (if > AMAS.Min.Missing.Trainer.Spells) (for each don't learn spell)
+#		Default: 5
+#
 
-AMAS.Warning.Point.Trainer.Spells = 30
+AMAS.Min.Missing.Trainer.Spells = 1
+AMAS.Warning.Point.Missing.One.Trainer.Spell = 5
 
 #
 #	SYSTEM SETTINGS: ZONE
@@ -123,6 +129,20 @@ AMAS.Warning.Point.Trainer.Spells = 30
 AMAS.Warning.Point.Warning.Zone = 10
 
 #
+#	SYSTEM SETTINGS: SKILLS (PROFESSION)
+#
+#	AMAS.Min.Profession
+#		Description: Minimum profession for player, so as not to cause suspicion
+#		Default: 1
+#
+#	AMAS.Warning.Point.Trainer.Spells
+#		Description: Warning point at check profession (if < 1)
+#		Default: 10
+
+AMAS.Min.Profession = 1
+AMAS.Warning.Point.Professions = 10
+
+#
 #	SYSTEM SETTINGS: IP
 #
 #	AMAS.Warning.Point.More.IP
@@ -133,10 +153,93 @@ AMAS.Warning.Point.Warning.Zone = 10
 AMAS.Warning.Point.More.IP = 20
 
 #
-#	SYSTEM SETTINGS: OTHER
+#	SYSTEM SETTINGS: CREATION DATE
+#
+#	AMAS.Min.Diff.Account.Create 
+#		Description: Min difference between account creation date and now
+#		Default: 86400 (1 day)
+#
+#	AMAS.Min.Diff.Character.Create
+#		Description: Min difference between character creation date and now
+#		Default: 86400 (1 day)
+#
+#	AMAS.Warning.Point.Diff.Account
+#		Description: Warning point at check AMAS.Min.Diff.Account.Create 
+#		Default: 10
+#
+#	AMAS.Warning.Point.Diff.Character
+#		Description: Warning point at check AMAS.Min.Diff.Character.Create
+#		Default: 5
 #
 
-AMAS.Min.Point.For.Warning.Account = 5
+AMAS.Min.Diff.Account.Create = 86400
+AMAS.Min.Diff.Character.Create = 86400
+AMAS.Warning.Point.Diff.Account = 10
+AMAS.Warning.Point.Diff.Character = 5
+
+#	SYSTEM SETTINGS: CONFIRMED MULTI ACCOUNT
+#
+#	AMAS.Confirmed.Min.Points
+#		Description: Minimum warning points player, for Confirmed Multi Account
+#		Default: 100
+#
+#	AMAS.Confirmed.Action
+#		Description: Type action. 1 - Ban, 2 - GM message, 3 - All
+#		Default: 2
+#
+#	AMAS.Confirmed.Action.Ban.RandomInterval.Min
+#		Description: Minimum time for ban interval (sec)
+#		Default: 86440 (1 day)
+#
+#	AMAS.Confirmed.Action.Ban.RandomInterval
+#		Description: Maximum time for ban interval (sec)
+#		Default: 172880 (2 days)
+#
+#	AMAS.Confirmed.Action.Ban.Reason
+#		Description: Ban reason 
+#		Default: "This account has been banned for using multiple accounts"
+#
+
+AMAS.Confirmed.Min.Points = 100
+AMAS.Confirmed.Action = 2
+AMAS.Confirmed.Ban.RandomInterval.Min = 86440
+AMAS.Confirmed.Ban.RandomInterval.Max = 172880
+AMAS.Confirmed.Ban.Reason = "This account has been banned for using multiple accounts"
+
+#
+#	SYSTEM SETTINGS: OTHER
+#
+#	AMAS.Suspicious.Account.Min.Points
+#		Description: Minimum warning points player, for suspicious
+#		Default: 15
+#
+#	AMAS.Low.GMLevel
+#		Description: Minimum GMLevel
+#		Default: 2
+#
+#	AMAS.High.GMLevel
+#		Description: Maxmimum GMLevel
+#		Default: 3
+#
+#	AMAS.Warning.Interval
+#		Description: (sec)
+#		Default: 1800 (30 min)
+#
+#	AMAS.Min.Time.For.DB.Histoty
+#		Description: Min diff time (last save and now) for save history to DB (sec)
+#		Default: 43200 (12 h)
+#
+#	AMAS.GM.Check.Enable
+#		Description: Enable check GM's account
+#		Default: 1 - Enable
+#
+
+AMAS.Suspicious.Account.Min.Points = 15
+AMAS.Low.GMLevel = 2
+AMAS.High.GMLevel = 3
+AMAS.Warning.Interval = 1800
+AMAS.Min.Time.For.DB.Histoty = 43200
+AMAS.GM.Check.Enable = 1
 
 #
 ###################################################################################################

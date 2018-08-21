@@ -7,10 +7,8 @@
 #include "Configuration/Config.h"
 #include "AMAS.h"
 #include "Chat.h"
-
-#define LANG_ANNOUNCE_GLOBAL_GM_PLAYER_WARNING 40037
-#define LANG_PLAYER_OFFLINE 40038
-#define LANG_AMAS_INFO_PLAYER_WARNING 40039
+#include "DBCStores.h"
+#include "AccountMgr.h"
 
 AMAS::AMAS()
 {
@@ -153,9 +151,11 @@ void AMAS::CheckTrainerSpells(Player * player)
         }
     }
 
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Trainer.Spells", 20);
-    if (Count > 1)
-        this->AddWarningPoint(player, amas::TRAINER_SPELLS, float(PointWarning));
+    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Missing.One.Trainer.Spell", 5);
+    uint32 MinMissingSpells = sConfigMgr->GetIntDefault("AMAS.Min.Missing.Trainer.Spells", 5);
+
+    if (Count > MinMissingSpells)
+        this->AddWarningPoint(player, amas::TRAINER_SPELLS, float(PointWarning * Count));
 }
 
 void AMAS::CheckWarningZone(Player * player)
@@ -188,6 +188,14 @@ void AMAS::LoadWarningZone()
     do
     {
         uint32 ZoneID = result->Fetch()->GetUInt32();
+
+        AreaTableEntry const* zone = sAreaTableStore.LookupEntry(ZoneID);
+        if (!zone)
+        {
+            sLog->outErrorDb(">> Not found zone (%u)", ZoneID);
+            continue;
+        }
+
         _warningZoneStore.push_back(ZoneID);
         count++;
 
@@ -209,6 +217,99 @@ bool AMAS::IsWarningZone(uint32 ZoneID)
     return false;
 }
 
+void AMAS::CheckProfession(Player * player)
+{
+    uint32 ProfCount = 0;
+
+    if (player->HasSkill(SKILL_MINING))
+        ProfCount++;
+    if (player->HasSkill(SKILL_SKINNING))
+        ProfCount++;
+    if (player->HasSkill(SKILL_HERBALISM))
+        ProfCount++;
+
+    for (uint32 i = 1; i < sSkillLineStore.GetNumRows(); ++i)
+    {
+        SkillLineEntry const *SkillInfo = sSkillLineStore.LookupEntry(i);
+        if (!SkillInfo)
+            continue;
+
+        if (SkillInfo->categoryId == SKILL_CATEGORY_SECONDARY)
+            continue;
+
+        if ((SkillInfo->categoryId != SKILL_CATEGORY_PROFESSION) || !SkillInfo->canLink)
+            continue;
+
+        const uint32 skillID = SkillInfo->id;
+        if (player->HasSkill(skillID))
+            ProfCount++;
+    }
+
+    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Professions", 10);
+    uint32 MinProf = sConfigMgr->GetIntDefault("AMAS.Min.Profession", 1);
+
+    if (ProfCount < MinProf)
+        this->AddWarningPoint(player, amas::PROFESSION, float(PointWarning));
+}
+
+void AMAS::CheckJoinAccount(Player * player)
+{
+    uint32 AccoutCreateDateUnix = 0;
+
+    QueryResult result = LoginDatabase.PQuery("SELECT UNIX_TIMESTAMP(joindate) FROM account WHERE id = %u", player->GetSession()->GetAccountId());
+    if (result)
+        AccoutCreateDateUnix = result->Fetch()->GetUInt32();
+
+    uint32 MinDiff = sConfigMgr->GetIntDefault("AMAS.Min.Diff.Account.Create", DAY);
+    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Diff.Account", 10);
+
+    if (AccoutCreateDateUnix < MinDiff)
+        this->AddWarningPoint(player, amas::JOIN_ACC, float(PointWarning));
+}
+
+void AMAS::CheckJoinCharacter(Player * player)
+{
+    uint32 CharacterCreateDateUnix = 0;
+
+    QueryResult result = CharacterDatabase.PQuery("SELECT UNIX_TIMESTAMP(create_date) FROM characters WHERE guid = %u", player->GetGUID());
+    if (result)
+        CharacterCreateDateUnix = result->Fetch()->GetUInt32();
+
+    uint32 MinDiff = sConfigMgr->GetIntDefault("AMAS.Min.Diff.Character.Create", DAY);
+    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Diff.Character", 10);
+
+    if (CharacterCreateDateUnix < MinDiff)
+        this->AddWarningPoint(player, amas::JOIN_CHAR, float(PointWarning));
+}
+
+void AMAS::AddWarningZone(uint32 ZoneID, bool IsDB)
+{
+    _warningZoneStore.push_back(ZoneID);
+
+    if (!IsDB)
+        return;
+
+    std::string ZoneName = "";
+
+    AreaTableEntry const* zone = sAreaTableStore.LookupEntry(ZoneID);
+    if (zone)
+        ZoneName = zone->area_name[1];
+
+    std::replace(ZoneName.begin(), ZoneName.end(), '\'', ' ');
+
+    CharacterDatabase.PExecute("INSERT INTO `amas_warning_zone`(`ZoneID`, `Comment`) VALUES (%u, '%s')", ZoneID, ZoneName.c_str());
+}
+
+void AMAS::DeleteWarningZone(uint32 ZoneID, bool IsDB)
+{
+    _warningZoneStore.erase(std::remove(_warningZoneStore.begin(), _warningZoneStore.end(), ZoneID), _warningZoneStore.end());
+
+    if (!IsDB)
+        return;
+
+    CharacterDatabase.PExecute("DELETE FROM `amas_warning_zone` WHERE `ZoneID` = %u", ZoneID);
+}
+
 void AMAS::StartCheck(Player * player)
 {
     if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
@@ -222,8 +323,11 @@ void AMAS::StartCheck(Player * player)
     this->CheckMoney(player);
     this->CheckHonorAndKills(player);
     this->CheckIP(player);
-	this->CheckTrainerSpells(player);
+    this->CheckTrainerSpells(player);
     this->CheckWarningZone(player);
+    this->CheckProfession(player);
+    this->CheckJoinAccount(player);
+    this->CheckJoinCharacter(player);
 }
 
 float AMAS::GetWarningPoint(Player * player, amas::CheckType TypeCheck)
@@ -260,6 +364,15 @@ float AMAS::GetWarningPoint(Player * player, amas::CheckType TypeCheck)
     case amas::WARNING_ZONE:
         return _playerWarningPointStore[player->GetGUID()].WarningZone;
         break;
+    case amas::PROFESSION:
+        return _playerWarningPointStore[player->GetGUID()].Profession;
+        break;
+    case amas::JOIN_ACC:
+        return _playerWarningPointStore[player->GetGUID()].JoinAccount;
+        break;
+    case amas::JOIN_CHAR:
+        return _playerWarningPointStore[player->GetGUID()].JoinCharacter;
+        break;
     default:
         return 0.0f;
         break;
@@ -277,7 +390,10 @@ float AMAS::GetAllWarningPoint(Player * player)
         _playerWarningPointStore[player->GetGUID()].HonorAndKills +
         _playerWarningPointStore[player->GetGUID()].TrainerSpells +
         _playerWarningPointStore[player->GetGUID()].Ip +
-        _playerWarningPointStore[player->GetGUID()].WarningZone;
+        _playerWarningPointStore[player->GetGUID()].WarningZone +
+        _playerWarningPointStore[player->GetGUID()].Profession +
+        _playerWarningPointStore[player->GetGUID()].JoinAccount +
+        _playerWarningPointStore[player->GetGUID()].JoinCharacter;
 }
 
 void AMAS::AddWarningPoint(Player * player, amas::CheckType TypeCheck, float SetPointWarning)
@@ -317,6 +433,15 @@ void AMAS::AddWarningPoint(Player * player, amas::CheckType TypeCheck, float Set
     case amas::WARNING_ZONE:
         _playerWarningPointStore[player->GetGUID()].WarningZone = _playerWarningPointStore[player->GetGUID()].WarningZone + SetPointWarning;
         break;
+    case amas::PROFESSION:
+        _playerWarningPointStore[player->GetGUID()].Profession = _playerWarningPointStore[player->GetGUID()].Profession + SetPointWarning;
+        break;
+    case amas::JOIN_ACC:
+        _playerWarningPointStore[player->GetGUID()].JoinAccount = _playerWarningPointStore[player->GetGUID()].JoinAccount + SetPointWarning;
+        break;
+    case amas::JOIN_CHAR:
+        _playerWarningPointStore[player->GetGUID()].JoinCharacter = _playerWarningPointStore[player->GetGUID()].JoinCharacter + SetPointWarning;
+        break;
     default:
         break;
     }
@@ -336,11 +461,38 @@ void AMAS::LogoutPlayer(Player * player)
     float WPTrainerSpells = this->GetWarningPoint(player, amas::TRAINER_SPELLS);
     float WPIp = this->GetWarningPoint(player, amas::IP);
     float WPWarningZone = this->GetWarningPoint(player, amas::WARNING_ZONE);
-
-    CharacterDatabase.PExecute("INSERT INTO `amas_player_rating_history`(`PlayerGUID`, `WarningPointAll`, `WarningPointTimeAcc`, `WarningPointAverageIlvl`, `WarningPointFreeTalent`, `WarningPointCompletedQuest`, `WarningPointFriend`, `WarningPointMoney`, `WarningPointHonorAndKills`, `WarningPointTrainerSpells`, `WarningPointIp`, `WarningPointWarningZone`, `Date`) VALUES (%u, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, NOW())",
-        PlayerGUID, AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPIp, WPWarningZone);
+    float WPProfession = this->GetWarningPoint(player, amas::PROFESSION);
+    float WPJoinAcc = this->GetWarningPoint(player, amas::JOIN_ACC);
+    float WPJoinChar = this->GetWarningPoint(player, amas::JOIN_CHAR);
 
     this->ClearWarningPoint(player);
+
+    if (AllWarningPoint < sConfigMgr->GetIntDefault("AMAS.Suspicious.Account.Min.Points", 15))
+        return;
+
+    if (!this->IsValidTime(player))
+        return;
+
+    CharacterDatabase.PExecute("INSERT INTO `amas_player_rating_history`(`PlayerGUID`, `WarningPointAll`, `WarningPointTimeAcc`, `WarningPointAverageIlvl`, `WarningPointFreeTalent`, `WarningPointCompletedQuest`, `WarningPointFriend`, `WarningPointMoney`, `WarningPointHonorAndKills`, `WarningPointTrainerSpells`, `WarningPointIp`, `WarningPointWarningZone`, `WarningPointProfession`, `WarningPointJoinAccount`, `WarningPointJoinCharacter`, `Date`) VALUES (%u, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, NOW())",
+        PlayerGUID, AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPIp, WPWarningZone, WPProfession, WPJoinAcc, WPJoinChar);
+}
+
+bool AMAS::IsValidTime(Player* player)
+{
+    uint32 LastDate = 0;
+
+    QueryResult result = CharacterDatabase.PQuery("SELECT UNIX_TIMESTAMP(Date) FROM `amas_player_rating_history` WHERE PlayerGUID = %u ORDER BY `Date` DESC LIMIT 0, 1", player->GetGUID());
+    if (result)
+        LastDate = result->Fetch()->GetUInt32();
+
+    uint32 TimeNow = uint32(time(NULL));
+    uint32 Diff = TimeNow - LastDate;
+    uint32 MinDiff = sConfigMgr->GetIntDefault("AMAS.Min.Time.For.DB.Histoty", DAY / 2);
+
+    if (Diff > MinDiff)
+        return true;
+
+    return false;
 }
 
 void AMAS::ClearWarningPoint(Player * player)
@@ -359,18 +511,24 @@ public:
         if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
             return;
 
+        if (!(sConfigMgr->GetBoolDefault("AMAS.GM.Check.Enable", true) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity())))
+            return;
+
         sAMAS->StartCheck(player);
 
         uint32 MinWaringPoint = sConfigMgr->GetIntDefault("AMAS.Min.Point.For.Warning.Account", 50);
         float PlayerWarningPoint = sAMAS->GetAllWarningPoint(player);
 
         if (PlayerWarningPoint > float(MinWaringPoint))
-            sWorld->SendGMText(LANG_ANNOUNCE_GLOBAL_GM_PLAYER_WARNING, player->GetName().c_str(), PlayerWarningPoint);
+            sWorld->SendGMText(amas::LANG_ANNOUNCE_GM, player->GetName().c_str(), PlayerWarningPoint);
     }
 
     void OnLogout(Player* player) override
     {
         if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
+            return;
+
+        if (!(sConfigMgr->GetBoolDefault("AMAS.GM.Check.Enable", true) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity())))
             return;
 
         sAMAS->LogoutPlayer(player);
@@ -399,21 +557,198 @@ public:
 
     std::vector<ChatCommand> GetCommands() const override
     {
-        static std::vector<ChatCommand> CommandAMASTable = // .amas
+        static std::vector<ChatCommand> TableCommandAmasZone = // .amas zone
         {
-            { "player",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASPlayerInfo, 		   	    "" },
-            { "reload",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASWarningZoneReload, 		"" }
-        };       
+            { "list",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASZoneList, 		   	                "" },
+            { "add",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASZoneAdd, 		   	                "" },
+            { "delete",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASZoneDelete, 		   	            "" },
+            { "reload",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASZoneRelaod, 		   	            "" }
+        };
+
+        static std::vector<ChatCommand> TableCommandAmasInfo = // .amas info (not work)
+        {
+            /*{ "account",	        SEC_ADMINISTRATOR,  	true, &HandleAMASInfoAccount, 		   	            "" },*/
+            { "player",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASInfoPlayer, 		   	            "" }
+        };
+
+        static std::vector<ChatCommand> TableCommandAmasComment = // .amas comment (not work)
+        {
+            /*{ "add",	            SEC_ADMINISTRATOR,  	true, &HandleAMASCommentAdd, 		   	            "" },
+            { "delete",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASCommentDelete, 		   	        "" },
+            { "edit",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASCommentEdit, 		   	            "" }*/
+        };
+
+        static std::vector<ChatCommand> TableCommandAmasList = // .amas list (not work)
+        {
+            /*{ "all",	            SEC_ADMINISTRATOR,  	true, &HandleAMASListAll, 		   	                "" },
+            { "online",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASListOnline, 		   	            "" },
+            { "offline",	    	SEC_ADMINISTRATOR,  	true, &HandleAMASListOffline, 		   	            "" }*/
+        };
+
+        static std::vector<ChatCommand> TableCommandAmas = // .amas
+        {
+            { "zone",				SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasZone },
+            { "info",				SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasInfo },
+            { "comment",			SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasComment },
+            { "list",			    SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasList }
+        };
 
         static std::vector<ChatCommand> commandTable =
         {  
-            { "amas",				SEC_ADMINISTRATOR, 		true, nullptr,             	   				"", CommandAMASTable }
+            { "amas",				SEC_ADMINISTRATOR, 		true, nullptr,             	   				    "", TableCommandAmas }
         };
 
         return commandTable;
     }
+    /*
+    static bool HandleKargatumTest(ChatHandler *handler, const char *args)
+    {
+        return true;
+    }
 
-    static bool HandleAMASWarningZoneReload(ChatHandler *handler, const char* /*args*/)
+    static bool HandleAMASListAll(ChatHandler *handler, const char *args)
+    {
+        return true;
+    }
+
+    static bool HandleAMASListOnline(ChatHandler *handler, const char *args)
+    {
+        return true;
+    }
+
+    static bool HandleAMASListOffline(ChatHandler *handler, const char *args)
+    {
+        return true;
+    }
+
+    static bool HandleAMASCommentAdd(ChatHandler *handler, const char *args)
+    {
+        return true;
+    }
+
+    static bool HandleAMASCommentDelete(ChatHandler *handler, const char *args)
+    {
+        return true;
+    }
+
+    static bool HandleAMASCommentEdit(ChatHandler *handler, const char *args)
+    {
+        return true;
+    }
+
+    static bool HandleAMASInfoAccount(ChatHandler *handler, const char *args)
+    {
+        return true;
+    }
+
+    static bool HandleAMASInfoPlayer(ChatHandler *handler, const char *args)
+    {
+        return true;
+    }
+    */
+    static bool HandleAMASZoneList(ChatHandler *handler, const char* /*args*/)
+    {
+        handler->SendSysMessage(amas::LANG_AMAS_WARNING_ZONE_LIST);
+        uint32 Count = 1;
+        int8 locale_index = handler->GetSessionDbLocaleIndex();
+        std::string ZoneName = "";
+
+        AMAS::WarningZoneContainer& _WarningZone = sAMAS->GetWarningZone();
+        for (auto i : _WarningZone)
+        {
+            if (Count == 50)
+                break;
+
+            AreaTableEntry const* zone = sAreaTableStore.LookupEntry(i);
+            if (!zone)
+                continue;
+
+            ZoneName = zone->area_name[locale_index];
+
+            if (ZoneName.empty())
+                continue;
+
+            handler->PSendSysMessage("%u. %u - %s", Count, i, ZoneName.c_str());
+
+            Count++;
+        }
+
+        return true;
+    }
+
+    static bool HandleAMASZoneAdd(ChatHandler *handler, const char *args)
+    {
+        if (!*args)
+        {
+            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_ENTER_ZONEID);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 ZoneID = (uint32)atoi((char *)args);
+        std::string ZoneName = "";
+
+        AreaTableEntry const* zone = sAreaTableStore.LookupEntry(ZoneID);
+        if (!zone)
+        {
+            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_NOT_CORRECT_ZONEID, ZoneID);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+        else
+            ZoneName = zone->area_name[handler->GetSessionDbLocaleIndex()];
+
+        if (sAMAS->IsWarningZone(ZoneID))
+        {
+            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_EXIST, ZoneID, ZoneName.c_str());
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        sAMAS->AddWarningZone(ZoneID, true);
+
+        handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_ADD, ZoneID, ZoneName.c_str());
+
+        return true;
+    }
+
+    static bool HandleAMASZoneDelete(ChatHandler *handler, const char *args)
+    {
+        if (!*args)
+        {
+            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_ENTER_ZONEID);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 ZoneID = (uint32)atoi((char *)args);
+        std::string ZoneName = "";
+
+        AreaTableEntry const* zone = sAreaTableStore.LookupEntry(ZoneID);
+        if (!zone)
+        {
+            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_NOT_CORRECT_ZONEID, ZoneID);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+        else
+            ZoneName = zone->area_name[handler->GetSessionDbLocaleIndex()];
+
+        if (!sAMAS->IsWarningZone(ZoneID))
+        {
+            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_NOT_FOUND, ZoneID, ZoneName.c_str());
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        sAMAS->DeleteWarningZone(ZoneID, true);
+
+        handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_DELETE, ZoneID, ZoneName.c_str());
+
+        return true;
+    }
+
+    static bool HandleAMASZoneRelaod(ChatHandler *handler, const char* /*args*/)
     {
         sLog->outString("Reload warning zone for AMAS...");
         sAMAS->LoadWarningZone();
@@ -421,35 +756,62 @@ public:
         return true;
     }
 
-    static bool HandleAMASPlayerInfo(ChatHandler *handler, const char *args)
+    static bool HandleAMASInfoPlayer(ChatHandler *handler, const char *args)
     {
-        Player* target;
-        uint64 targetGuid;
-        std::string targetName;
-        if (!handler->extractPlayerTarget((char*)args, &target, &targetGuid, &targetName))
+        Player* player;
+        uint64 playerGUID;
+        std::string PlayerName;
+        if (!handler->extractPlayerTarget((char*)args, &player, &playerGUID, &PlayerName))
             return false;
 
-        if (!target)
+        float AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPWarningZone, WPProfession, WPIp, WPJoinAcc, WPJoinChar;
+
+        if (player)
         {
-            handler->PSendSysMessage(LANG_PLAYER_OFFLINE, targetName.c_str());
-            handler->SetSentErrorMessage(true);
-            return false;
+            AllWarningPoint = sAMAS->GetAllWarningPoint(player);
+            WPTimeAcc = sAMAS->GetWarningPoint(player, amas::TIME_ACCOUNT);
+            WPAverageIlvl = sAMAS->GetWarningPoint(player, amas::AVERAGE_ITEM_LEVEL);
+            WPFreeTalent = sAMAS->GetWarningPoint(player, amas::FREE_TALENT);
+            WPCompletedQuest = sAMAS->GetWarningPoint(player, amas::COMPLETED_QUEST);
+            WPFriend = sAMAS->GetWarningPoint(player, amas::FRIEND);
+            WPMoney = sAMAS->GetWarningPoint(player, amas::MONEY);
+            WPHonorAndKills = sAMAS->GetWarningPoint(player, amas::HONOR_AND_KILLS);
+            WPTrainerSpells = sAMAS->GetWarningPoint(player, amas::TRAINER_SPELLS);
+            WPWarningZone = sAMAS->GetWarningPoint(player, amas::WARNING_ZONE);
+            WPProfession = sAMAS->GetWarningPoint(player, amas::PROFESSION);
+            WPIp = sAMAS->GetWarningPoint(player, amas::IP);
+            WPJoinAcc = sAMAS->GetWarningPoint(player, amas::JOIN_ACC);
+            WPJoinChar = sAMAS->GetWarningPoint(player, amas::JOIN_CHAR);
+        }
+        else
+        {                                                    //         0                    1                     2                        3                          4                       5                  6                     7                            8                    9                  10                       11                      12                        13                              
+            QueryResult result = CharacterDatabase.PQuery("SELECT WarningPointAll, WarningPointTimeAcc, WarningPointAverageIlvl, WarningPointFreeTalent, WarningPointCompletedQuest, WarningPointFriend, WarningPointMoney, WarningPointHonorAndKills, WarningPointTrainerSpells, WarningPointIp, WarningPointWarningZone, WarningPointProfession, WarningPointJoinAccount, WarningPointJoinCharacter FROM `amas_player_rating_history` WHERE PlayerGUID = %u ORDER BY `Date` DESC LIMIT 0, 1", playerGUID);
+            if (!result)
+            {
+                handler->PSendSysMessage(amas::LANG_AMAS_PLAYER_OFFLINE, PlayerName.c_str());
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+
+            Field* field = result->Fetch();
+            AllWarningPoint = field[0].GetFloat();
+            WPTimeAcc = field[1].GetFloat();
+            WPAverageIlvl = field[2].GetFloat();
+            WPFreeTalent = field[3].GetFloat();
+            WPCompletedQuest = field[4].GetFloat();
+            WPFriend = field[5].GetFloat();
+            WPMoney = field[6].GetFloat();
+            WPHonorAndKills = field[7].GetFloat();
+            WPTrainerSpells = field[8].GetFloat();
+            WPIp = field[9].GetFloat();
+            WPWarningZone = field[10].GetFloat();
+            WPProfession = field[11].GetFloat();
+            WPJoinAcc = field[12].GetFloat();
+            WPJoinChar = field[13].GetFloat();
         }
 
-        float AllWarningPoint = sAMAS->GetAllWarningPoint(target);
-        float WPTimeAcc = sAMAS->GetWarningPoint(target, amas::TIME_ACCOUNT);
-        float WPAverageIlvl = sAMAS->GetWarningPoint(target, amas::AVERAGE_ITEM_LEVEL);
-        float WPFreeTalent = sAMAS->GetWarningPoint(target, amas::FREE_TALENT);
-        float WPCompletedQuest = sAMAS->GetWarningPoint(target, amas::COMPLETED_QUEST);
-        float WPFriend = sAMAS->GetWarningPoint(target, amas::FRIEND);
-        float WPMoney = sAMAS->GetWarningPoint(target, amas::MONEY);
-        float WPHonorAndKills = sAMAS->GetWarningPoint(target, amas::HONOR_AND_KILLS);
-        float WPTrainerSpells = sAMAS->GetWarningPoint(target, amas::TRAINER_SPELLS);
-        float WPWarningZone = sAMAS->GetWarningPoint(target, amas::WARNING_ZONE);
-        float WPIp = sAMAS->GetWarningPoint(target, amas::IP);
-
-        handler->PSendSysMessage(LANG_AMAS_INFO_PLAYER_WARNING,
-            target->GetName().c_str(), AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPWarningZone, WPIp);
+        handler->PSendSysMessage(amas::LANG_AMAS_INFO_PLAYER_WARNING,
+            PlayerName.c_str(), AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPWarningZone, WPIp, WPProfession, WPJoinAcc, WPJoinChar);
 
         return true;
     }
