@@ -678,12 +678,12 @@ public:
 
     static bool HandleAMASZoneAdd(ChatHandler *handler, const char *args)
     {
+        uint32 ZoneID = 0;
+
         if (!*args)
-        {
-            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_ENTER_ZONEID);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
+            ZoneID = handler->GetSession()->GetPlayer()->GetZoneId();
+        else
+            ZoneID = (uint32)atoi((char *)args);
 
         uint32 ZoneID = (uint32)atoi((char *)args);
         std::string ZoneName = "";
@@ -714,12 +714,12 @@ public:
 
     static bool HandleAMASZoneDelete(ChatHandler *handler, const char *args)
     {
+        uint32 ZoneID = 0;
+
         if (!*args)
-        {
-            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_ENTER_ZONEID);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
+            ZoneID = handler->GetSession()->GetPlayer()->GetZoneId();
+        else
+            ZoneID = (uint32)atoi((char *)args);
 
         uint32 ZoneID = (uint32)atoi((char *)args);
         std::string ZoneName = "";
