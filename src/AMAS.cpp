@@ -500,6 +500,88 @@ void AMAS::ClearWarningPoint(Player * player)
     _playerWarningPointStore.erase(player->GetGUID());
 }
 
+void AMAS::PushDBPlayerInfo(Player* player)
+{
+    uint64 PlayerGUID = player->GetGUID();
+    uint32 TotalTimeAccount = player->GetSession()->GetTotalTime();
+    uint32 AVGILvl = player->GetAverageItemLevel();
+    uint32 FreeTalent = player->GetFreeTalentPoints();
+    uint32 TotalRewardQuest = player->GetRewardedQuestCount();
+    uint32 TotalTimePlayed = player->GetTotalPlayedTime();
+
+    uint32 FriendCount = 0;
+
+    QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM character_social JOIN characters ON characters.guid = character_social.friend WHERE character_social.guid = %u AND deleteinfos_name IS NULL LIMIT 255", player->GetGUID());
+    if (result)
+        FriendCount = result->Fetch()->GetUInt32();
+
+    uint32 TotalMoney = player->GetMoney();
+    uint32 TotalHonorPoint = player->GetHonorPoints();
+    uint32 TotalKill = player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS);
+    std::string PlayerIP = player->GetSession()->GetRemoteAddress();
+
+    std::vector<uint32> NpcTrainers =
+    {
+        0, // None
+        985, // Warrior
+        927, // Paladin
+        987, // Hunter
+        917, // Rogue
+        376, // Priest
+        28472, // Death knight
+        986, // Shaman
+        328, // Mage
+        906, // Warlock
+        0, // Monk (5.x)
+        3033 // Druid
+    };
+
+    uint8 PlayerClass = player->getClass();
+    uint32 MissingTrainerSpells = 0;
+
+    if (auto spells = sObjectMgr->GetNpcTrainerSpells(NpcTrainers[PlayerClass]))
+    {
+        for (auto itr = spells->spellList.begin(); itr != spells->spellList.end(); itr++)
+        {
+            auto spell = &itr->second;
+
+            if (spell->spell > 0 && player->GetTrainerSpellState(spell) == TRAINER_SPELL_GREEN && !player->HasSpell(spell->spell))
+                MissingTrainerSpells++;
+        }
+    }
+
+    uint32 CurrentZone = player->GetZoneId();
+    uint32 ProfCount = 0;
+
+    if (player->HasSkill(SKILL_MINING))
+        ProfCount++;
+    if (player->HasSkill(SKILL_SKINNING))
+        ProfCount++;
+    if (player->HasSkill(SKILL_HERBALISM))
+        ProfCount++;
+
+    for (uint32 i = 1; i < sSkillLineStore.GetNumRows(); ++i)
+    {
+        SkillLineEntry const *SkillInfo = sSkillLineStore.LookupEntry(i);
+        if (!SkillInfo)
+            continue;
+
+        if (SkillInfo->categoryId == SKILL_CATEGORY_SECONDARY)
+            continue;
+
+        if ((SkillInfo->categoryId != SKILL_CATEGORY_PROFESSION) || !SkillInfo->canLink)
+            continue;
+
+        const uint32 skillID = SkillInfo->id;
+        if (player->HasSkill(skillID))
+            ProfCount++;
+    }
+
+    CharacterDatabase.PExecute("DELETE FROM `amas_player_info` WHERE `PlayerGUID` = %u", PlayerGUID);
+    CharacterDatabase.PExecute("INSERT INTO `amas_player_info`(`PlayerGUID`, `TotalTimeAccount`, `AverageItemLevel`, `IP`, `FriendCount`, `Money`, `CompletedQuests`, `TotalTimePlayed`, `Honor`, `Kills`, `CurrentZone`, `MissingSpells`, `ProfessionLearned`, `FreeTalent`, `DateCheck`) VALUES (%u, %u, %u, '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, NOW())",
+        PlayerGUID, TotalTimeAccount, AVGILvl, PlayerIP.c_str(), FriendCount, TotalMoney, TotalRewardQuest, TotalTimePlayed, TotalHonorPoint, TotalKill, CurrentZone, MissingTrainerSpells, ProfCount, FreeTalent);
+}
+
 // AMAS SC
 class AMAS_SC : public PlayerScript
 {

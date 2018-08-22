@@ -102,6 +102,7 @@ private:
     void CheckJoinAccount(Player* player);
     void CheckJoinCharacter(Player* player);
     bool IsValidTime(Player* player);
+	void PushDBPlayerInfo(Player* player);
 };
 
 #define sAMAS ACE_Singleton<AMAS, ACE_Null_Mutex>::instance()
