@@ -543,7 +543,6 @@ uint32 AMAS::GetProfessionCount(Player* player)
     return ProfCount;
 }
 
-
 // AMAS SC
 class AMAS_SC : public PlayerScript
 {
@@ -564,7 +563,7 @@ public:
         float PlayerWarningPoint = sAMAS->GetAllWarningPoint(player);
 
         if (PlayerWarningPoint > float(MinWaringPoint))
-            sWorld->SendGMText(amas::LANG_ANNOUNCE_GM, player->GetName().c_str(), PlayerWarningPoint);
+            sWorld->SendGMText(amas::LANG_AMAS_ANNOUNCE_GM, player->GetName().c_str(), PlayerWarningPoint);
     }
 
     void OnLogout(Player* player) override
@@ -609,10 +608,10 @@ public:
             { "reload",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASZoneRelaod, 		   	            "" }
         };
 
-        static std::vector<ChatCommand> TableCommandAmasInfo = // .amas info (not work)
+        static std::vector<ChatCommand> TableCommandAmasInfo = // .amas info
         {
-            /*{ "account",	        SEC_ADMINISTRATOR,  	true, &HandleAMASInfoAccount, 		   	            "" },*/
-            { "player",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASInfoPlayer, 		   	            "" }
+            { "detail",				SEC_ADMINISTRATOR, 		true, &HandleAMASInfoDetail,             	   		"" },
+            { "warning",			SEC_ADMINISTRATOR, 		true, &HandleAMASInfoWarning,             	   		"" }
         };
 
         static std::vector<ChatCommand> TableCommandAmasComment = // .amas comment (not work)
@@ -631,7 +630,7 @@ public:
 
         static std::vector<ChatCommand> TableCommandAmas = // .amas
         {
-            { "zone",				SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasZone },
+            { "zone",				SEC_ADMINISTRATOR, 		true, nullptr,             	   					    "", TableCommandAmasZone },
             { "info",				SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasInfo },
             { "comment",			SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasComment },
             { "list",			    SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasList }
@@ -639,7 +638,7 @@ public:
 
         static std::vector<ChatCommand> commandTable =
         {  
-            { "amas",				SEC_ADMINISTRATOR, 		true, nullptr,             	   				    "", TableCommandAmas }
+            { "amas",				SEC_ADMINISTRATOR, 		true, nullptr,             	   				        "", TableCommandAmas }
         };
 
         return commandTable;
@@ -735,7 +734,7 @@ public:
         AreaTableEntry const* zone = sAreaTableStore.LookupEntry(ZoneID);
         if (!zone)
         {
-            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_NOT_CORRECT_ZONEID, ZoneID);
+            handler->PSendSysMessage(amas::LANG_AMAS_ZONE_INVALID, ZoneID);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -771,7 +770,7 @@ public:
         AreaTableEntry const* zone = sAreaTableStore.LookupEntry(ZoneID);
         if (!zone)
         {
-            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_NOT_CORRECT_ZONEID, ZoneID);
+            handler->PSendSysMessage(amas::LANG_AMAS_ZONE_INVALID, ZoneID);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -799,8 +798,8 @@ public:
         handler->SendGlobalGMSysMessage("|cff6C8CD5#|cFFFF0000 DB table|r `amas_warning_zone` |cFFFF0000reloading|r");
         return true;
     }
-
-    static bool HandleAMASInfoPlayer(ChatHandler *handler, const char *args)
+    
+    static bool HandleAMASInfoWarning(ChatHandler *handler, const char *args)
     {
         Player* player;
         uint64 playerGUID;
@@ -832,7 +831,7 @@ public:
             QueryResult result = CharacterDatabase.PQuery("SELECT WarningPointAll, WarningPointTimeAcc, WarningPointAverageIlvl, WarningPointFreeTalent, WarningPointCompletedQuest, WarningPointFriend, WarningPointMoney, WarningPointHonorAndKills, WarningPointTrainerSpells, WarningPointIp, WarningPointWarningZone, WarningPointProfession, WarningPointJoinAccount, WarningPointJoinCharacter FROM `amas_player_rating_history` WHERE PlayerGUID = %u ORDER BY `Date` DESC LIMIT 0, 1", playerGUID);
             if (!result)
             {
-                handler->PSendSysMessage(amas::LANG_AMAS_PLAYER_OFFLINE, PlayerName.c_str());
+                handler->PSendSysMessage(amas::LANG_AMAS_PLAYER_NOT_SAVED_DB, PlayerName.c_str());
                 handler->SetSentErrorMessage(true);
                 return false;
             }
@@ -854,11 +853,93 @@ public:
             WPJoinChar = field[13].GetFloat();
         }
 
-        handler->PSendSysMessage(amas::LANG_AMAS_INFO_PLAYER_WARNING,
-            PlayerName.c_str(), AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPWarningZone, WPIp, WPProfession, WPJoinAcc, WPJoinChar);
+        uint32 Secutiry = handler->GetSession()->GetSecurity();
+
+        if (Secutiry >= sConfigMgr->GetIntDefault("AMAS.High.GMLevel", 4))
+            handler->PSendSysMessage(amas::LANG_AMAS_INFO_PLAYER_WARNING_DETAIL,
+                PlayerName.c_str(), AllWarningPoint, WPTimeAcc, WPAverageIlvl, WPFreeTalent, WPCompletedQuest, WPFriend, WPMoney, WPHonorAndKills, WPTrainerSpells, WPWarningZone, WPIp, WPProfession, WPJoinAcc, WPJoinChar);
+        else
+            handler->PSendSysMessage(amas::LANG_AMAS_INFO_PLAYER_WARNING, PlayerName.c_str(), AllWarningPoint);
 
         return true;
     }
+
+    static bool HandleAMASInfoDetail(ChatHandler *handler, const char *args)
+    {
+        Player* player;
+        uint64 playerGUID;
+        std::string PlayerName;
+        if (!handler->extractPlayerTarget((char*)args, &player, &playerGUID, &PlayerName))
+            return false;
+
+        uint32 TotalTimeAccount, AVGILvl, FreeTalent, TotalRewardQuest, TotalTimePlayed, FriendCount, TotalMoney, TotalHonorPoint, TotalKill, MissingTrainerSpells, CurrentZone, ProfCount;
+        std::string PlayerIP;
+
+        if (player)
+        {
+            TotalTimeAccount = player->GetSession()->GetTotalTime();
+            AVGILvl = player->GetAverageItemLevel();
+            FreeTalent = player->GetFreeTalentPoints();
+            TotalRewardQuest = player->GetRewardedQuestCount();
+            TotalTimePlayed = player->GetTotalPlayedTime();
+            FriendCount = sAMAS->GetFriendCount(player);
+            TotalMoney = player->GetMoney();
+            TotalHonorPoint = player->GetHonorPoints();
+            TotalKill = player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS);
+            PlayerIP = player->GetSession()->GetRemoteAddress();
+            MissingTrainerSpells = sAMAS->GetMissingTrainerSpells(player);
+            CurrentZone = player->GetZoneId();
+            ProfCount = sAMAS->GetProfessionCount(player);
+        }
+        else
+        {                                                    //         0                  1           2       3         4           5                6           7      8         9            10                11             12    
+            QueryResult result = CharacterDatabase.PQuery("SELECT TotalTimeAccount, AverageItemLevel, IP, FriendCount, Money, CompletedQuests, TotalTimePlayed, Honor, Kills, CurrentZone, MissingSpells, ProfessionLearned, FreeTalent FROM `amas_player_info` WHERE PlayerGUID = %u", playerGUID);
+            if (!result)
+            {
+                handler->PSendSysMessage(amas::LANG_AMAS_PLAYER_NOT_SAVED_DB, PlayerName.c_str());
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+
+            Field* field = result->Fetch();
+            TotalTimeAccount = field[0].GetUInt32();
+            AVGILvl = field[1].GetUInt32();
+            FreeTalent = field[12].GetUInt32();
+            TotalRewardQuest = field[5].GetUInt32();
+            TotalTimePlayed = field[6].GetUInt32();
+            FriendCount = field[3].GetUInt32();
+            TotalMoney = field[4].GetUInt32();
+            TotalHonorPoint = field[7].GetUInt32();
+            TotalKill = field[8].GetUInt32();
+            PlayerIP = field[2].GetString();
+            MissingTrainerSpells = field[10].GetUInt32();
+            CurrentZone = field[9].GetUInt32();
+            ProfCount = field[11].GetUInt32();
+        }
+
+        uint32 gold = TotalMoney / GOLD;
+        uint32 silv = (TotalMoney % GOLD) / SILVER;
+        uint32 copp = (TotalMoney % GOLD) % SILVER;
+
+        std::string TotalTimeAccountStr = secsToTimeString(TotalTimeAccount);
+        std::string MoneyStr = std::to_string(gold) + "|TInterface\\MoneyFrame\\UI-GoldIcon:0:0:2:0|t " + std::to_string(silv) + "|TInterface\\MoneyFrame\\UI-SilverIcon:0:0:2:0|t " + std::to_string(copp) + "|TInterface\\MoneyFrame\\UI-CopperIcon:0:0:2:0|t ";
+        std::string TotalTimePlayedStr = secsToTimeString(TotalTimePlayed);
+        std::string IsWarningZone;
+        std::string ZoneName;
+
+        AreaTableEntry const* zone = sAreaTableStore.LookupEntry(CurrentZone);
+        if (zone)
+            ZoneName = zone->area_name[handler->GetSessionDbLocaleIndex()];
+
+        if (sAMAS->IsWarningZone(CurrentZone))
+            IsWarningZone = handler->GetTrinityString(amas::LANG_AMAS_IS_WARNING_ZONE);
+
+        handler->PSendSysMessage(amas::LANG_AMAS_INFO_PLAYER_DETAIL,
+            PlayerName.c_str(), TotalTimeAccountStr.c_str(), AVGILvl, FreeTalent, TotalRewardQuest, TotalTimePlayedStr.c_str(), FriendCount, MoneyStr.c_str(), TotalHonorPoint, TotalKill, PlayerIP.c_str(), MissingTrainerSpells, CurrentZone, ZoneName.c_str(), IsWarningZone.c_str(), ProfCount);
+
+        return true;
+    }
+
 };
 
 void AddAMASScripts() 
