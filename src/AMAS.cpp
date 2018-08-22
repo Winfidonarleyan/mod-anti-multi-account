@@ -65,11 +65,7 @@ void AMAS::CheckCompletedQuestCount(Player * player)
 
 void AMAS::CheckFriend(Player * player)
 {
-    uint32 FriendCount = 0;
-
-    QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM character_social JOIN characters ON characters.guid = character_social.friend WHERE character_social.guid = %u AND deleteinfos_name IS NULL LIMIT 255;", player->GetGUID());
-    if (result)
-        FriendCount = result->Fetch()->GetUInt32();
+    uint32 FriendCount = this->GetFriendCount(player);
 
     uint32 MinFriendCount = sConfigMgr->GetIntDefault("AMAS.Min.Friend.Count", 2);
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Min.Friend", 5);
@@ -121,41 +117,13 @@ void AMAS::CheckIP(Player * player)
 
 void AMAS::CheckTrainerSpells(Player * player)
 {
-    std::vector<uint32> NpcTrainers =
-    {
-        0, // None
-        985, // Warrior
-        927, // Paladin
-        987, // Hunter
-        917, // Rogue
-        376, // Priest
-        28472, // Death knight
-        986, // Shaman
-        328, // Mage
-        906, // Warlock
-        0, // UNKNOWN class in 3.3.5a
-        3033, // Druid
-    };
-
-    uint8 PlayerClass = player->getClass();
-    int32 Count = 0;
-
-    if (auto spells = sObjectMgr->GetNpcTrainerSpells(NpcTrainers[PlayerClass]))
-    {
-        for (auto itr = spells->spellList.begin(); itr != spells->spellList.end(); itr++)
-        {
-            auto spell = &itr->second;
-
-            if (spell->spell > 0 && player->GetTrainerSpellState(spell) == TRAINER_SPELL_GREEN && !player->HasSpell(spell->spell))
-                Count++;
-        }
-    }
+    uint32 MissingTrainerSpells = this->GetMissingTrainerSpells(player);
 
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Missing.One.Trainer.Spell", 5);
     uint32 MinMissingSpells = sConfigMgr->GetIntDefault("AMAS.Min.Missing.Trainer.Spells", 5);
 
-    if (Count > MinMissingSpells)
-        this->AddWarningPoint(player, amas::TRAINER_SPELLS, float(PointWarning * Count));
+    if (MissingTrainerSpells > MinMissingSpells)
+        this->AddWarningPoint(player, amas::TRAINER_SPELLS, float(PointWarning * MissingTrainerSpells));
 }
 
 void AMAS::CheckWarningZone(Player * player)
@@ -219,31 +187,7 @@ bool AMAS::IsWarningZone(uint32 ZoneID)
 
 void AMAS::CheckProfession(Player * player)
 {
-    uint32 ProfCount = 0;
-
-    if (player->HasSkill(SKILL_MINING))
-        ProfCount++;
-    if (player->HasSkill(SKILL_SKINNING))
-        ProfCount++;
-    if (player->HasSkill(SKILL_HERBALISM))
-        ProfCount++;
-
-    for (uint32 i = 1; i < sSkillLineStore.GetNumRows(); ++i)
-    {
-        SkillLineEntry const *SkillInfo = sSkillLineStore.LookupEntry(i);
-        if (!SkillInfo)
-            continue;
-
-        if (SkillInfo->categoryId == SKILL_CATEGORY_SECONDARY)
-            continue;
-
-        if ((SkillInfo->categoryId != SKILL_CATEGORY_PROFESSION) || !SkillInfo->canLink)
-            continue;
-
-        const uint32 skillID = SkillInfo->id;
-        if (player->HasSkill(skillID))
-            ProfCount++;
-    }
+    uint32 ProfCount = this->GetProfessionCount(player);    
 
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Professions", 10);
     uint32 MinProf = sConfigMgr->GetIntDefault("AMAS.Min.Profession", 1);
