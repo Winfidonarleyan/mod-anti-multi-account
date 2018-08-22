@@ -83,6 +83,9 @@ public:
     bool IsWarningZone(uint32 ZoneID);
     void AddWarningZone(uint32 ZoneID, bool IsDB);
     void DeleteWarningZone(uint32 ZoneID, bool IsDB);
+	uint32 GetFriendCount(Player* player);
+    uint32 GetMissingTrainerSpells(Player* player);
+    uint32 GetProfessionCount(Player* player);
 
     WarningZoneContainer &GetWarningZone() { return _warningZoneStore; }
 

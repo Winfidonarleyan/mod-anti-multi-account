@@ -508,18 +508,33 @@ void AMAS::PushDBPlayerInfo(Player* player)
     uint32 FreeTalent = player->GetFreeTalentPoints();
     uint32 TotalRewardQuest = player->GetRewardedQuestCount();
     uint32 TotalTimePlayed = player->GetTotalPlayedTime();
-
-    uint32 FriendCount = 0;
-
-    QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM character_social JOIN characters ON characters.guid = character_social.friend WHERE character_social.guid = %u AND deleteinfos_name IS NULL LIMIT 255", player->GetGUID());
-    if (result)
-        FriendCount = result->Fetch()->GetUInt32();
-
+    uint32 FriendCount = this->GetFriendCount(player);;
     uint32 TotalMoney = player->GetMoney();
     uint32 TotalHonorPoint = player->GetHonorPoints();
     uint32 TotalKill = player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS);
-    std::string PlayerIP = player->GetSession()->GetRemoteAddress();
+    std::string PlayerIP = player->GetSession()->GetRemoteAddress();    
+    uint32 MissingTrainerSpells = this->GetMissingTrainerSpells(player);
+    uint32 CurrentZone = player->GetZoneId();
+    uint32 ProfCount = this->GetProfessionCount(player);
 
+    CharacterDatabase.PExecute("DELETE FROM `amas_player_info` WHERE `PlayerGUID` = %u", PlayerGUID);
+    CharacterDatabase.PExecute("INSERT INTO `amas_player_info`(`PlayerGUID`, `TotalTimeAccount`, `AverageItemLevel`, `IP`, `FriendCount`, `Money`, `CompletedQuests`, `TotalTimePlayed`, `Honor`, `Kills`, `CurrentZone`, `MissingSpells`, `ProfessionLearned`, `FreeTalent`, `DateCheck`) VALUES (%u, %u, %u, '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, NOW())",
+        PlayerGUID, TotalTimeAccount, AVGILvl, PlayerIP.c_str(), FriendCount, TotalMoney, TotalRewardQuest, TotalTimePlayed, TotalHonorPoint, TotalKill, CurrentZone, MissingTrainerSpells, ProfCount, FreeTalent);
+}
+
+uint32 AMAS::GetFriendCount(Player* player)
+{
+    uint32 FriendCount = 0;
+
+    QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM character_social JOIN characters ON characters.guid = character_social.friend WHERE character_social.guid = %u AND deleteinfos_name IS NULL LIMIT 255;", player->GetGUID());
+    if (result)
+        FriendCount = result->Fetch()->GetUInt32();
+
+    return FriendCount;
+}
+
+uint32 AMAS::GetMissingTrainerSpells(Player* player)
+{
     std::vector<uint32> NpcTrainers =
     {
         0, // None
@@ -550,7 +565,11 @@ void AMAS::PushDBPlayerInfo(Player* player)
         }
     }
 
-    uint32 CurrentZone = player->GetZoneId();
+    return MissingTrainerSpells;
+}
+
+uint32 AMAS::GetProfessionCount(Player* player)
+{
     uint32 ProfCount = 0;
 
     if (player->HasSkill(SKILL_MINING))
@@ -577,10 +596,9 @@ void AMAS::PushDBPlayerInfo(Player* player)
             ProfCount++;
     }
 
-    CharacterDatabase.PExecute("DELETE FROM `amas_player_info` WHERE `PlayerGUID` = %u", PlayerGUID);
-    CharacterDatabase.PExecute("INSERT INTO `amas_player_info`(`PlayerGUID`, `TotalTimeAccount`, `AverageItemLevel`, `IP`, `FriendCount`, `Money`, `CompletedQuests`, `TotalTimePlayed`, `Honor`, `Kills`, `CurrentZone`, `MissingSpells`, `ProfessionLearned`, `FreeTalent`, `DateCheck`) VALUES (%u, %u, %u, '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, NOW())",
-        PlayerGUID, TotalTimeAccount, AVGILvl, PlayerIP.c_str(), FriendCount, TotalMoney, TotalRewardQuest, TotalTimePlayed, TotalHonorPoint, TotalKill, CurrentZone, MissingTrainerSpells, ProfCount, FreeTalent);
+    return ProfCount;
 }
+
 
 // AMAS SC
 class AMAS_SC : public PlayerScript
