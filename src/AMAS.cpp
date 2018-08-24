@@ -728,7 +728,6 @@ public:
         else
             ZoneID = (uint32)atoi((char *)args);
 
-        uint32 ZoneID = (uint32)atoi((char *)args);
         std::string ZoneName = "";
 
         AreaTableEntry const* zone = sAreaTableStore.LookupEntry(ZoneID);
@@ -764,7 +763,6 @@ public:
         else
             ZoneID = (uint32)atoi((char *)args);
 
-        uint32 ZoneID = (uint32)atoi((char *)args);
         std::string ZoneName = "";
 
         AreaTableEntry const* zone = sAreaTableStore.LookupEntry(ZoneID);
