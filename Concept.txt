@@ -255,9 +255,11 @@ been banned for using multiple accounts, which is against the
 rules of this server. Do it again and we will ban your IPs” (or 
 empty)
 
-AMAS.LowGMLevel = 2
+AMAS.LowGMLevel = 1
 
-AMAS.HighGMLevel = 3
+AMAS.MidGMLevel = 2,3
+
+AMAS.HighGMLevel = 4
 
 AMAS.WarningInterval = 1800 (30 min by default)
 
@@ -277,11 +279,11 @@ suspicious accounts (command .amas list) :
 There is also a string saying “Here are all the suspicious 
 accounts to review.”
 
-6.2.2 If player_rating < AMAS.SuspiciousAccountMinPoints
+6.2.2 If player_rating < AMAS.SuspiciousAccount.MinPoints
 
 • DO NOT SAVE (saves resources and space).
 
-6.2.3 If player_rating >= AMAS.SuspiciousAccountMinPoints
+6.2.3 If player_rating >= AMAS.SuspiciousAccount.MinPoints
 
 • SAVE to DB when the character logs out (only one rating per 
   day, overwrites the previous rating if multiple log out per day 
@@ -331,29 +333,28 @@ accounts to review.”
 
 7.1.4 Info
 
-• .amas -> IF PLAYER SELECTED WITH THE MOUSE, show rating of the 
-  selected player's account
+• .amas info help -> display subcommands (if there are)
 
-• .amas account_name -> show rating, see #toc-Subsection-7.1
+• .amas info -> IF PLAYER SELECTED WITH THE MOUSE, show rating of 
+  the selected player's account. IF PLAYER NOT SELECTED : show 
+  rating of yourself
 
-• .amas account_id -> same (you should add a variable that 
-  creates the subcommand with both account_name and account_id I 
-  think)
+• .amas info #account_name -> show rating, see #toc-Subsection-7.1
 
 7.1.5 Comment
 
-• .amas comment account_name -> list subcommands below
+• .amas comment -> list subcommands below
 
-• .amas comment account_name add -> add extra comment (for 
-  example if the GM thinks this account is NOT a multi account). 
-  This only appends extra comment and when you press enter, you 
-  see the result of the comment (so you can edit it if it's 
-  wrong). 
+• .amas comment add #account_name #comment-> add extra comment 
+  (for example if the GM thinks this account is NOT a multi 
+  account). This only appends extra comment and when you press 
+  enter, you see the result of the comment (so you can edit it if 
+  it's wrong). 
 
-• .amas comment account_name delete -> delete comment
+• .amas comment delete #account_name -> delete comment
 
-• .amas comment account_name edit -> delete the comment and add 
-  your new comment (it's a mix of the two other commands)
+• .amas comment edit #account_name #comment -> delete the comment 
+  and add your new comment (it's a mix of the two other commands)
 
 Add these columns in the player rating table: comment | 
 comment_date | commenter_id | commenter_gm_lvl
@@ -368,9 +369,13 @@ commenter_id = account_id of the gm
 
 commenter_gm_lvl = gm level
 
-7.2 .amas account_name
+7.2 .amas info #account_name
 
-7.2.1 If AMAS.HighGMLevel =< GM Level >= AMAS.LowGMLevel 
+There are different GM levels for this command, I know normally 
+we must make 3 different commands but I feel like it's more 
+practical this way for this particular case.
+
+7.2.1 If GM Level = AMAS.LowGMLevel 
 
 Then show simple rating for that account.
 
@@ -378,13 +383,15 @@ Example:
 
 Barbz: 100 pts
 
-7.2.2 If GM Level >= AMAS.HighGMLevel
+7.2.2 If GM Level = AMAS.MidGMLevel
 
 Then show detailed rating.
 
 Example:
 
 Barbz: 100 pts
+
+--------------
 
 Average Ilevel: 25
 
@@ -415,7 +422,53 @@ Missing spells: 15
 Profession learned: 2 (count because I can set the number in the 
 worldserver.conf to 3/4/5/6 professions :P)
 
-Other checks??
+Comment: the comment? (if empty, then it's empty or written “no 
+comment”)
+
+Other missing checks??
+
+7.2.3 If GM Level >= AMAS.HighGMLevel
+
+Then show detailed rating + points at the end, so no need to have 
+a second command
+
+Example:
+
+Barbz: 100pts
+
+--------------
+
+Average Ilevel: 25 | 10pts
+
+IP: xxx.xxx.xxx.xxx /!\ Same IP as account: Winfi | 10pts
+
+Friends: 1 | 10pts
+
+Unused talents: 10 | 10pts
+
+Money: 15000g | 10pts
+
+Completed Quests: 0 | 10pts
+
+Total time played: 6h | 10pts
+
+Zones discovered: 5 | 10pts
+
+Honor/Kills: 0/0 | 10pts
+
+Suspicious zones: yes (lol dunno for this one)
+
+Average play session: 5m | 10pts
+
+Missing spells: 15 | 10pts
+
+Profession learned: 2 | 10pts (count because I can set the number 
+in the worldserver.conf to 3/4/5/6 professions :P)
+
+Comment: the comment? (if empty, then it's empty or written “no 
+comment”)
+
+Other missing checks??
 
 7.3 .amas account_name mails
 
