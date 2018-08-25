@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <meta name="generator" content="http://www.nongnu.org/elyxer/"/>
-<meta name="create-date" content="2018-08-20"/>
+<meta name="create-date" content="2018-08-25"/>
 <link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
 <title>YHOOL - Anti-Multi Account (System)</title>
 </head>
@@ -92,7 +92,7 @@ Shouldn’t be hard anyway.
 I think we should have this function in the CORE directly because then we can call it for every module, script etc... It can be used for anticheat for example. It can be used for an anti spam script too. This is very useful because if the interval is random, the banned guy has no idea why he got banned.
 </div>
 <div class="Indented">
-So something like &ldquo;autoban(interval_1,interval_2,ban_reason)&rdquo; or &ldquo;autoban(intervals,ban_reason)&rdquo; and then in each script we can use it and change the interval as we want, and we replace by our own configuration interval if needed, and our own ban_reason. Default ban_reason = empty
+So something like &ldquo;RandomBan(interval_1,interval_2,ban_reason)&rdquo; or &ldquo;RandomBan(intervals,ban_reason)&rdquo; and then in each script we can use it and change the interval as we want, and we replace by our own configuration interval if needed, and our own ban_reason. Default ban_reason = empty
 </div>
 <div class="Indented">
 <b>This function can be public for all AC users.</b>
@@ -232,6 +232,27 @@ This can be used as a check, if account is new, then it’s suspicious.
 <div class="Unindented">
 I haven’t found a way to check this but it could be added to the core directly too. It would also be helpful for another module of mine (a module that will evaluate if an account/character is new or not).
 </div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.14">4.14</a> Account activity
+</h2>
+<div class="Unindented">
+If the user logs very rarely but &ldquo;regularly&rdquo; and only does a few actions, then it’s probably a hidden mule = +10 pts
+</div>
+<div class="Indented">
+It is good against smarter people.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-4.15">4.15</a> New account or not
+</h2>
+<div class="Unindented">
+This is a check that is relying on another module concept that I must write. This module will be a dependency on two or 3 other modules.
+</div>
+<div class="Indented">
+Basically, it will find out if an account is new or not (probably with point systems).
+</div>
+<div class="Indented">
+If it’s new, then there will be +50 points here (configurable of course) or it will multiply some other check points by 2.
+</div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-5">5</a> Checks to perform - for technical stuff
 </h1>
@@ -257,8 +278,9 @@ AMAS.ConfirmedMultiAccount.Action = Ban|Warn GMs
 ## This is a random interval to ban the account between X,Y seconds. Reason = Multiple account
 AMAS.ConfirmedMultiAccount.Action.Ban.RandomInterval = 86440,172880 (1 - 2 days)
 AMAS.ConfirmedMultiAccount.Action.Ban.Reason = &ldquo;This account has been banned for using multiple accounts, which is against the rules of this server. Do it again and we will ban your IPs&rdquo; (or empty)
-AMAS.LowGMLevel = 2
-AMAS.HighGMLevel = 3
+AMAS.LowGMLevel = 1
+AMAS.MidGMLevel = 2,3
+AMAS.HighGMLevel = 4
 AMAS.WarningInterval = 1800 (30 min by default)
 </pre>
 <div class="Unindented">
@@ -286,7 +308,7 @@ Every X minutes
 There is also a string saying &ldquo;Here are all the suspicious accounts to review.&rdquo;
 </div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-6.2.2">6.2.2</a> If player_rating &lt; AMAS.SuspiciousAccountMinPoints
+<a class="toc" name="toc-Subsubsection-6.2.2">6.2.2</a> If player_rating &lt; AMAS.SuspiciousAccount.MinPoints
 </h3>
 <ul>
 <li>
@@ -295,7 +317,7 @@ DO NOT SAVE (saves resources and space).
 
 </ul>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-6.2.3">6.2.3</a> If player_rating &gt;= AMAS.SuspiciousAccountMinPoints
+<a class="toc" name="toc-Subsubsection-6.2.3">6.2.3</a> If player_rating &gt;= AMAS.SuspiciousAccount.MinPoints
 </h3>
 <ul>
 <li>
@@ -368,13 +390,13 @@ Do the action in AMAS.ConfirmedMultiAccount.Action
 </h3>
 <ul>
 <li>
-.amas -&gt; IF PLAYER SELECTED WITH THE MOUSE, show rating of the selected player’s account
+.amas info help -&gt; display subcommands (if there are)
 </li>
 <li>
-.amas account_name -&gt; show rating, see <a class="FlexURL" href="#toc-Subsection-7.1">#toc-Subsection-7.1</a>
+.amas info -&gt; IF PLAYER SELECTED WITH THE MOUSE, show rating of the selected player’s account. IF PLAYER NOT SELECTED : show rating of yourself
 </li>
 <li>
-.amas account_id -&gt; same (you should add a variable that creates the subcommand with both account_name and account_id I think)
+.amas info #account_name -&gt; show rating, see <a class="FlexURL" href="#toc-Subsection-7.1">#toc-Subsection-7.1</a>
 </li>
 
 </ul>
@@ -383,16 +405,16 @@ Do the action in AMAS.ConfirmedMultiAccount.Action
 </h3>
 <ul>
 <li>
-.amas account_name comment -&gt; list subcommands below
+.amas comment -&gt; list subcommands below
 </li>
 <li>
-.amas account_name comment add -&gt; add extra comment (for example if the GM thinks this account is NOT a multi account). This only appends extra comment and when you press enter, you see the result of the comment (so you can edit it if it’s wrong). 
+.amas comment add #account_name #comment-&gt; add extra comment (for example if the GM thinks this account is NOT a multi account). This only appends extra comment and when you press enter, you see the result of the comment (so you can edit it if it’s wrong). 
 </li>
 <li>
-.amas account_name comment delete -&gt; delete comment
+.amas comment delete #account_name -&gt; delete comment
 </li>
 <li>
-.amas account_name comment edit -&gt; delete the comment and add your new comment (it’s a mix of the two other commands)
+.amas comment edit #account_name #comment -&gt; delete the comment and add your new comment (it’s a mix of the two other commands)
 </li>
 
 </ul>
@@ -412,10 +434,13 @@ commenter_id = account_id of the gm
 commenter_gm_lvl = gm level
 </div>
 <h2 class="Subsection">
-<a class="toc" name="toc-Subsection-7.2">7.2</a> .amas account_name
+<a class="toc" name="toc-Subsection-7.2">7.2</a> .amas info #account_name
 </h2>
+<div class="Unindented">
+There are different GM levels for this command, I know normally we must make 3 different commands but I feel like it’s more practical this way for this particular case.
+</div>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-7.2.1">7.2.1</a> If AMAS.<b>High</b>GMLevel =&lt;<b> GM Level</b> &gt;= AMAS.<b>Low</b>GMLevel 
+<a class="toc" name="toc-Subsubsection-7.2.1">7.2.1</a> If<b> GM Level</b> = AMAS.<b>Low</b>GMLevel 
 </h3>
 <div class="Unindented">
 Then show simple rating for that account.
@@ -427,7 +452,7 @@ Then show simple rating for that account.
 Barbz: 100 pts
 </pre>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-7.2.2">7.2.2</a> If <b>GM Level</b> &gt;= AMAS.<b>High</b>GMLevel
+<a class="toc" name="toc-Subsubsection-7.2.2">7.2.2</a> If <b>GM Level</b> = AMAS.MidGMLevel
 </h3>
 <div class="Unindented">
 Then show detailed rating.
@@ -437,6 +462,7 @@ Then show detailed rating.
 </div>
 <pre class="LyX-Code">
 Barbz: 100 pts
+--------------
 Average Ilevel: 25
 IP: xxx.xxx.xxx.xxx (Same as account: Winfi)
 Friends: 1
@@ -450,7 +476,36 @@ Suspicious zones: yes (lol dunno for this one)
 Average play session: 5m
 Missing spells: 15
 Profession learned: 2 (count because I can set the number in the worldserver.conf to 3/4/5/6 professions :P)
-Other checks??
+Comment: the comment? (if empty, then it’s empty or written &ldquo;no comment&rdquo;)
+Other missing checks??
+</pre>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-7.2.3">7.2.3</a> If <b>GM Level</b> &gt;= AMAS.<b>High</b>GMLevel
+</h3>
+<div class="Unindented">
+Then show detailed rating + points at the end, so no need to have a second command
+</div>
+<div class="Indented">
+<b>Example:</b>
+</div>
+<pre class="LyX-Code">
+Barbz: 100pts
+--------------
+Average Ilevel: 25 | 10pts
+IP: xxx.xxx.xxx.xxx /!\ Same IP as account: Winfi | 10pts
+Friends: 1 | 10pts
+Unused talents: 10 | 10pts
+Money: 15000g | 10pts
+Completed Quests: 0 | 10pts
+Total time played: 6h | 10pts
+Zones discovered: 5 | 10pts
+Honor/Kills: 0/0 | 10pts
+Suspicious zones: yes (lol dunno for this one)
+Average play session: 5m | 10pts
+Missing spells: 15 | 10pts
+Profession learned: 2 | 10pts (count because I can set the number in the worldserver.conf to 3/4/5/6 professions :P)
+Comment: the comment? (if empty, then it’s empty or written &ldquo;no comment&rdquo;)
+Other missing checks??
 </pre>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-7.3">7.3</a> .amas account_name mails
