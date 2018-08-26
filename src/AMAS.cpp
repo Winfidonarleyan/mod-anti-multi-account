@@ -706,7 +706,7 @@ public:
     {
         if (!sAMAS->IsWarningZoneExist())
         {
-            handler->PSendSysMessage(KARGATUM_LANG_AMAS_WARNING_ZONE_NOT_LOADED);
+            handler->PSendSysMessage(LANG_AMAS_WARNING_ZONE_NOT_LOADED);
             handler->SetSentErrorMessage(true);
             return false;
         }
