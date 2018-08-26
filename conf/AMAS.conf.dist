@@ -225,7 +225,7 @@ AMAS.Confirmed.Ban.Reason = "This account has been banned for using multiple acc
 #		Description: (sec)
 #		Default: 1800 (30 min)
 #
-#	AMAS.Min.Time.For.DB.Histoty
+#	AMAS.Min.Time.For.DB.History
 #		Description: Min diff time (last save and now) for save history to DB (sec)
 #		Default: 43200 (12 h)
 #
@@ -238,7 +238,7 @@ AMAS.Suspicious.Account.Min.Points = 15
 AMAS.Low.GMLevel = 2
 AMAS.High.GMLevel = 3
 AMAS.Warning.Interval = 1800
-AMAS.Min.Time.For.DB.Histoty = 43200
+AMAS.Min.Time.For.DB.History = 43200
 AMAS.GM.Check.Enable = 1
 
 #

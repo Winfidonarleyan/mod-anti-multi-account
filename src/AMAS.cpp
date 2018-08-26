@@ -444,7 +444,7 @@ bool AMAS::IsValidTime(Player* player)
 
     uint32 TimeNow = uint32(time(NULL));
     uint32 Diff = TimeNow - LastDate;
-    uint32 MinDiff = sConfigMgr->GetIntDefault("AMAS.Min.Time.For.DB.Histoty", DAY / 2);
+    uint32 MinDiff = sConfigMgr->GetIntDefault("AMAS.Min.Time.For.DB.History", DAY / 2);
 
     if (Diff > MinDiff)
         return true;
