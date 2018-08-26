@@ -57,6 +57,7 @@ namespace amas
         LANG_AMAS_WARNING_ZONE_NOT_FOUND,
         LANG_AMAS_WARNING_ZONE_DELETE,
         LANG_AMAS_WARNING_ZONE_EXIST,
+		LANG_AMAS_WARNING_ZONE_NOT_LOADED,
         LANG_AMAS_ZONE_INVALID,
         LANG_AMAS_INFO_PLAYER_DETAIL,
         LANG_AMAS_IS_WARNING_ZONE
@@ -87,9 +88,12 @@ public:
     bool IsWarningZone(uint32 ZoneID);
     void AddWarningZone(uint32 ZoneID, bool IsDB);
     void DeleteWarningZone(uint32 ZoneID, bool IsDB);
+	
 	uint32 GetFriendCount(Player* player);
     uint32 GetMissingTrainerSpells(Player* player);
     uint32 GetProfessionCount(Player* player);
+	
+	bool IsWarningZoneExist();
 
     WarningZoneContainer &GetWarningZone() { return _warningZoneStore; }
 

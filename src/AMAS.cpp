@@ -169,8 +169,21 @@ void AMAS::LoadWarningZone()
 
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded warning zones %i in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
-    sLog->outString();
+    if (_warningZoneStore.size())
+    {
+        sLog->outString(">> Loaded zones %i за %u мс", count, GetMSTimeDiffToNow(oldMSTime));
+        sLog->outString();
+    }
+    else
+    {
+        sLog->outString(">> Loaded 0 zones. In DB table `amas_warning_zone` not found correct zone");
+        sLog->outString();
+    }
+}
+
+bool AMAS::IsWarningZoneExist()
+{
+    return _warningZoneStore.size();
 }
 
 bool AMAS::IsWarningZone(uint32 ZoneID)
@@ -691,7 +704,14 @@ public:
     */
     static bool HandleAMASZoneList(ChatHandler *handler, const char* /*args*/)
     {
-        handler->SendSysMessage(amas::LANG_AMAS_WARNING_ZONE_LIST);
+        if (!sAMAS->IsWarningZoneExist())
+        {
+            handler->PSendSysMessage(KARGATUM_LANG_AMAS_WARNING_ZONE_NOT_LOADED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		handler->SendSysMessage(amas::LANG_AMAS_WARNING_ZONE_LIST);
         uint32 Count = 1;
         int8 locale_index = handler->GetSessionDbLocaleIndex();
         std::string ZoneName = "";
