@@ -36,7 +36,7 @@ void AMAS::CheckTotalTimeAccount(Player * player)
 
 void AMAS::CheckAverageItemLevel(Player * player)
 {
-    uint32 AVGILvl = player->GetAverageItemLevel();
+    uint32 AVGILvl = this->GetAverageItemLevel(player);
     uint32 MinAVGILvl = sConfigMgr->GetIntDefault("AMAS.Min.Average.Ilvl", 50);
     uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Average.Ilvl", 10);
 
@@ -461,7 +461,7 @@ void AMAS::PushDBPlayerInfo(Player* player)
 {
     uint64 PlayerGUID = player->GetGUID();
     uint32 TotalTimeAccount = player->GetSession()->GetTotalTime();
-    uint32 AVGILvl = player->GetAverageItemLevel();
+    uint32 AVGILvl = this->GetAverageItemLevel(player);
     uint32 FreeTalent = player->GetFreeTalentPoints();
     uint32 TotalRewardQuest = player->GetRewardedQuestCount();
     uint32 TotalTimePlayed = player->GetTotalPlayedTime();
@@ -554,6 +554,28 @@ uint32 AMAS::GetProfessionCount(Player* player)
     }
 
     return ProfCount;
+}
+
+float AMAS::GetAverageItemLevel(Player* player)
+{
+    float sum = 0;
+    uint32 count = 0;
+
+    for (uint8 Slot = EQUIPMENT_SLOT_START; Slot < EQUIPMENT_SLOT_END; Slot++)
+    {
+        Item* item = player->GetItemByPos(INVENTORY_SLOT_BAG_0, Slot);
+        if (!item || !item->GetTemplate())
+            continue;
+
+        if (Slot == EQUIPMENT_SLOT_TABARD || Slot == EQUIPMENT_SLOT_OFFHAND || Slot == EQUIPMENT_SLOT_BODY)
+            continue;
+
+        sum += item->GetTemplate()->ItemLevel;
+
+        ++count;
+    }    
+
+    return std::max<float>(0.0f, sum / (float)count);
 }
 
 // AMAS SC
@@ -896,7 +918,7 @@ public:
         if (player)
         {
             TotalTimeAccount = player->GetSession()->GetTotalTime();
-            AVGILvl = player->GetAverageItemLevel();
+            AVGILvl = sAMAS->GetAverageItemLevel(player);
             FreeTalent = player->GetFreeTalentPoints();
             TotalRewardQuest = player->GetRewardedQuestCount();
             TotalTimePlayed = player->GetTotalPlayedTime();

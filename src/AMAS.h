@@ -93,6 +93,8 @@ public:
     uint32 GetMissingTrainerSpells(Player* player);
     uint32 GetProfessionCount(Player* player);
 	
+	float GetAverageItemLevel(Player* player);
+	
 	bool IsWarningZoneExist();
 
     WarningZoneContainer &GetWarningZone() { return _warningZoneStore; }
