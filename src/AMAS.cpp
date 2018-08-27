@@ -728,7 +728,7 @@ public:
     {
         if (!sAMAS->IsWarningZoneExist())
         {
-            handler->PSendSysMessage(LANG_AMAS_WARNING_ZONE_NOT_LOADED);
+            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_NOT_LOADED);
             handler->SetSentErrorMessage(true);
             return false;
         }
