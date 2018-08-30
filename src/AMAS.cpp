@@ -26,6 +26,9 @@ AMAS::~AMAS()
 void AMAS::CheckTotalTimeAccount(Player * player)
 {
     float TotalTimeAccount = player->GetSession()->GetTotalTime();
+	if(TotalTimeAccount == 0)
+        TotalTimeAccount = 60;
+	
     float MinTimeAccount = sConfigMgr->GetIntDefault("AMAS.Min.Total.Time.Account", DAY);
     float PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Total.Time.Account", 10);
 
@@ -407,7 +410,7 @@ void AMAS::AddWarningPoint(Player * player, amas::CheckType TypeCheck, float Set
 void AMAS::LogoutPlayer(Player * player)
 {
     uint64 PlayerGUID = player->GetGUID();
-    float AllWarningPoint = GetAllWarningPoint(player);
+    float AllWarningPoint = this->GetAllWarningPoint(player);
     float WPTimeAcc = this->GetWarningPoint(player, amas::TIME_ACCOUNT);
     float WPAverageIlvl = this->GetWarningPoint(player, amas::AVERAGE_ITEM_LEVEL);
     float WPFreeTalent = this->GetWarningPoint(player, amas::FREE_TALENT);
@@ -439,7 +442,9 @@ bool AMAS::IsValidTime(Player* player)
     uint32 LastDate = 0;
 
     QueryResult result = CharacterDatabase.PQuery("SELECT UNIX_TIMESTAMP(Date) FROM `amas_player_rating_history` WHERE PlayerGUID = %u ORDER BY `Date` DESC LIMIT 0, 1", player->GetGUID());
-    if (result)
+    if (!result)
+		return true;
+	else
         LastDate = result->Fetch()->GetUInt32();
 
     uint32 TimeNow = uint32(time(NULL));
