@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <meta name="generator" content="http://www.nongnu.org/elyxer/"/>
-<meta name="create-date" content="2018-08-25"/>
+<meta name="create-date" content="2018-08-30"/>
 <link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
 <title>YHOOL - Anti-Multi Account (System)</title>
 </head>
@@ -177,7 +177,7 @@ Table of Contents
 <a class="Link" href="#toc-Subsubsection-7.5.1">Subsubsection 7.5.1: Commands</a>
 </div>
 <div class="toc">
-<a class="Link" href="#toc-Subsubsection-7.5.2">Subsubsection 7.5.2: .amas info #account_name</a>
+<a class="Link" href="#toc-Subsubsection-7.5.2">Subsubsection 7.5.2: .amas info #character_name</a>
 </div>
 <div class="toc">
 <a class="Link" href="#toc-Subsubsection--1">Subsubsection: If = AMAS.GMLevel </a>
@@ -443,7 +443,7 @@ If it’s new, then there will be +50 points here (configurable of course) or it
 If IP is used on multiple accounts, it will give a high rating because it’s a huge warning (most of the time it will mean it’s the same user but I know some students use the same network for example, or guys in the same family).
 </div>
 <div class="Indented">
-20 points.
+Check <a class="URL" href="https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/19">https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/19</a>
 </div>
 <h1 class="Section">
 <a class="toc" name="toc-Section-5">5</a> CONFIGURATION FILE
@@ -579,16 +579,16 @@ When a character is deleted, it should delete the related info from that table. 
 </h3>
 <ul>
 <li>
-.amas comment -&gt; list subcommands below
+.amas comment -&gt; list subcommands below (warn user that it can’t contain more than 255 or X chars)
 </li>
 <li>
-.amas comment add #account_name #comment-&gt; add extra comment (for example if the GM thinks this account is NOT a multi account). This only appends extra comment and when you press enter, you see the result of the comment (so you can edit it if it’s wrong). 
+.amas comment add #character_name #comment-&gt; add extra comment (for example if the GM thinks this account is NOT a multi account). This only appends extra comment and when you press enter, you see the result of the comment (so you can edit it if it’s wrong).
 </li>
 <li>
-.amas comment delete #account_name -&gt; delete comment
+.amas comment delete #character_name -&gt; delete comment
 </li>
 <li>
-.amas comment edit #account_name #comment -&gt; delete the comment and add your new comment (it’s a mix of the two other commands)
+.amas comment edit #character_name #comment -&gt; delete the comment and add your new comment (it’s a mix of the two other commands)
 </li>
 
 </ul>
@@ -596,19 +596,16 @@ When a character is deleted, it should delete the related info from that table. 
 <a class="toc" name="toc-Subsubsection-7.4.2">7.4.2</a> Table structure
 </h3>
 <div class="Unindented">
-Add these columns in the player rating table: comment | comment_date | commenter_id | commenter_gm_lvl
+Add these columns in the player rating table: comment | comment_date | commenter_id
 </div>
 <div class="Indented">
-comment = maybe a limit of characters (I don’t remember the mySQL data types but i have done it several times), if you write a too long comment, the core tells you it’s too long
+comment = maybe a limit of characters (I don’t remember the mySQL data types but i have done it several times), if you write a too long comment, the core must tell you ingame that it’s too long or maybe display the comment right after it’s written
 </div>
 <div class="Indented">
-comment_date = date in unixtime I guess
+comment_date = date
 </div>
 <div class="Indented">
 commenter_id = account_id of the gm
-</div>
-<div class="Indented">
-commenter_gm_lvl = gm level
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-7.5">7.5</a> .amas info
@@ -621,21 +618,21 @@ commenter_gm_lvl = gm level
 .amas info help -&gt; display subcommands (if there are)
 </li>
 <li>
-.amas info -&gt; IF PLAYER SELECTED WITH THE MOUSE, show rating of the selected player’s account. IF PLAYER NOT SELECTED : show rating of yourself
+.amas info -&gt; IF PLAYER SELECTED WITH THE MOUSE, show rating of the selected player’s character/account. IF PLAYER NOT SELECTED : show rating of yourself
 </li>
 <li>
-.amas info #account_name -&gt; show rating, see below
+.amas info #character_name -&gt; show rating, see below
 </li>
 
 </ul>
 <h3 class="Subsubsection">
-<a class="toc" name="toc-Subsubsection-7.5.2">7.5.2</a> .amas info #account_name
+<a class="toc" name="toc-Subsubsection-7.5.2">7.5.2</a> .amas info #character_name
 </h3>
 <div class="Unindented">
 There are different GM levels for this command, I know normally we must make 3 different commands but I feel like it’s more practical this way for this particular case.
 </div>
 <h3 class="Subsubsection-">
-<a class="toc" name="toc-Subsubsection--1"></a>If<b> GM Level</b> = AMAS.<b>Low</b>GMLevel 
+<a class="toc" name="toc-Subsubsection--1"></a>If<b> GM Level</b> = AMAS.<b>Low</b>GMLevel
 </h3>
 <div class="Unindented">
 Then show simple rating for that account.
@@ -659,7 +656,7 @@ Then show detailed rating.
 Barbz: 100 pts
 --------------
 Average Ilevel: 25
-IP: xxx.xxx.xxx.xxx (Same as account: Winfi)
+IP: Unique IP xxx.xxx.xxx.xxx (or warn if the IP is the same as another account for the first 3 bytes Check <a class="URL" href="https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/19">https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/19</a> )
 Friends: 1
 Unused talents: 10
 Money: 15000g (plz convert gold/silver/copper :P)
@@ -671,6 +668,8 @@ Suspicious zones: yes (lol dunno for this one)
 Average play session: 5m
 Missing spells: 15
 Profession learned: 2 (count because I can set the number in the worldserver.conf to 3/4/5/6 professions :P)
+Bag slots on character: 55
+Bag slots in bank: 30
 Comment: the comment? (if empty, then it’s empty or written &ldquo;no comment&rdquo;)
 Other missing checks??
 </pre>
@@ -687,7 +686,7 @@ Then show detailed rating + points at the end, so no need to have a second comma
 Barbz: 100pts
 --------------
 Average Ilevel: 25 | 10pts
-IP: xxx.xxx.xxx.xxx /!\ Same IP as account: Winfi | 10pts
+IP: Unique IP xxx.xxx.xxx.xxx (or warn if the IP is the same as another account for the first 3 bytes) | 10 pts (Check <a class="URL" href="https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/19">https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/19</a> )
 Friends: 1 | 10pts
 Unused talents: 10 | 10pts
 Money: 15000g | 10pts
@@ -699,6 +698,8 @@ Suspicious zones: yes (lol dunno for this one)
 Average play session: 5m | 10pts
 Missing spells: 15 | 10pts
 Profession learned: 2 | 10pts (count because I can set the number in the worldserver.conf to 3/4/5/6 professions :P)
+Bag slots: 55 (no points, it’s just for manual check)
+Bag slots in bank: 30
 Comment: the comment? (if empty, then it’s empty or written &ldquo;no comment&rdquo;)
 Other missing checks??
 </pre>
