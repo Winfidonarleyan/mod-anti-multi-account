@@ -425,7 +425,9 @@ void AMAS::LogoutPlayer(Player * player)
     float WPJoinAcc = this->GetWarningPoint(player, amas::JOIN_ACC);
     float WPJoinChar = this->GetWarningPoint(player, amas::JOIN_CHAR);
 
-    this->ClearWarningPoint(player);
+    this->PushDBPlayerInfo(player);
+	
+	this->ClearWarningPoint(player);
 
     if (AllWarningPoint < sConfigMgr->GetIntDefault("AMAS.Suspicious.Account.Min.Points", 15))
         return;
