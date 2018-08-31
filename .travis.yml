@@ -1,0 +1,39 @@
+sudo: required
+dist: trusty # (14.04)
+
+language: cpp
+compiler:
+  - clang
+
+git:
+  depth: 10
+
+before_install:
+  - sudo apt-get -y install build-essential libtool make cmake cmake-data openssl libgoogle-perftools-dev
+  - sudo apt-get -y install libssl-dev libmysqlclient-dev libmysql++-dev libreadline6-dev zlib1g-dev libbz2-dev libace-dev
+  - git config user.email "travis@build.bot" && git config user.name "Travis CI"
+  - git tag -a -m "Travis build" init
+
+install:
+  - cd ..
+  - git clone --depth=1 --branch=acctime https://github.com/Winfidonarleyan/azerothcore-wotlk.git azerothcore
+  - mv mod-anti-multi-account azerothcore/modules
+  - cd azerothcore
+  - git submodule update --init --recursive
+  - cd bin
+  - cmake ../ -DWITH_WARNINGS=1 -DUSE_COREPCH=0 -DUSE_SCRIPTPCH=0 -DTOOLS=0 -DSCRIPTS=1 -DSERVERS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=check_install
+  - cd ..
+
+script:
+  - $CXX --version
+  - cd build
+  - make -j 8 -k && make install
+  - cd check_install/bin
+  
+notifications:
+  webhooks: http://travis.kargatum.ru/travis-ci.php
+  on_success: always
+  on_failure: always
+  on_start: always
+  on_cancel: always
+  on_error: always
