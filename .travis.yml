@@ -26,7 +26,7 @@ install:
 
 script:
   - $CXX --version
-  - cd build
+  - cd bin
   - make -j 8 -k && make install
   - cd check_install/bin
   
