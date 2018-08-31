@@ -23,14 +23,59 @@ AMAS::~AMAS()
     }
 }
 
+void AMASConfig::LoadConfig()
+{
+    // AMAS general
+    m_bool[conf::AMAS_ENABLE]                           = sConfigMgr->GetBoolDefault("AMAS.Enable", true);
+    m_int[conf::AMAS_MIN_TOTAL_TIME_ACC]                = sConfigMgr->GetIntDefault("AMAS.Min.Total.Time.Account", DAY);
+    m_int[conf::AMAS_MIN_TOTAL_TIME_ACC_POINT]          = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Total.Time.Account", 10);
+    m_int[conf::AMAS_MIN_AVG_ILVL]                      = sConfigMgr->GetIntDefault("AMAS.Min.Average.Ilvl", 50);
+    m_int[conf::AMAS_MIN_AVG_ILVL_POINT]                = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Average.Ilvl", 10);
+    m_int[conf::AMAS_FREE_TALENT_POINT]                 = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Free.Talent", 5);
+    m_int[conf::AMAS_MIN_COUNT_REWARDED_QUEST]          = sConfigMgr->GetIntDefault("AMAS.Min.Completed.Quest.Count", 20);
+    m_int[conf::AMAS_MIN_COUNT_REWARDED_QUEST_POINT]    = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Completed.Quest.Count", 10);
+    m_int[conf::AMAS_MIN_COUNT_FRIEND]                  = sConfigMgr->GetIntDefault("AMAS.Min.Friend.Count", 2);
+    m_int[conf::AMAS_MIN_COUNT_FRIEND_POINT]            = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Min.Friend", 5);
+    m_int[conf::AMAS_MAX_COUNT_MONEY]                   = sConfigMgr->GetIntDefault("AMAS.Max.Count.Money", 2) * GOLD;
+    m_int[conf::AMAS_MAX_COUNT_MONEY_POINT]             = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Max.Count.Money", 5);
+    m_int[conf::AMAS_NULL_HONOR_AND_KILLS]              = sConfigMgr->GetIntDefault("AMAS.Warning.Point.NULL.Honor.And.Kills", 10);
+    m_int[conf::AMAS_MORE_IP_POINT]                     = sConfigMgr->GetIntDefault("AMAS.Warning.Point.More.IP", 20);
+    m_int[conf::AMAS_MIN_TRAINER_SPELL_MISSING]         = sConfigMgr->GetIntDefault("AMAS.Min.Missing.Trainer.Spells", 1);
+    m_int[conf::AMAS_MISSING_TRAINER_SPELL_POINT]       = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Missing.One.Trainer.Spell", 20);
+    m_int[conf::AMAS_WARNING_ZONE_POINT]                = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Warning.Zone", 20);
+    m_int[conf::AMAS_MIN_PROFESSION]                    = sConfigMgr->GetIntDefault("AMAS.Min.Profession", 1);
+    m_int[conf::AMAS_PROFESSION_POINT]                  = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Professions", 20);
+    m_int[conf::AMAS_DIFF_ACC_CREATE]                   = sConfigMgr->GetIntDefault("AMAS.Min.Diff.Account.Create", DAY);
+    m_int[conf::AMAS_DIFF_CHAR_CREATE]                  = sConfigMgr->GetIntDefault("AMAS.Min.Diff.Character.Create", DAY);
+    m_int[conf::AMAS_DIFF_ACC_CREATE_POINT]             = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Diff.Account", 10);
+    m_int[conf::AMAS_DIFF_CHAR_CREATE_POINT]            = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Diff.Character", 5);
+    m_int[conf::AMAS_MIN_AVERAGE_SESSION]               = sConfigMgr->GetIntDefault("AMAS.Min.Average.Session", 5 * IN_MILLISECONDS * 60);
+    m_int[conf::AMAS_MIN_AVERAGE_SESSION_POINT]         = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Min.Average.Session", 10);
+
+    // Amas confirmed
+    m_int[conf::AMAS_CONFIRMED_MIN_POINT]               = sConfigMgr->GetIntDefault("AMAS.Confirmed.Min.Points", 20);
+    m_int[conf::AMAS_CONFIRMED_ACTION]                  = sConfigMgr->GetIntDefault("AMAS.Confirmed.Action", 20);
+    m_int[conf::AMAS_CONFIRMED_BAN_INTERVAL_MIN]        = sConfigMgr->GetIntDefault("AMAS.Confirmed.Ban.RandomInterval.Min", 20);
+    m_int[conf::AMAS_CONFIRMED_BAN_INTERVAL_MAX]        = sConfigMgr->GetIntDefault("AMAS.Confirmed.Ban.RandomInterval.Max", 20);
+    m_string[conf::AMAS_BAN_REASON]                     = sConfigMgr->GetStringDefault("AMAS.Confirmed.Ban.Reason", "This account has been banned for using multiple accounts");
+
+    // Other amas option
+    m_int[conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT]      = sConfigMgr->GetIntDefault("AMAS.Suspicious.Account.Min.Points", 50);
+    m_int[conf::AMAS_LOW_GMLEVEL]                       = sConfigMgr->GetIntDefault("AMAS.Low.GMLevel", 20);
+    m_int[conf::AMAS_HIGH_GMLEVEL]                      = sConfigMgr->GetIntDefault("AMAS.High.GMLevel", 20);
+    m_int[conf::AMAS_WARNING_INTERVAL]                  = sConfigMgr->GetIntDefault("AMAS.Warning.Interval", 20);
+    m_int[conf::AMAS_MIN_TIME_TO_DB_HISTORY]            = sConfigMgr->GetIntDefault("AMAS.Min.Time.For.DB.History", DAY / 2);
+    m_bool[conf::AMAS_GM_CHECK_ENABLE]                  = sConfigMgr->GetBoolDefault("AMAS.GM.Check.Enable", false);
+}
+
 void AMAS::CheckTotalTimeAccount(Player * player)
 {
     float TotalTimeAccount = player->GetSession()->GetTotalTime();
 	if(TotalTimeAccount == 0)
         TotalTimeAccount = 60;
 	
-    float MinTimeAccount = sConfigMgr->GetIntDefault("AMAS.Min.Total.Time.Account", DAY);
-    float PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Total.Time.Account", 10);
+    float MinTimeAccount = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC);
+    float PointWarning = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC_POINT);
 
     float TotalPointWarning = (PointWarning / MinTimeAccount) / (TotalTimeAccount / DAY);
 
@@ -40,8 +85,8 @@ void AMAS::CheckTotalTimeAccount(Player * player)
 void AMAS::CheckAverageItemLevel(Player * player)
 {
     uint32 AVGILvl = this->GetAverageItemLevel(player);
-    uint32 MinAVGILvl = sConfigMgr->GetIntDefault("AMAS.Min.Average.Ilvl", 50);
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Average.Ilvl", 10);
+    uint32 MinAVGILvl = CONF_INT(conf::AMAS_MIN_AVG_ILVL);
+    uint32 PointWarning = CONF_INT(conf::AMAS_MIN_AVG_ILVL_POINT);
 
     if (AVGILvl < MinAVGILvl)
         this->AddWarningPoint(player, amas::AVERAGE_ITEM_LEVEL, float(PointWarning));
@@ -50,7 +95,7 @@ void AMAS::CheckAverageItemLevel(Player * player)
 void AMAS::CheckFreeTalent(Player * player)
 {
     uint32 FreeTalent = player->GetFreeTalentPoints();
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Free.Talent", 5);
+    uint32 PointWarning = CONF_INT(conf::AMAS_FREE_TALENT_POINT);
 
     if (FreeTalent > 0)
         this->AddWarningPoint(player, amas::FREE_TALENT, float(PointWarning));
@@ -59,8 +104,8 @@ void AMAS::CheckFreeTalent(Player * player)
 void AMAS::CheckCompletedQuestCount(Player * player)
 {
     uint32 TotalRewardQuest = player->GetRewardedQuestCount();
-    uint32 MinQuestCount = sConfigMgr->GetIntDefault("AMAS.Min.Quest.Rewarded.Count", 20);
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Quest.Rewarded.Count", 10);
+    uint32 MinQuestCount = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST);
+    uint32 PointWarning = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST_POINT);
 
     if (TotalRewardQuest < MinQuestCount)
         this->AddWarningPoint(player, amas::COMPLETED_QUEST, float(PointWarning));
@@ -70,8 +115,8 @@ void AMAS::CheckFriend(Player * player)
 {
     uint32 FriendCount = this->GetFriendCount(player);
 
-    uint32 MinFriendCount = sConfigMgr->GetIntDefault("AMAS.Min.Friend.Count", 2);
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Min.Friend", 5);
+    uint32 MinFriendCount = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND);
+    uint32 PointWarning = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND_POINT);
 
     if (FriendCount < MinFriendCount)
         this->AddWarningPoint(player, amas::FRIEND, float(PointWarning));
@@ -80,8 +125,8 @@ void AMAS::CheckFriend(Player * player)
 void AMAS::CheckMoney(Player * player)
 {
     uint32 TotalMoney = player->GetMoney();
-    uint32 MaxMoneyCount = sConfigMgr->GetIntDefault("AMAS.Max.Count.Money", 100000) * GOLD;
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Max.Count.Money", 5);
+    uint32 MaxMoneyCount = CONF_INT(conf::AMAS_MAX_COUNT_MONEY);
+    uint32 PointWarning = CONF_INT(conf::AMAS_MAX_COUNT_MONEY_POINT);
 
     if (TotalMoney > MaxMoneyCount)
         this->AddWarningPoint(player, amas::MONEY, float(PointWarning));
@@ -91,7 +136,7 @@ void AMAS::CheckHonorAndKills(Player * player)
 {
     uint32 TotalHonorPoint = player->GetHonorPoints();
     uint32 TotalKill = player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS);
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.NULL.Honor.And.Kills", 10);
+    uint32 PointWarning = CONF_INT(conf::AMAS_NULL_HONOR_AND_KILLS);
 
     if (!TotalHonorPoint && !TotalKill)
         this->AddWarningPoint(player, amas::HONOR_AND_KILLS, float(PointWarning));
@@ -101,7 +146,7 @@ void AMAS::CheckIP(Player * player)
 {
     uint8 IPCount = 0;
     std::string PlayerIP = player->GetSession()->GetRemoteAddress();
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.More.IP", 20);
+    uint32 PointWarning = CONF_INT(conf::AMAS_MORE_IP_POINT);
 
     SessionMap::iterator itr;
     SessionMap m_sessions = sWorld->GetAllSessions();
@@ -122,8 +167,8 @@ void AMAS::CheckTrainerSpells(Player * player)
 {
     uint32 MissingTrainerSpells = this->GetMissingTrainerSpells(player);
 
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Missing.One.Trainer.Spell", 5);
-    uint32 MinMissingSpells = sConfigMgr->GetIntDefault("AMAS.Min.Missing.Trainer.Spells", 5);
+    uint32 PointWarning = CONF_INT(conf::AMAS_MISSING_TRAINER_SPELL_POINT);
+    uint32 MinMissingSpells = CONF_INT(conf::AMAS_MIN_TRAINER_SPELL_MISSING);
 
     if (MissingTrainerSpells > MinMissingSpells)
         this->AddWarningPoint(player, amas::TRAINER_SPELLS, float(PointWarning * MissingTrainerSpells));
@@ -131,15 +176,56 @@ void AMAS::CheckTrainerSpells(Player * player)
 
 void AMAS::CheckWarningZone(Player * player)
 {
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Warning.Zone", 20);
+    uint32 PointWarning = CONF_INT(conf::AMAS_WARNING_ZONE_POINT);
 
     if (this->IsWarningZone(player->GetZoneId()))
         this->AddWarningPoint(player, amas::WARNING_ZONE, float(PointWarning));
 }
 
+void AMAS::CheckProfession(Player * player)
+{
+    uint32 ProfCount = this->GetProfessionCount(player);    
+
+    uint32 PointWarning = CONF_INT(conf::AMAS_PROFESSION_POINT);
+    uint32 MinProf = CONF_INT(conf::AMAS_MIN_PROFESSION);
+
+    if (ProfCount < MinProf)
+        this->AddWarningPoint(player, amas::PROFESSION, float(PointWarning));
+}
+
+void AMAS::CheckJoinAccount(Player * player)
+{
+    uint32 AccoutCreateDateUnix = 0;
+
+    QueryResult result = LoginDatabase.PQuery("SELECT UNIX_TIMESTAMP(joindate) FROM account WHERE id = %u", player->GetSession()->GetAccountId());
+    if (result)
+        AccoutCreateDateUnix = result->Fetch()->GetUInt32();
+
+    uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_ACC_CREATE);
+    uint32 PointWarning = CONF_INT(conf::AMAS_DIFF_ACC_CREATE_POINT);
+
+    if (AccoutCreateDateUnix < MinDiff)
+        this->AddWarningPoint(player, amas::JOIN_ACC, float(PointWarning));
+}
+
+void AMAS::CheckJoinCharacter(Player * player)
+{
+    uint32 CharacterCreateDateUnix = 0;
+
+    QueryResult result = CharacterDatabase.PQuery("SELECT UNIX_TIMESTAMP(create_date) FROM characters WHERE guid = %u", player->GetGUID());
+    if (result)
+        CharacterCreateDateUnix = result->Fetch()->GetUInt32();
+
+    uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE);
+    uint32 PointWarning = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE_POINT);
+
+    if (CharacterCreateDateUnix < MinDiff)
+        this->AddWarningPoint(player, amas::JOIN_CHAR, float(PointWarning));
+}
+
 void AMAS::LoadWarningZone()
 {
-    if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
         return;
 
     uint32 oldMSTime = getMSTime();
@@ -201,47 +287,6 @@ bool AMAS::IsWarningZone(uint32 ZoneID)
     return false;
 }
 
-void AMAS::CheckProfession(Player * player)
-{
-    uint32 ProfCount = this->GetProfessionCount(player);    
-
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Professions", 10);
-    uint32 MinProf = sConfigMgr->GetIntDefault("AMAS.Min.Profession", 1);
-
-    if (ProfCount < MinProf)
-        this->AddWarningPoint(player, amas::PROFESSION, float(PointWarning));
-}
-
-void AMAS::CheckJoinAccount(Player * player)
-{
-    uint32 AccoutCreateDateUnix = 0;
-
-    QueryResult result = LoginDatabase.PQuery("SELECT UNIX_TIMESTAMP(joindate) FROM account WHERE id = %u", player->GetSession()->GetAccountId());
-    if (result)
-        AccoutCreateDateUnix = result->Fetch()->GetUInt32();
-
-    uint32 MinDiff = sConfigMgr->GetIntDefault("AMAS.Min.Diff.Account.Create", DAY);
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Diff.Account", 10);
-
-    if (AccoutCreateDateUnix < MinDiff)
-        this->AddWarningPoint(player, amas::JOIN_ACC, float(PointWarning));
-}
-
-void AMAS::CheckJoinCharacter(Player * player)
-{
-    uint32 CharacterCreateDateUnix = 0;
-
-    QueryResult result = CharacterDatabase.PQuery("SELECT UNIX_TIMESTAMP(create_date) FROM characters WHERE guid = %u", player->GetGUID());
-    if (result)
-        CharacterCreateDateUnix = result->Fetch()->GetUInt32();
-
-    uint32 MinDiff = sConfigMgr->GetIntDefault("AMAS.Min.Diff.Character.Create", DAY);
-    uint32 PointWarning = sConfigMgr->GetIntDefault("AMAS.Warning.Point.Diff.Character", 10);
-
-    if (CharacterCreateDateUnix < MinDiff)
-        this->AddWarningPoint(player, amas::JOIN_CHAR, float(PointWarning));
-}
-
 void AMAS::AddWarningZone(uint32 ZoneID, bool IsDB)
 {
     _warningZoneStore.push_back(ZoneID);
@@ -272,7 +317,7 @@ void AMAS::DeleteWarningZone(uint32 ZoneID, bool IsDB)
 
 void AMAS::StartCheck(Player * player)
 {
-    if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
         return;
 
     this->CheckTotalTimeAccount(player);
@@ -409,6 +454,9 @@ void AMAS::AddWarningPoint(Player * player, amas::CheckType TypeCheck, float Set
 
 void AMAS::LogoutPlayer(Player * player)
 {
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+
     uint64 PlayerGUID = player->GetGUID();
     float AllWarningPoint = this->GetAllWarningPoint(player);
     float WPTimeAcc = this->GetWarningPoint(player, amas::TIME_ACCOUNT);
@@ -593,15 +641,15 @@ public:
 
     void OnLogin(Player* player) override
     {
-        if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
             return;
 
-        if (!(sConfigMgr->GetBoolDefault("AMAS.GM.Check.Enable", true) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity())))
+        if (!(CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && AccountMgr::IsGMAccount(player->GetSession()->GetSecurity())))
             return;
 
         sAMAS->StartCheck(player);
 
-        uint32 MinWaringPoint = sConfigMgr->GetIntDefault("AMAS.Min.Point.For.Warning.Account", 50);
+        uint32 MinWaringPoint = CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT);
         float PlayerWarningPoint = sAMAS->GetAllWarningPoint(player);
 
         if (PlayerWarningPoint > float(MinWaringPoint))
@@ -610,10 +658,10 @@ public:
 
     void OnLogout(Player* player) override
     {
-        if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
             return;
 
-        if (!(sConfigMgr->GetBoolDefault("AMAS.GM.Check.Enable", true) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity())))
+        if (!(CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && AccountMgr::IsGMAccount(player->GetSession()->GetSecurity())))
             return;
 
         sAMAS->LogoutPlayer(player);
@@ -627,11 +675,20 @@ public:
 
     void OnLoadCustomDatabaseTable() override
     {
-        if (!sConfigMgr->GetBoolDefault("AMAS.Enable", true))
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
             return;
 
         sLog->outString("Loading warning zone for AMAS");
         sAMAS->LoadWarningZone();
+    }
+
+    void OnAfterConfigLoad(bool /*reload*/) override
+    {
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+            return;
+
+        sLog->outString("Loading AMAS configuration...");
+        sAMASConfig->LoadConfig();
     }
 };
 
