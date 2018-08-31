@@ -8,59 +8,24 @@
 
 namespace amas
 {
-    struct WarningType
-    {
-        float TimeAccount;
-        float AverageIlvl;
-        float FreeTalent;
-        float CompletedQuest;
-        float Friend;
-        float Money;
-        float HonorAndKills;
-        float TrainerSpells;
-        float Ip;
-        float WarningZone;
-        float Profession;
-        float JoinAccount;
-        float JoinCharacter;
-    };
-
-    enum CheckType
-    {
-        TIME_ACCOUNT,
-        AVERAGE_ITEM_LEVEL,
-        FREE_TALENT,
-        COMPLETED_QUEST,
-        FRIEND,
-        MONEY,
-        HONOR_AND_KILLS,
-        TRAINER_SPELLS,
-        IP,
-        WARNING_ZONE,
-        PROFESSION,
-        JOIN_ACC,
-        JOIN_CHAR,
-
-        MAX_CHECK_TYPE
-    };
-
     enum Language
     {
-        LANG_AMAS_ANNOUNCE_GM = 40037,
-        LANG_AMAS_PLAYER_NOT_SAVED_DB,
-        LANG_AMAS_INFO_PLAYER_WARNING_DETAIL,
-        LANG_AMAS_INFO_PLAYER_WARNING,
-        LANG_AMAS_WARNING_ZONE_LIST,
-        LANG_AMAS_WARNING_ZONE_ENTER_ZONEID,
-        LANG_AMAS_IS_LOW_GMLEVEL,
-        LANG_AMAS_WARNING_ZONE_ADD,
-        LANG_AMAS_WARNING_ZONE_NOT_FOUND,
-        LANG_AMAS_WARNING_ZONE_DELETE,
-        LANG_AMAS_WARNING_ZONE_EXIST,
-		LANG_AMAS_WARNING_ZONE_NOT_LOADED,
-        LANG_AMAS_ZONE_INVALID,
-        LANG_AMAS_INFO_PLAYER_DETAIL,
-        LANG_AMAS_IS_WARNING_ZONE
+        // AMAS
+        AMAS_ANNOUNCE_GM = 40037,
+        AMAS_PLAYER_NOT_SAVED_DB,
+        AMAS_INFO_PLAYER_WARNING_DETAIL,
+        AMAS_INFO_PLAYER_WARNING,
+        AMAS_WARNING_ZONE_LIST,
+        AMAS_WARNING_ZONE_ENTER_ZONEID,
+        AMAS_IS_LOW_GMLEVEL,
+        AMAS_WARNING_ZONE_ADD,
+        AMAS_WARNING_ZONE_NOT_FOUND,
+        AMAS_WARNING_ZONE_DELETE,
+        AMAS_WARNING_ZONE_EXIST,
+        AMAS_WARNING_ZONE_NOT_LOADED,
+        AMAS_ZONE_INVALID,
+        AMAS_INFO,
+        AMAS_IS_WARNING_ZONE
     };
 }
 
@@ -69,53 +34,54 @@ class AMAS
     friend class ACE_Singleton<AMAS, ACE_Null_Mutex>;
 
 public:
-    AMAS();
-    ~AMAS();
+    AMAS() {}
+    ~AMAS() {}
 
-    typedef UNORDERED_MAP<uint64, amas::WarningType> PlayerWarningPointContainer;
     typedef std::vector<uint32> WarningZoneContainer;
-
-    PlayerWarningPointContainer _playerWarningPointStore;
     WarningZoneContainer _warningZoneStore;
 
-    float GetWarningPoint(Player* player, amas::CheckType TypeCheck);
     float GetAllWarningPoint(Player* player);
-    void AddWarningPoint(Player* player, amas::CheckType TypeCheck, float SetPointWarning);
-    void ClearWarningPoint(Player* player);
-    void StartCheck(Player* player);
     void LogoutPlayer(Player* player);
     void LoadWarningZone();
-    bool IsWarningZone(uint32 ZoneID);
     void AddWarningZone(uint32 ZoneID, bool IsDB);
     void DeleteWarningZone(uint32 ZoneID, bool IsDB);
-	
-	uint32 GetFriendCount(Player* player);
+    /*void AddComment(std::string Text, uint64 PlayerGuid);
+    void DeleteComment(std::string Text, uint64 PlayerGuid);
+    void EditComment(std::string Text, uint64 PlayerGuid);*/
+
+    uint32 GetFriendCount(Player* player);
     uint32 GetMissingTrainerSpells(Player* player);
     uint32 GetProfessionCount(Player* player);
-	
-	float GetAverageItemLevel(Player* player);
-	
-	bool IsWarningZoneExist();
+    uint32 GetDateUnixJoinAccount(uint32 AccountID);
+    uint32 GetDateUnixJoinCharacter(uint32 PlayerGuid);
+
+    float GetAverageItemLevel(Player* player);
+
+    float GetWPTotalTimeAccount(uint32 TotalTimeAccount);
+    float GetWPAverageItemLevel(float AverageItemLevel);
+    float GetWPFreeTalent(uint32 FreeTalent);
+    float GetWPCompletedQuestCount(uint32 CompleteQuest);
+    float GetWPFriend(uint32 FriendCount);
+    float GetWPMoney(uint32 Money);
+    float GetWPHonorAndKills(uint32 Honor, uint32 Kills);
+    float GetWPIP(std::string IP);
+    float GetWPTrainerSpells(uint32 MissingTrainerSpells);
+    float GetWPWarningZone(uint32 ZoneID);
+    float GetWPProfession(uint32 ProffCount);
+    float GetWPJoinAccount(uint32 DateUnix);
+    float GetWPJoinCharacter(uint32 DateUnix);
+    //float GetWPAverageSessionTime(Player* player);
+
+    //std::string GetComment(Player* player);
+
+    bool IsWarningZoneExist();
+    bool IsWarningZone(uint32 ZoneID);
 
     WarningZoneContainer &GetWarningZone() { return _warningZoneStore; }
 
 private:
     
-    void CheckTotalTimeAccount(Player* player);
-    void CheckAverageItemLevel(Player* player);
-    void CheckFreeTalent(Player* player);
-    void CheckCompletedQuestCount(Player* player);
-    void CheckFriend(Player* player);
-    void CheckMoney(Player* player);
-    void CheckHonorAndKills(Player* player);
-    void CheckIP(Player* player);
-    void CheckTrainerSpells(Player* player);
-    void CheckWarningZone(Player* player);
-    void CheckProfession(Player * player);
-    void CheckJoinAccount(Player* player);
-    void CheckJoinCharacter(Player* player);
-    bool IsValidTime(Player* player);
-	void PushDBPlayerInfo(Player* player);
+    void PushDBPlayerInfo(Player* player);
 };
 
 #define sAMAS ACE_Singleton<AMAS, ACE_Null_Mutex>::instance()
