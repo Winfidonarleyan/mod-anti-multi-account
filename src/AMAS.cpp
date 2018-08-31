@@ -621,12 +621,12 @@ public:
     {
         if (!sAMAS->IsWarningZoneExist())
         {
-            handler->PSendSysMessage(amas::LANG_AMAS_WARNING_ZONE_NOT_LOADED);
+            handler->PSendSysMessage(amas::AMAS_WARNING_ZONE_NOT_LOADED);
             handler->SetSentErrorMessage(true);
             return false;
         }
 		
-		handler->SendSysMessage(amas::LANG_AMAS_WARNING_ZONE_LIST);
+		handler->SendSysMessage(amas::AMAS_WARNING_ZONE_LIST);
         uint32 Count = 1;
         int8 locale_index = handler->GetSessionDbLocaleIndex();
         std::string ZoneName = "";
