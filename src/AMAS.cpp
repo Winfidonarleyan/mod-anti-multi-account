@@ -10,19 +10,6 @@
 #include "DBCStores.h"
 #include "AccountMgr.h"
 
-AMAS::AMAS()
-{
-    _playerWarningPointStore.clear();
-}
-
-AMAS::~AMAS()
-{
-    while (!_playerWarningPointStore.empty())
-    {
-        _playerWarningPointStore.erase(_playerWarningPointStore.begin());
-    }
-}
-
 void AMASConfig::LoadConfig()
 {
     // AMAS general
