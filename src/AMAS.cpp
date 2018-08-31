@@ -319,28 +319,6 @@ float AMAS::GetAllWarningPoint(Player * player)
     return WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp + WPJoinAcc + WPJoinChar;
 }
 
-float AMAS::GetAllWarningPoint(Player * player)
-{
-    if (!CONF_BOOL(conf::AMAS_ENABLE))
-        return 0.0f;
-
-    float WPTimeAcc = this->GetWPTotalTimeAccount(player->GetSession()->GetTotalTime());
-    float WPAverageIlvl = this->GetWPAverageItemLevel(this->GetAverageItemLevel(player));
-    float WPFreeTalent = this->GetWPFreeTalent(player->GetFreeTalentPoints());
-    float WPCompletedQuest = this->GetWPCompletedQuestCount(player->GetRewardedQuestCount());
-    float WPFriend = this->GetWPFriend(this->GetFriendCount(player));
-    float WPMoney = this->GetWPMoney(player->GetMoney());
-    float WPHonorAndKills = this->GetWPHonorAndKills(player->GetHonorPoints(), player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS));
-    float WPTrainerSpells = this->GetWPTrainerSpells(this->GetMissingTrainerSpells(player));
-    float WPWarningZone = this->GetWPWarningZone(player->GetZoneId());
-    float WPProfession = this->GetWPProfession(this->GetProfessionCount(player));
-    float WPIp = this->GetWPIP(player->GetSession()->GetRemoteAddress());
-    float WPJoinAcc = this->GetWPJoinAccount(this->GetDateUnixJoinAccount(player->GetSession()->GetAccountId()));
-    float WPJoinChar = this->GetWPJoinCharacter(this->GetDateUnixJoinCharacter(player->GetGUID()));
-
-    return WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp + WPJoinAcc + WPJoinChar;
-}
-
 void AMAS::LogoutPlayer(Player * player)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
