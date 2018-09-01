@@ -342,10 +342,10 @@ void AMAS::PushDBPlayerInfo(Player* player)
     uint32 MissingTrainerSpells = this->GetMissingTrainerSpells(player);
     uint32 CurrentZone = player->GetZoneId();
     uint32 ProfCount = this->GetProfessionCount(player);
-
-    CharacterDatabase.PExecute("DELETE FROM `amas_player_info` WHERE `PlayerGUID` = %u", PlayerGUID);
-    CharacterDatabase.PExecute("INSERT INTO `amas_player_info`(`PlayerGUID`, `TotalTimeAccount`, `AverageItemLevel`, `IP`, `FriendCount`, `Money`, `CompletedQuests`, `TotalTimePlayed`, `Honor`, `Kills`, `CurrentZone`, `MissingSpells`, `ProfessionLearned`, `FreeTalent`, `DateCheck`) VALUES (%u, %u, %u, '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, NOW())",
-        PlayerGUID, TotalTimeAccount, AVGILvl, PlayerIP.c_str(), FriendCount, TotalMoney, TotalRewardQuest, TotalTimePlayed, TotalHonorPoint, TotalKill, CurrentZone, MissingTrainerSpells, ProfCount, FreeTalent);
+    float WPAll = this->GetAllWarningPoint(player);
+   
+    CharacterDatabase.PExecute("REPLACE INTO `amas_player_info`(`PlayerGUID`, `TotalWarningPoint`, `TotalTimeAccount`, `AverageItemLevel`, `IP`, `FriendCount`, `Money`, `CompletedQuests`, `TotalTimePlayed`, `Honor`, `Kills`, `CurrentZone`, `MissingSpells`, `ProfessionLearned`, `FreeTalent`) VALUES (%u, %f, %u, %u, '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, %u)",
+        PlayerGUID, WPAll, TotalTimeAccount, AVGILvl, PlayerIP.c_str(), FriendCount, TotalMoney, TotalRewardQuest, TotalTimePlayed, TotalHonorPoint, TotalKill, CurrentZone, MissingTrainerSpells, ProfCount, FreeTalent);
 }
 
 uint32 AMAS::GetFriendCount(Player* player)
