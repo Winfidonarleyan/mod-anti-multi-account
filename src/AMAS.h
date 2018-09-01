@@ -2,8 +2,8 @@
 #define _AMAS_H_
 
 #include "Common.h"
-#include "UnorderedMap.h"
-#include <vector>
+#include "Player.h"
+#include "Chat.h"
 #include <ace/Singleton.h>
 
 namespace amas
@@ -25,7 +25,11 @@ namespace amas
         AMAS_WARNING_ZONE_NOT_LOADED,
         AMAS_ZONE_INVALID,
         AMAS_INFO,
-        AMAS_IS_WARNING_ZONE
+        AMAS_IS_WARNING_ZONE,
+		AMAS_LIST_ONLINE_PLAYER,
+		AMAS_LIST_ONLINE_PLAYER_NOT_FOUND,
+		AMAS_LIST_OFFLINE_PLAYER,
+		AMAS_LIST_OFFLINE_PLAYER_NOT_FOUND
     };
 }
 
@@ -48,6 +52,8 @@ public:
     /*void AddComment(std::string Text, uint64 PlayerGuid);
     void DeleteComment(std::string Text, uint64 PlayerGuid);
     void EditComment(std::string Text, uint64 PlayerGuid);*/
+	void GetTopWPOnlineList(ChatHandler* handler);
+    void GetTopWPOfflineList(ChatHandler* handler);
 
     uint32 GetFriendCount(Player* player);
     uint32 GetMissingTrainerSpells(Player* player);

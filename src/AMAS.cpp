@@ -1,14 +1,13 @@
-/**
-    This plugin can be used for common player customizations
- */
-
 #include "ScriptMgr.h"
-#include "Player.h"
 #include "Configuration/Config.h"
 #include "AMAS.h"
-#include "Chat.h"
 #include "DBCStores.h"
 #include "AccountMgr.h"
+
+bool Prev(const std::pair<uint64, float> &a, const std::pair<uint64, float> &b)
+{
+    return a.second > b.second;
+}
 
 void AMASConfig::LoadConfig()
 {
@@ -470,6 +469,88 @@ uint32 AMAS::GetDateUnixJoinCharacter(uint32 PlayerGuid)
     return DateUnix;
 }
 
+
+void AMAS::GetTopWPOnlineList(ChatHandler * handler)
+{
+    std::map<uint64, float> WPMap;
+
+    int8 Count = 0;
+
+    SessionMap::iterator itr;
+    SessionMap m_sessions = sWorld->GetAllSessions();
+    for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+    {
+        if (Count > 20)
+            break;
+
+        if (!itr->second && !itr->second->GetPlayer() && !itr->second->GetPlayer()->IsInWorld())
+            continue;
+
+        float WPAll = sAMAS->GetAllWarningPoint(itr->second->GetPlayer());
+
+        if (WPAll < float(CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT)))
+            continue;
+
+        WPMap[itr->second->GetPlayer()->GetGUID()] = WPAll;
+
+        Count++;
+    }
+
+    if (WPMap.empty())
+    {
+        handler->PSendSysMessage(amas::AMAS_LIST_ONLINE_PLAYER_NOT_FOUND);
+        handler->SetSentErrorMessage(true);
+        return;
+    }
+
+    std::vector<std::pair<uint64, float>> VectorWP(WPMap.begin(), WPMap.end());
+    std::sort(VectorWP.begin(), VectorWP.end(), Prev);
+
+    handler->PSendSysMessage(amas:AMAS_LIST_ONLINE_PLAYER);
+
+    for (auto itr : VectorWP)
+    {
+        std::string PlayerName;
+
+        sObjectMgr->GetPlayerNameByGUID(itr.first, PlayerName);
+
+        handler->PSendSysMessage("%.2f - %s", itr.second, PlayerName.c_str());
+    }
+}
+
+void AMAS::GetTopWPOfflineList(ChatHandler * handler)
+{
+    QueryResult result = CharacterDatabase.PQuery("SELECT PlayerGUID, TotalWarningPoint FROM `amas_player_info` WHERE TotalWarningPoint > %u ORDER BY `TotalWarningPoint` DESC LIMIT 0, 20", CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT));
+    if (!result)
+    {
+        handler->PSendSysMessage(amas:AMAS_LIST_OFFLINE_PLAYER_NOT_FOUND);
+        handler->SetSentErrorMessage(true);
+        return;
+    }
+
+    handler->PSendSysMessage(amas:AMAS_LIST_OFFLINE_PLAYER);
+
+    do
+    {
+        Field* field = result->Fetch();
+
+        uint32 PlayerGuid = field[0].GetUInt32();
+        float WPAll = field[1].GetFloat();
+        std::string PlayerName;
+
+        sObjectMgr->GetPlayerNameByGUID(PlayerGuid, PlayerName);
+
+        if (PlayerName.empty())
+            continue;
+
+        if (ObjectAccessor::FindPlayerByName(PlayerName))
+            continue;
+
+        handler->PSendSysMessage("%.2f - %s", WPAll, PlayerName.c_str());
+
+    } while (result->NextRow());
+}
+
 // AMAS SC
 class AMAS_SC : public PlayerScript
 {
@@ -551,9 +632,9 @@ public:
 
         static std::vector<ChatCommand> TableCommandAmasList = // .amas list (not work)
         {
-            /*{ "all",	            SEC_ADMINISTRATOR,  	true, &HandleAMASListAll, 		   	                "" },
+            { "all",	            SEC_ADMINISTRATOR,  	true, &HandleAMASListAll, 		   	                "" },
             { "online",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASListOnline, 		   	            "" },
-            { "offline",	    	SEC_ADMINISTRATOR,  	true, &HandleAMASListOffline, 		   	            "" }*/
+            { "offline",	    	SEC_ADMINISTRATOR,  	true, &HandleAMASListOffline, 		   	            "" }
         };
 
         static std::vector<ChatCommand> TableCommandAmas = // .amas
@@ -575,24 +656,28 @@ public:
     static bool HandleKargatumTest(ChatHandler *handler, const char *args)
     {
         return true;
-    }
+    }*/
 
-    static bool HandleAMASListAll(ChatHandler *handler, const char *args)
+	static bool HandleAMASListAll(ChatHandler *handler, const char *args)
     {
+        sAMAS->GetTopWPOnlineList(handler);
+        sAMAS->GetTopWPOfflineList(handler);
         return true;
     }
-
+    
     static bool HandleAMASListOnline(ChatHandler *handler, const char *args)
     {
+        sAMAS->GetTopWPOnlineList(handler);
         return true;
     }
 
     static bool HandleAMASListOffline(ChatHandler *handler, const char *args)
     {
+        sAMAS->GetTopWPOfflineList(handler);
         return true;
     }
 
-    static bool HandleAMASCommentAdd(ChatHandler *handler, const char *args)
+    /*static bool HandleAMASCommentAdd(ChatHandler *handler, const char *args)
     {
         return true;
     }
