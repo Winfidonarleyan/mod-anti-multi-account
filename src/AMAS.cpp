@@ -506,7 +506,7 @@ void AMAS::GetTopWPOnlineList(ChatHandler * handler)
     std::vector<std::pair<uint64, float>> VectorWP(WPMap.begin(), WPMap.end());
     std::sort(VectorWP.begin(), VectorWP.end(), Prev);
 
-    handler->PSendSysMessage(amas:AMAS_LIST_ONLINE_PLAYER);
+    handler->PSendSysMessage(amas::AMAS_LIST_ONLINE_PLAYER);
 
     for (auto itr : VectorWP)
     {
@@ -523,12 +523,12 @@ void AMAS::GetTopWPOfflineList(ChatHandler * handler)
     QueryResult result = CharacterDatabase.PQuery("SELECT PlayerGUID, TotalWarningPoint FROM `amas_player_info` WHERE TotalWarningPoint > %u ORDER BY `TotalWarningPoint` DESC LIMIT 0, 20", CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT));
     if (!result)
     {
-        handler->PSendSysMessage(amas:AMAS_LIST_OFFLINE_PLAYER_NOT_FOUND);
+        handler->PSendSysMessage(amas::AMAS_LIST_OFFLINE_PLAYER_NOT_FOUND);
         handler->SetSentErrorMessage(true);
         return;
     }
 
-    handler->PSendSysMessage(amas:AMAS_LIST_OFFLINE_PLAYER);
+    handler->PSendSysMessage(amas::AMAS_LIST_OFFLINE_PLAYER);
 
     do
     {
