@@ -677,7 +677,7 @@ public:
     {
         if (!*args)
         {
-            handler->SendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NEED_ENTER_PLAYENAME_AND_COMMENT);
+            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_PLAYENAME_AND_COMMENT);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -692,7 +692,7 @@ public:
         char* tail1 = strtok(nullptr, "");
         if (!tail1)
         {
-            handler->SendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NEED_ENTER_COMMENT);
+            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -700,7 +700,7 @@ public:
         char const* comment = handler->extractQuotedArg(tail1);
         if (!comment)
         {
-            handler->SendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NEED_ENTER_COMMENT);
+            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -713,7 +713,7 @@ public:
         CharacterDatabase.PExecute("INSERT INTO `amas_player_comment`(`PlayerGuid`, `PlayerAccount`, `Comment`, `Date`, `CommenterGuid`, `CommenterAccount`) VALUES (%u, %u, '%s', NOW(), %u, %u)",
             targetGuid, PlayerAccount, Comment.c_str(), CommenterGuid, CommenterAccountID);
 
-        handler->PSendSysMessage(KARGATUM_LANG_AMAS_COMMENT_ADDED, targetName.c_str(), Comment.c_str());
+        handler->PSendSysMessage(amas::AMAS_COMMENT_ADDED, targetName.c_str(), Comment.c_str());
 
         return true;
     }
@@ -722,7 +722,7 @@ public:
     {
         if (!*args)
         {
-            handler->SendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NEED_ENTER_COMMENTID);
+            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENTID);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -733,7 +733,7 @@ public:
         QueryResult result = CharacterDatabase.PQuery("SELECT Comment FROM `amas_player_comment` WHERE `CommentID` = %u", CommentID);
         if (!result)
         {
-            handler->PSendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NOT_FOUND_COMMENTID, CommentID);
+            handler->PSendSysMessage(amas::AMAS_COMMENT_NOT_FOUND_COMMENTID, CommentID);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -742,7 +742,7 @@ public:
 
         CharacterDatabase.PExecute("DELETE FROM `amas_player_comment` WHERE `CommentID` = %u", CommentID);
 
-        handler->PSendSysMessage(KARGATUM_LANG_AMAS_COMMENT_DELETED, CommentID, Comment.c_str());
+        handler->PSendSysMessage(amas::AMAS_COMMENT_DELETED, CommentID, Comment.c_str());
 
         return true;
     }
