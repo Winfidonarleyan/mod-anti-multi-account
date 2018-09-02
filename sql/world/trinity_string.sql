@@ -6,8 +6,7 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 1, 'Player %s is offline and don\'t save DB.', 'Игрок %s не в сети и ещё не сохранён в БД'),
 (@FirstID + 2, 'Player %s\n- All: %.2f\n- Total account time: %.2f\n- Average item level: %.2f\n- Free talent: %.2f\n- Completed quest: %.2f\n- Friend list: %.2f\n- Money: %.2f\n- Honor and kills: %.2f\n- Trainer spells: %.2f\n- Warning zone: %.2f\n- Ip: %.2f\n- Profession: %.2f\n- Join Account: %.2f\n- Join Character: %.2f.', '%s\n- Всего: %.2f\n- Игровое время аккаунта: %.2f\n- Средний уровень предметов: %.2f\n- Не использованые таланты: %.2f\n- Завершённые квесты: %.2f\n- Список друзей: %.2f\n- Деньги: %.2f\n- Хонор и килы: %.2f\n- Обучение у тренера: %.2f\n- Подозрительная зона: %.2f\n- Айпи: %.2f\n- Профессии: %.2f\n- Дата создания аккаунта: %.2f\n- Дата создания персонажа: %.2f'),
 (@FirstID + 3, 'Player %s\n- Warning Points: %.2f.', 'Игрок %s\n- Очков подозрительности: %.2f'),
-(@FirstID + 4, 'Warning zone list:
-	', 'Список подозрительных зон:'),
+(@FirstID + 4, 'Warning zone list:', 'Список подозрительных зон:'),
 (@FirstID + 5, '|cff00ff00You must enter a zoneID|r.', 'Введите айди зоны'),
 (@FirstID + 6, '|cff00ff00Your GM level is too low:|r.', '|cff00ff00Ваш уровень ГМ низок:|r'),
 (@FirstID + 7, '|cff00ff00You added a new warning zone:|r %u - %s.', '|cff00ff00Вы добавили подозрительную зону:|r %u - %s'),
@@ -34,4 +33,4 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 28, '|cFFFF0000#|r |cff00ff00Deleted comment. CommentID:|r %u. |cff00ff00CommentText|r |cFFFF0000%s|r.', '|cFFFF0000#|r |cff00ff00Удалён комментарий. Номер:|r %u. |cff00ff00Сообщение|r |cFFFF0000%s|r'),
 (@FirstID + 29, '|cFFFF0000#|r |cff00ff00Edited comment. CommentID:|r %u. |cff00ff00CommentTexts:|r |cFFFF0000%s|r -> |cFFFF0000%s|r.', '|cFFFF0000#|r |cff00ff00Замена комментария. Номер:|r %u. |cff00ff00Сообщения:|r |cFFFF0000%s|r -> |cFFFF0000%s|r'),
 (@FirstID + 30, '|cFFFF0000#|r |cff00ff00List comments for player|r %s.', '|cFFFF0000#|r |cff00ff00Список комментариев для игрока|r %s'),
-(@FirstID + 31, '|cFFFF0000#|r |cff00ff00CommentID:|r %u. |cff00ff00Commenter:|r %s. |cff00ff00Date:|r %s. |cff00ff00Comment:|r %s. .', '|cFFFF0000#|r |cff00ff00Номер:|r %u. |cff00ff00Автор:|r %s. |cff00ff00Дата:|r %s. |cff00ff00Комментарий:|r %s.');
+(@FirstID + 31, '|cFFFF0000#|r |cff00ff00CommentID:|r %u | |cff00ff00Commenter:|r %s | |cff00ff00Date:|r %s | |cff00ff00Comment:|r %s', '|cFFFF0000#|r |cff00ff00Номер:|r %u. |cff00ff00Автор:|r %s. |cff00ff00Дата:|r %s. |cff00ff00Комментарий:|r %s.');
