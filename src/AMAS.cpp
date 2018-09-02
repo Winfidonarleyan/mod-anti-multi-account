@@ -3,6 +3,7 @@
 #include "AMAS.h"
 #include "DBCStores.h"
 #include "AccountMgr.h"
+#include "Language.h" 
 
 bool Prev(const std::pair<uint64, float> &a, const std::pair<uint64, float> &b)
 {
