@@ -1,6 +1,6 @@
 SET @FirstID = 40037;
 
-DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 18;
+DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 31;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES 
 (@FirstID, 'Player %s have %.2f point warning', 'Игрок %s имеет %.2f очков подозрительности'),
 (@FirstID + 1, 'Player %s is offline and don\'t save DB', 'Игрок %s не в сети и ещё не сохранён в БД'),
@@ -20,4 +20,17 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 15, 'List top players online warning point:', 'Список топа онлайн игроков по очкам подозреваемости:'),
 (@FirstID + 16, 'Suck online players is not found', 'Такие онлайн игроки не найдены'),
 (@FirstID + 17, 'List top players offline warning point:', 'Список топа оффлайн игроков по очкам подозреваемости:'),
-(@FirstID + 18, 'Suck offline players is not found', 'Такие оффлайн игроки не найдены');
+(@FirstID + 18, 'Suck offline players is not found', 'Такие оффлайн игроки не найдены'),
+(@FirstID + 19, '|cFFFF0000#|r |cff00ff00Need enter player name and comment', '|cFFFF0000#|r |cff00ff00Введите имя персонажа и комментарий'),
+(@FirstID + 20, '|cFFFF0000#|r |cff00ff00Need enter comment', '|cFFFF0000#|r |cff00ff00Введите комментарий'),
+(@FirstID + 21, '|cFFFF0000#|r |cff00ff00Need enter comment id', '|cFFFF0000#|r |cff00ff00Укажите номер комментария'),
+(@FirstID + 22, '|cFFFF0000#|r |cff00ff00Need enter comment id and comment text', '|cFFFF0000#|r |cff00ff00Укажите номер комментария и сообщение'),
+(@FirstID + 23, '|cFFFF0000#|r |cff00ff00Need enter player name', '|cFFFF0000#|r |cff00ff00Введите имя персонажа'),
+(@FirstID + 24, '|cFFFF0000#|r |cff00ff00Not found comment id:|r %u', '|cFFFF0000#|r |cff00ff00Не найден комментарий под номером:|r %u'),
+(@FirstID + 25, '|cFFFF0000#|r |cff00ff00Not found comments for player:|r %s', '|cFFFF0000#|r |cff00ff00Не найдены комментарии для игрока:|r %s'),
+(@FirstID + 26, '|cFFFF0000#|r |cff00ff00Invalid entered comment id', '|cFFFF0000#|r |cff00ff00Неправильно введён номер комментария'),
+(@FirstID + 27, '|cFFFF0000#|r |cff00ff00Added comment player|r %s |cff00ff00-|r |cFFFF0000%s|r', '|cFFFF0000#|r |cff00ff00Вы добавили комментарий игроку|r %s |cff00ff00-|r |cFFFF0000%s|r'),
+(@FirstID + 28, '|cFFFF0000#|r |cff00ff00Deleted comment. CommentID:|r %u. |cff00ff00CommentText|r |cFFFF0000%s|r', '|cFFFF0000#|r |cff00ff00Удалён комментарий. Номер:|r %u. |cff00ff00Сообщение|r |cFFFF0000%s|r'),
+(@FirstID + 29, '|cFFFF0000#|r |cff00ff00Edited comment. CommentID:|r %u. |cff00ff00CommentTexts:|r |cFFFF0000%s|r -> |cFFFF0000%s|r', '|cFFFF0000#|r |cff00ff00Замена комментария. Номер:|r %u. |cff00ff00Сообщения:|r |cFFFF0000%s|r -> |cFFFF0000%s|r'),
+(@FirstID + 30, '|cFFFF0000#|r |cff00ff00List comments for player|r %s', '|cFFFF0000#|r |cff00ff00Список комментариев для игрока|r %s'),
+(@FirstID + 31, '|cFFFF0000#|r |cff00ff00CommentID:|r %u. |cff00ff00Commenter:|r %s. |cff00ff00Date:|r %s. |cff00ff00Comment:|r %s. ', '|cFFFF0000#|r |cff00ff00Номер:|r %u. |cff00ff00Автор:|r %s. |cff00ff00Дата:|r %s. |cff00ff00Комментарий:|r %s.');

@@ -623,14 +623,15 @@ public:
             { "reload",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASZoneRelaod, 		   	            "" }
         };        
 
-        static std::vector<ChatCommand> TableCommandAmasComment = // .amas comment (not work)
+        static std::vector<ChatCommand> TableCommandAmasComment = // .amas comment
         {
-            /*{ "add",	            SEC_ADMINISTRATOR,  	true, &HandleAMASCommentAdd, 		   	            "" },
+            { "add",	            SEC_ADMINISTRATOR,  	true, &HandleAMASCommentAdd, 		   	            "" },
             { "delete",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASCommentDelete, 		   	        "" },
-            { "edit",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASCommentEdit, 		   	            "" }*/
+            { "edit",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASCommentEdit, 		   	            "" },
+			{ "list",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASCommentList, 		   	            "" }
         };
 
-        static std::vector<ChatCommand> TableCommandAmasList = // .amas list (not work)
+        static std::vector<ChatCommand> TableCommandAmasList = // .amas list
         {
             { "all",	            SEC_ADMINISTRATOR,  	true, &HandleAMASListAll, 		   	                "" },
             { "online",	    	    SEC_ADMINISTRATOR,  	true, &HandleAMASListOnline, 		   	            "" },
@@ -639,8 +640,8 @@ public:
 
         static std::vector<ChatCommand> TableCommandAmas = // .amas
         {
-            { "zone",				SEC_ADMINISTRATOR, 		true, nullptr,             	   					    "", TableCommandAmasZone },
             { "info",				SEC_ADMINISTRATOR, 		true, &HandleAMASInfo,             	   			    "" },
+			{ "zone",				SEC_ADMINISTRATOR, 		true, nullptr,             	   					    "", TableCommandAmasZone },            
             { "comment",			SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasComment },
             { "list",			    SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasList }
         };
@@ -651,12 +652,7 @@ public:
         };
 
         return commandTable;
-    }
-    /*
-    static bool HandleKargatumTest(ChatHandler *handler, const char *args)
-    {
-        return true;
-    }*/
+    }    
 
 	static bool HandleAMASListAll(ChatHandler *handler, const char *args)
     {
@@ -677,31 +673,180 @@ public:
         return true;
     }
 
-    /*static bool HandleAMASCommentAdd(ChatHandler *handler, const char *args)
+    static bool HandleAMASCommentAdd(ChatHandler *handler, const char *args)
     {
+        if (!*args)
+        {
+            handler->SendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NEED_ENTER_PLAYENAME_AND_COMMENT);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        // format: playername "Comment text"
+        Player* target;
+        uint64 targetGuid;
+        std::string targetName;
+        if (!handler->extractPlayerTarget((char*)args, &target, &targetGuid, &targetName))
+            return false;
+
+        char* tail1 = strtok(nullptr, "");
+        if (!tail1)
+        {
+            handler->SendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NEED_ENTER_COMMENT);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        char const* comment = handler->extractQuotedArg(tail1);
+        if (!comment)
+        {
+            handler->SendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NEED_ENTER_COMMENT);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+        
+        std::string Comment = comment;
+        uint32 PlayerAccount = sObjectMgr->GetPlayerAccountIdByGUID(targetGuid);
+        uint32 CommenterGuid = handler->GetSession()->GetPlayer()->GetGUID();
+        uint32 CommenterAccountID = handler->GetSession()->GetAccountId();
+        
+        CharacterDatabase.PExecute("INSERT INTO `amas_player_comment`(`PlayerGuid`, `PlayerAccount`, `Comment`, `Date`, `CommenterGuid`, `CommenterAccount`) VALUES (%u, %u, '%s', NOW(), %u, %u)",
+            targetGuid, PlayerAccount, Comment.c_str(), CommenterGuid, CommenterAccountID);
+
+        handler->PSendSysMessage(KARGATUM_LANG_AMAS_COMMENT_ADDED, targetName.c_str(), Comment.c_str());
+
         return true;
     }
 
     static bool HandleAMASCommentDelete(ChatHandler *handler, const char *args)
     {
+        if (!*args)
+        {
+            handler->SendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NEED_ENTER_COMMENTID);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 CommentID = (uint32)atoi((char *)args);
+        std::string Comment;
+
+        QueryResult result = CharacterDatabase.PQuery("SELECT Comment FROM `amas_player_comment` WHERE `CommentID` = %u", CommentID);
+        if (!result)
+        {
+            handler->PSendSysMessage(KARGATUM_LANG_AMAS_COMMENT_NOT_FOUND_COMMENTID, CommentID);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+        else
+            Comment = result->Fetch()->GetString();
+
+        CharacterDatabase.PExecute("DELETE FROM `amas_player_comment` WHERE `CommentID` = %u", CommentID);
+
+        handler->PSendSysMessage(KARGATUM_LANG_AMAS_COMMENT_DELETED, CommentID, Comment.c_str());
+
         return true;
     }
 
     static bool HandleAMASCommentEdit(ChatHandler *handler, const char *args)
     {
+        if (!*args)
+        {
+            handler->PSendSysMessage(amas::AMAS_COMMENT_NEED_COMMENTID_AND_COMMENT);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        char *IDComment = strtok((char *)args, " ");
+        if (!IDComment)
+        {
+            handler->PSendSysMessage(amas::AMAS_COMMENT_INVALID_COMMENTID);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 CommentID = (uint32)atoi(IDComment);
+
+        char* tail1 = strtok(nullptr, "");
+        if (!tail1)
+        {
+            handler->PSendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        char const* newcomment = handler->extractQuotedArg(tail1);
+        if (!newcomment)
+        {
+            handler->PSendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        std::string NewComment = newcomment;
+        std::string OldComment;
+
+        QueryResult result = CharacterDatabase.PQuery("SELECT Comment FROM `amas_player_comment` WHERE `CommentID` = %u", CommentID);
+        if (!result)
+        {
+            handler->PSendSysMessage(amas::AMAS_COMMENT_NOT_FOUND_COMMENTID, CommentID);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+        else
+            OldComment = result->Fetch()->GetString();
+
+        CharacterDatabase.PExecute("UPDATE `amas_player_comment` SET `Comment` = '%s' WHERE `CommentID` = %u", NewComment.c_str(), CommentID);
+
+        handler->PSendSysMessage(amas::AMAS_COMMENT_EDITED, CommentID, OldComment.c_str(), NewComment.c_str());
+
         return true;
     }
 
-    static bool HandleAMASInfoAccount(ChatHandler *handler, const char *args)
+    static bool HandleAMASCommentList(ChatHandler *handler, const char *args)
     {
-        return true;
-    }
+        if (!*args)
+        {
+            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_PLAYERNAME);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
 
-    static bool HandleAMASInfoPlayer(ChatHandler *handler, const char *args)
-    {
+        // format: playername "Comment text"
+        uint64 targetGuid;
+        std::string targetName;
+        if (!handler->extractPlayerTarget((char*)args, nullptr, &targetGuid, &targetName))
+            return false;
+                                                     //           0         1      2          3
+        QueryResult result = CharacterDatabase.PQuery("SELECT CommentID, Comment, Date, CommenterGuid FROM `amas_player_comment` WHERE `PlayerGuid` = %u", targetGuid);
+        if (!result)
+        {
+            handler->PSendSysMessage(amas::AMAS_COMMENT_NOT_FOUND_COMMENTS_FOR_PLAYER, targetName.c_str());
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        handler->PSendSysMessage(amas::AMAS_COMMENT_LIST, targetName.c_str());
+
+        do
+        {
+            Field *field = result->Fetch();
+            uint32 CommentID = field[0].GetUInt32();
+            std::string Comment = field[1].GetString();
+            std::string Date = field[2].GetString();
+            uint32 CommenterGuid = field[3].GetUInt32();
+
+            std::string CommenterName;
+
+            if (!sObjectMgr->GetPlayerNameByGUID(CommenterGuid, CommenterName))
+                CommenterName = handler->GetTrinityString(LANG_UNKNOWN);                
+
+            handler->PSendSysMessage(amas::AMAS_COMMENT_LIST_FOR, CommentID, CommenterName.c_str(), Date.c_str(), Comment.c_str());
+
+        } while (result->NextRow());
+
         return true;
     }
-    */
+ 
     static bool HandleAMASZoneList(ChatHandler *handler, const char* /*args*/)
     {
         if (!sAMAS->IsWarningZoneExist())
