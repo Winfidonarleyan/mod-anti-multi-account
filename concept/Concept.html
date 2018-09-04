@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <meta name="generator" content="http://www.nongnu.org/elyxer/"/>
-<meta name="create-date" content="2018-08-30"/>
+<meta name="create-date" content="2018-09-04"/>
 <link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
 <title>YHOOL - Anti-Multi Account (System)</title>
 </head>
@@ -331,6 +331,12 @@ Maybe we can evaluate the gear with a gearscore calculation.
 <div class="Unindented">
 If the character has not trained all his spells. If he’s lacking some spells or not training them at all.
 </div>
+<div class="Indented">
+This only takes into account the spells that are =&lt; character_level (this is in table &ldquo;npc_trainer&rdquo; with &ldquo;ReqLevel&rdquo;)
+</div>
+<div class="Indented">
+Note: like many checks, this should be highly configurable (like I can decide that I want to rate X1 points when the player hasn’t trained Y1 spells, then same for X2, Y2, X3, Y3 etc) but this will be done at the end I guess
+</div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-4.5">4.5</a> Skills evaluation
 </h2>
@@ -423,6 +429,9 @@ If the user logs very rarely but &ldquo;regularly&rdquo; and only does a few act
 </div>
 <div class="Indented">
 It is good against smarter people.
+</div>
+<div class="Indented">
+See https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/18
 </div>
 <h2 class="Subsection">
 <a class="toc" name="toc-Subsection-4.15">4.15</a> New account or not
@@ -582,7 +591,7 @@ When a character is deleted, it should delete the related info from that table. 
 .amas comment -&gt; list subcommands below (warn user that it can’t contain more than 255 or X chars)
 </li>
 <li>
-.amas comment add #character_name #comment-&gt; add extra comment (for example if the GM thinks this account is NOT a multi account). This only appends extra comment and when you press enter, you see the result of the comment (so you can edit it if it’s wrong).
+.amas comment add #character_name #comment-&gt; add extra comment (for example if the GM thinks this account is NOT a multi account). This only appends extra comment and when you press enter, you see the result of the comment (so you can edit it if it’s wrong). 
 </li>
 <li>
 .amas comment delete #character_name -&gt; delete comment
@@ -632,7 +641,7 @@ commenter_id = account_id of the gm
 There are different GM levels for this command, I know normally we must make 3 different commands but I feel like it’s more practical this way for this particular case.
 </div>
 <h3 class="Subsubsection-">
-<a class="toc" name="toc-Subsubsection--1"></a>If<b> GM Level</b> = AMAS.<b>Low</b>GMLevel
+<a class="toc" name="toc-Subsubsection--1"></a>If<b> GM Level</b> = AMAS.<b>Low</b>GMLevel 
 </h3>
 <div class="Unindented">
 Then show simple rating for that account.
@@ -670,7 +679,7 @@ Missing spells: 15
 Profession learned: 2 (count because I can set the number in the worldserver.conf to 3/4/5/6 professions :P)
 Bag slots on character: 55
 Bag slots in bank: 30
-Comment: the comment? (if empty, then it’s empty or written &ldquo;no comment&rdquo;)
+Comment count: 0 (this is useful so you don’t need to type .amas comm list #character for each character if they have 0 comment)
 Other missing checks??
 </pre>
 <h3 class="Subsubsection-">
@@ -700,7 +709,7 @@ Missing spells: 15 | 10pts
 Profession learned: 2 | 10pts (count because I can set the number in the worldserver.conf to 3/4/5/6 professions :P)
 Bag slots: 55 (no points, it’s just for manual check)
 Bag slots in bank: 30
-Comment: the comment? (if empty, then it’s empty or written &ldquo;no comment&rdquo;)
+Comment count: 5 (this is useful so you don’t need to type .amas comm list #character for each character if they have 0 comment)
 Other missing checks??
 </pre>
 <h2 class="Subsection">
