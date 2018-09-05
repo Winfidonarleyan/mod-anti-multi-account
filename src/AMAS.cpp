@@ -1060,7 +1060,7 @@ public:
         //float WPJoinAcc = sAMAS->GetWPJoinAccount(sAMAS->GetDateUnixJoinAccount(player->GetSession()->GetAccountId()));
         //float WPJoinChar = sAMAS->GetWPJoinCharacter(sAMAS->GetDateUnixJoinCharacter(playerGUID));
 
-        handler->PSendSysMessage(KARGATUM_LANG_AMAS_INFO,
+        handler->PSendSysMessage(amas::AMAS_INFO,
             PlayerName.c_str(), WPAll,
             WPTimeAcc, TotalTimeAccountStr.c_str(),
             WPAverageIlvl, AVGILvl,
