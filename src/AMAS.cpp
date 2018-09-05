@@ -552,6 +552,15 @@ void AMAS::GetTopWPOfflineList(ChatHandler * handler)
     } while (result->NextRow());
 }
 
+uint32 AMAS::GetCommentCount(uint32 PlayerGuid)
+{
+    QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `amas_player_comment` WHERE `PlayerGuid` = %u", PlayerGuid);
+    if (result)
+        return result->Fetch()->GetUInt32();
+
+    return 0;
+}
+
 // AMAS SC
 class AMAS_SC : public PlayerScript
 {
@@ -1032,6 +1041,8 @@ public:
 
         if (sAMAS->IsWarningZone(CurrentZone))
             IsWarningZone = handler->GetTrinityString(amas::AMAS_IS_WARNING_ZONE);
+		
+		uint32 CommentCount = sAMAS->GetCommentCount(playerGUID);
 
         float WPTimeAcc = sAMAS->GetWPTotalTimeAccount(TotalTimeAccount);
         float WPAverageIlvl = sAMAS->GetWPAverageItemLevel(AVGILvl);
@@ -1049,20 +1060,21 @@ public:
         //float WPJoinAcc = sAMAS->GetWPJoinAccount(sAMAS->GetDateUnixJoinAccount(player->GetSession()->GetAccountId()));
         //float WPJoinChar = sAMAS->GetWPJoinCharacter(sAMAS->GetDateUnixJoinCharacter(playerGUID));
 
-        handler->PSendSysMessage(amas::AMAS_INFO,
+        handler->PSendSysMessage(KARGATUM_LANG_AMAS_INFO,
             PlayerName.c_str(), WPAll,
             WPTimeAcc, TotalTimeAccountStr.c_str(),
             WPAverageIlvl, AVGILvl,
             WPFreeTalent, FreeTalent,
-            WPCompletedQuest, TotalRewardQuest,
-            TotalTimePlayedStr.c_str(),
+            WPCompletedQuest, TotalRewardQuest,            
             WPFriend, FriendCount,
             WPMoney, MoneyStr.c_str(),
             WPHonorAndKills, TotalHonorPoint, TotalKill,
             WPIp, PlayerIP.c_str(),
             WPTrainerSpells, MissingTrainerSpells,
             WPWarningZone, CurrentZone, ZoneName.c_str(), IsWarningZone.c_str(),
-            WPProfession, ProfCount);
+            WPProfession, ProfCount,
+            TotalTimePlayedStr.c_str(),
+            CommentCount);
 
         return true;
     }
