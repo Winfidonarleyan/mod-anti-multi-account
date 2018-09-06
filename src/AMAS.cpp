@@ -54,6 +54,7 @@ void AMASConfig::LoadConfig()
     m_int[conf::AMAS_MIN_TIME_TO_DB_HISTORY]            = sConfigMgr->GetIntDefault("AMAS.Min.Time.For.DB.History", DAY / 2);
     m_bool[conf::AMAS_GM_CHECK_ENABLE]                  = sConfigMgr->GetBoolDefault("AMAS.GM.Check.Enable", false);
 }
+
 float AMAS::GetWPTotalTimeAccount(uint32 TotalTimeAccount)
 {
     if (TotalTimeAccount == 0)
@@ -691,41 +692,47 @@ public:
             handler->SetSentErrorMessage(true);
             return false;
         }
-
-        // format: playername "Comment text"
-        Player* target;
+        
+        Player* target = handler->getSelectedPlayer();
         uint64 targetGuid;
         std::string targetName;
-        if (!handler->extractPlayerTarget((char*)args, &target, &targetGuid, &targetName))
-            return false;
+        char* Comment;
 
-        char* tail1 = strtok(nullptr, "");
-        if (!tail1)
+        if (target && (handler->GetSession() != target->GetSession()))
         {
-            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
-            handler->SetSentErrorMessage(true);
-            return false;
+            target = handler->getSelectedPlayer();
+            targetGuid = target->GetGUID();
+            targetName = target->GetName();
+            Comment = strtok((char*)args, "\r");
         }
-
-        char const* comment = handler->extractQuotedArg(tail1);
-        if (!comment)
+        else
         {
-            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
-            handler->SetSentErrorMessage(true);
-            return false;
+            if (!handler->extractPlayerTarget((char*)args, &target, &targetGuid, &targetName))
+                return false;
+
+            Comment = strtok(nullptr, "\r");
         }
         
-        std::string Comment = comment;
+        std::string CommentStr;
+        if (Comment == nullptr)
+        {
+            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+        else
+            CommentStr = Comment;
+        
         uint32 PlayerAccount = sObjectMgr->GetPlayerAccountIdByGUID(targetGuid);
         uint32 CommenterGuid = handler->GetSession()->GetPlayer()->GetGUID();
         uint32 CommenterAccountID = handler->GetSession()->GetAccountId();
-		
-		std::replace(Comment.begin(), Comment.end(), '\'', ' ');
+
+        std::replace(CommentStr.begin(), CommentStr.end(), '\'', ' ');
         
         CharacterDatabase.PExecute("INSERT INTO `amas_player_comment`(`PlayerGuid`, `PlayerAccount`, `Comment`, `Date`, `CommenterGuid`, `CommenterAccount`) VALUES (%u, %u, '%s', NOW(), %u, %u)",
-            targetGuid, PlayerAccount, Comment.c_str(), CommenterGuid, CommenterAccountID);
+            targetGuid, PlayerAccount, CommentStr.c_str(), CommenterGuid, CommenterAccountID);
 
-        handler->PSendSysMessage(amas::AMAS_COMMENT_ADDED, targetName.c_str(), Comment.c_str());
+        handler->PSendSysMessage(amas::AMAS_COMMENT_ADDED, targetName.c_str(), CommentStr.c_str());
 
         return true;
     }
@@ -778,23 +785,20 @@ public:
 
         uint32 CommentID = (uint32)atoi(IDComment);
 
-        char* tail1 = strtok(nullptr, "");
-        if (!tail1)
+        char* Comment = strtok(nullptr, "\r");
+        std::string CommentStr;
+        if (Comment == nullptr)
         {
-            handler->PSendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
+            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
             handler->SetSentErrorMessage(true);
             return false;
         }
+        else
+            CommentStr = Comment;
 
-        char const* newcomment = handler->extractQuotedArg(tail1);
-        if (!newcomment)
-        {
-            handler->PSendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENT);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
+        std::replace(CommentStr.begin(), CommentStr.end(), '\'', ' ');
 
-        std::string NewComment = newcomment;
+        std::string NewComment = CommentStr;
         std::string OldComment;
 
         QueryResult result = CharacterDatabase.PQuery("SELECT Comment FROM `amas_player_comment` WHERE `CommentID` = %u", CommentID);
@@ -816,18 +820,21 @@ public:
 
     static bool HandleAMASCommentList(ChatHandler *handler, const char *args)
     {
-        if (!*args)
-        {
-            handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_PLAYERNAME);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
-
-        // format: playername "Comment text"
+        Player* target = handler->getSelectedPlayer();
         uint64 targetGuid;
         std::string targetName;
-        if (!handler->extractPlayerTarget((char*)args, nullptr, &targetGuid, &targetName))
-            return false;
+
+        if (!args && target)
+        {
+            target = handler->getSelectedPlayer();
+            targetGuid = target->GetGUID();
+            targetName = target->GetName();
+        }
+        else
+        {
+            if (!handler->extractPlayerTarget((char*)args, &target, &targetGuid, &targetName))
+                return false;
+        }
                                                      //           0         1      2          3
         QueryResult result = CharacterDatabase.PQuery("SELECT CommentID, Comment, Date, CommenterGuid FROM `amas_player_comment` WHERE `PlayerGuid` = %u", targetGuid);
         if (!result)
