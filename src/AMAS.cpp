@@ -719,6 +719,8 @@ public:
         uint32 PlayerAccount = sObjectMgr->GetPlayerAccountIdByGUID(targetGuid);
         uint32 CommenterGuid = handler->GetSession()->GetPlayer()->GetGUID();
         uint32 CommenterAccountID = handler->GetSession()->GetAccountId();
+		
+		std::replace(Comment.begin(), Comment.end(), '\'', ' ');
         
         CharacterDatabase.PExecute("INSERT INTO `amas_player_comment`(`PlayerGuid`, `PlayerAccount`, `Comment`, `Date`, `CommenterGuid`, `CommenterAccount`) VALUES (%u, %u, '%s', NOW(), %u, %u)",
             targetGuid, PlayerAccount, Comment.c_str(), CommenterGuid, CommenterAccountID);
