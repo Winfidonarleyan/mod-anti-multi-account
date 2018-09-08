@@ -57,13 +57,14 @@ void AMASConfig::LoadConfig()
 
 float AMAS::GetWPTotalTimeAccount(uint32 TotalTimeAccount)
 {
-    if (TotalTimeAccount == 0)
-        TotalTimeAccount = 60;
+    TotalTimeAccount += 1;
 
     uint32 MinTimeAccount = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC);
     uint32 PointWarning = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC_POINT);
 
-    return float(PointWarning) / float(MinTimeAccount) / float(TotalTimeAccount) * DAY * IN_MILLISECONDS;
+    float Total = float(PointWarning) / float(MinTimeAccount) / float(TotalTimeAccount) * DAY * IN_MILLISECONDS;
+
+    return std::max<float>(0.1f, Total);
 }
 
 float AMAS::GetWPAverageItemLevel(float AverageItemLevel)
