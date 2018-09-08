@@ -3,7 +3,7 @@ SET @FirstID = 40037;
 DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 31;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES 
 (@FirstID, 'Player %s have %.2f point warning.', 'Игрок %s имеет %.2f очков подозрительности'),
-(@FirstID + 1, 'Player %s is offline and don\'t save DB.', 'Игрок %s не в сети и ещё не сохранён в БД'),
+(@FirstID + 1, 'Player %s is offline and has no entry in the Database.', 'Игрок %s не в сети и ещё не сохранён в БД'),
 (@FirstID + 2, 'Player %s\n- All: %.2f\n- Total account time: %.2f\n- Average item level: %.2f\n- Free talent: %.2f\n- Completed quest: %.2f\n- Friend list: %.2f\n- Money: %.2f\n- Honor and kills: %.2f\n- Trainer spells: %.2f\n- Warning zone: %.2f\n- Ip: %.2f\n- Profession: %.2f\n- Join Account: %.2f\n- Join Character: %.2f.', '%s\n- Всего: %.2f\n- Игровое время аккаунта: %.2f\n- Средний уровень предметов: %.2f\n- Не использованые таланты: %.2f\n- Завершённые квесты: %.2f\n- Список друзей: %.2f\n- Деньги: %.2f\n- Хонор и килы: %.2f\n- Обучение у тренера: %.2f\n- Подозрительная зона: %.2f\n- Айпи: %.2f\n- Профессии: %.2f\n- Дата создания аккаунта: %.2f\n- Дата создания персонажа: %.2f'),
 (@FirstID + 3, 'Player %s\n- Warning Points: %.2f.', 'Игрок %s\n- Очков подозрительности: %.2f'),
 (@FirstID + 4, 'Warning zone list:', 'Список подозрительных зон:'),
@@ -21,10 +21,10 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 16, 'There is no suspicious online player.', 'Такие онлайн игроки не найдены'),
 (@FirstID + 17, 'Suspicious offline players:', 'Список топа оффлайн игроков по очкам подозреваемости:'),
 (@FirstID + 18, 'There is no suspicious offline player.', 'Такие оффлайн игроки не найдены'),
-(@FirstID + 19, '|cFFFF0000#|r |cff00ff00Need enter player name and comment.', '|cFFFF0000#|r |cff00ff00Введите имя персонажа и комментарий'),
-(@FirstID + 20, '|cFFFF0000#|r |cff00ff00Type your comment in double quotes \"blabla\" .', '|cFFFF0000#|r |cff00ff00Введите комментарий'),
+(@FirstID + 19, '|cFFFF0000#|r |cff00ff00Enter character\'s name and type your comment.', '|cFFFF0000#|r |cff00ff00Введите имя персонажа и комментарий'),
+(@FirstID + 20, '|cFFFF0000#|r |cff00ff00Type your comment after the character\'s name.', '|cFFFF0000#|r |cff00ff00Введите комментарий'),
 (@FirstID + 21, '|cFFFF0000#|r |cff00ff00Comment ID required.', '|cFFFF0000#|r |cff00ff00Укажите номер комментария'),
-(@FirstID + 22, '|cFFFF0000#|r |cff00ff00Type the comment ID and then the comment itself in double quotes \"blabla\". text.', '|cFFFF0000#|r |cff00ff00Укажите номер комментария и сообщение'),
+(@FirstID + 22, '|cFFFF0000#|r |cff00ff00Type the comment ID and then your comment.', '|cFFFF0000#|r |cff00ff00Укажите номер комментария и сообщение'),
 (@FirstID + 23, '|cFFFF0000#|r |cff00ff00Player name required.', '|cFFFF0000#|r |cff00ff00Введите имя персонажа'),
 (@FirstID + 24, '|cFFFF0000#|r |cff00ff00Comment ID not found:|r %u.', '|cFFFF0000#|r |cff00ff00Не найден комментарий под номером:|r %u'),
 (@FirstID + 25, '|cFFFF0000#|r |cff00ff00No comment found for player:|r %s.', '|cFFFF0000#|r |cff00ff00Не найдены комментарии для игрока:|r %s'),
