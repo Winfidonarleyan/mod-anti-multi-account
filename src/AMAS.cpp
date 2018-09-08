@@ -1052,7 +1052,7 @@ public:
         if (sAMAS->IsWarningZone(CurrentZone))
             IsWarningZone = handler->GetTrinityString(amas::AMAS_IS_WARNING_ZONE);
 		
-		uint32 CommentCount = sAMAS->GetCommentCount(playerGUID);
+		uint32 CommentCount = sAMAS->GetCommentCount(uint32(playerGUID));
 
         float WPTimeAcc = sAMAS->GetWPTotalTimeAccount(TotalTimeAccount);
         float WPAverageIlvl = sAMAS->GetWPAverageItemLevel(AVGILvl);
