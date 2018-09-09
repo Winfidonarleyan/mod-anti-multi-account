@@ -73,7 +73,7 @@ public:
     uint32 GetProfessionCount(Player* player);
     uint32 GetDateUnixJoinAccount(uint32 AccountID);
     uint32 GetDateUnixJoinCharacter(uint32 PlayerGuid);
-	uint32 GetCommentCount(uint32 PlayerGuid);
+	int8 GetCommentCount(uint64 PlayerGuid);
 
     float GetAverageItemLevel(Player* player);
 

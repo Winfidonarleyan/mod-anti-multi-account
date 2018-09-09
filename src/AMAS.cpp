@@ -554,11 +554,11 @@ void AMAS::GetTopWPOfflineList(ChatHandler * handler)
     } while (result->NextRow());
 }
 
-uint32 AMAS::GetCommentCount(uint32 PlayerGuid)
+int8 AMAS::GetCommentCount(uint64 PlayerGuid)
 {
     QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `amas_player_comment` WHERE `PlayerGuid` = %u", PlayerGuid);
     if (result)
-        return result->Fetch()->GetUInt32();
+        return result->Fetch()->GetInt8();
 
     return 0;
 }
@@ -1052,7 +1052,7 @@ public:
         if (sAMAS->IsWarningZone(CurrentZone))
             IsWarningZone = handler->GetTrinityString(amas::AMAS_IS_WARNING_ZONE);
 		
-		uint32 CommentCount = sAMAS->GetCommentCount(uint32(playerGUID));
+		int8 CommentCount = sAMAS->GetCommentCount(playerGUID);
 
         float WPTimeAcc = sAMAS->GetWPTotalTimeAccount(TotalTimeAccount);
         float WPAverageIlvl = sAMAS->GetWPAverageItemLevel(AVGILvl);
