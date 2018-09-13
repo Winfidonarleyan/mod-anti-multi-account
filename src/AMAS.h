@@ -74,6 +74,8 @@ public:
     uint32 GetDateUnixJoinAccount(uint32 AccountID);
     uint32 GetDateUnixJoinCharacter(uint32 PlayerGuid);
 	int8 GetCommentCount(uint64 PlayerGuid);
+	int8 GetFullIPCount(std::string IP);
+    int8 GetOnlineIPCount(std::string IP);
 
     float GetAverageItemLevel(Player* player);
 
@@ -96,6 +98,8 @@ public:
 
     bool IsWarningZoneExist();
     bool IsWarningZone(uint32 ZoneID);
+	
+	std::string GetAccoutNameByLastIp(std::string IP, uint32 SkipAccount);
 
     WarningZoneContainer &GetWarningZone() { return _warningZoneStore; }
 

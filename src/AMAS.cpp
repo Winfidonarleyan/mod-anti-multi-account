@@ -133,19 +133,14 @@ float AMAS::GetWPHonorAndKills(uint32 Honor, uint32 Kills)
 
 float AMAS::GetWPIP(std::string IP)
 {
-    uint8 IPCount = 0;
-    uint32 PointWarning = CONF_INT(conf::AMAS_MORE_IP_POINT);
+    int8 IPCount = 0;
 
-    SessionMap::iterator itr;
-    SessionMap m_sessions = sWorld->GetAllSessions();
-    for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
-    {
-        if (!itr->second && !itr->second->GetPlayer() && !itr->second->GetPlayer()->IsInWorld())
-            continue;
-
-        if (itr->second->GetRemoteAddress() == IP)
-            IPCount++;
-    }
+    if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE))
+        IPCount = sAMAS->GetFullIPCount(IP);
+    else
+        IPCount = sAMAS->GetOnlineIPCount(IP);
+	
+    uint32 PointWarning = CONF_INT(conf::AMAS_MORE_IP_POINT);    
 
     if (IPCount > 1)
         return float(PointWarning);
@@ -561,6 +556,42 @@ int8 AMAS::GetCommentCount(uint64 PlayerGuid)
         return result->Fetch()->GetInt8();
 
     return 0;
+}
+
+int8 AMAS::GetFullIPCount(std::string IP)
+{
+    QueryResult result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%%%s%%'", IP.c_str());
+    if (result)
+        return result->Fetch()->GetInt8();
+
+    return 0;
+}
+
+int8 AMAS::GetOnlineIPCount(std::string IP)
+{
+    int8 IPCount = 0;
+
+    SessionMap::iterator itr;
+    SessionMap m_sessions = sWorld->GetAllSessions();
+    for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+    {
+        if (!itr->second && !itr->second->GetPlayer() && !itr->second->GetPlayer()->IsInWorld())
+            continue;
+
+        if (itr->second->GetRemoteAddress() == IP)
+            IPCount++;
+    }
+
+    return IPCount;
+}
+
+std::string AMAS::GetAccoutNameByLastIp(std::string IP, uint32 SkipAccount)
+{
+    QueryResult result = LoginDatabase.PQuery("SELECT username FROM `account` WHERE `last_ip` LIKE '%%%s%%' AND NOT id = %u", IP.c_str(), SkipAccount);
+    if (result)
+        return result->Fetch()->GetString();
+
+    return "";
 }
 
 // AMAS SC
@@ -1065,10 +1096,24 @@ public:
         float WPWarningZone = sAMAS->GetWPWarningZone(CurrentZone);
         float WPProfession = sAMAS->GetWPProfession(ProfCount);
         float WPIp = sAMAS->GetWPIP(PlayerIP);
-
         float WPAll = WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp;
-        //float WPJoinAcc = sAMAS->GetWPJoinAccount(sAMAS->GetDateUnixJoinAccount(player->GetSession()->GetAccountId()));
-        //float WPJoinChar = sAMAS->GetWPJoinCharacter(sAMAS->GetDateUnixJoinCharacter(playerGUID));
+        
+		int8 IpCount = 0;
+        std::string IsUniqueIP = handler->GetTrinityString(LANG_YES);
+
+        if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE))
+            IpCount = sAMAS->GetFullIPCount(PlayerIP);
+        else
+            IpCount = sAMAS->GetOnlineIPCount(PlayerIP);
+
+        /*std::string _AccountName;
+        uint32 _AccountID = sObjectMgr->GetPlayerAccountIdByGUID(playerGUID);
+
+        if (IpCount == 2)
+            _AccountName = sAMAS->GetAccoutNameByLastIp(PlayerIP, _AccountID);*/
+
+        if (IpCount > 1)
+            IsUniqueIP = handler->GetTrinityString(LANG_NO);
 
         handler->PSendSysMessage(amas::AMAS_INFO,
             PlayerName.c_str(), WPAll,
@@ -1079,7 +1124,7 @@ public:
             WPFriend, FriendCount,
             WPMoney, MoneyStr.c_str(),
             WPHonorAndKills, TotalHonorPoint, TotalKill,
-            WPIp, PlayerIP.c_str(),
+            WPIp, PlayerIP.c_str(), IsUniqueIP.c_str(), IpCount,
             WPTrainerSpells, MissingTrainerSpells,
             WPWarningZone, CurrentZone, ZoneName.c_str(), IsWarningZone.c_str(),
             WPProfession, ProfCount,
