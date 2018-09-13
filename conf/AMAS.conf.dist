@@ -233,6 +233,10 @@ AMAS.Confirmed.Ban.Reason = "This account has been banned for using multiple acc
 #		Description: Enable check GM's account
 #		Default: 1 - Enable
 #
+#	AMAS.Full.IP.Check.Enable
+#		Description: Enable full check ip (online and offline) or only online
+#		Default: 1 - Enable
+#
 
 AMAS.Suspicious.Account.Min.Points = 15
 AMAS.Low.GMLevel = 2
@@ -240,6 +244,7 @@ AMAS.High.GMLevel = 3
 AMAS.Warning.Interval = 1800
 AMAS.Min.Time.For.DB.History = 43200
 AMAS.GM.Check.Enable = 1
+AMAS.Full.IP.Check.Enable = 1
 
 #
 ###################################################################################################
