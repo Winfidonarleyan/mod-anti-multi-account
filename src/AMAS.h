@@ -63,9 +63,6 @@ public:
     void LoadWarningZone();
     void AddWarningZone(uint32 ZoneID, bool IsDB);
     void DeleteWarningZone(uint32 ZoneID, bool IsDB);
-    /*void AddComment(std::string Text, uint64 PlayerGuid);
-    void DeleteComment(std::string Text, uint64 PlayerGuid);
-    void EditComment(std::string Text, uint64 PlayerGuid);*/
 	void GetTopWPOnlineList(ChatHandler* handler);
     void GetTopWPOfflineList(ChatHandler* handler);
 
@@ -93,9 +90,6 @@ public:
     float GetWPProfession(uint32 ProffCount);
     float GetWPJoinAccount(uint32 DateUnix);
     float GetWPJoinCharacter(uint32 DateUnix);
-    //float GetWPAverageSessionTime(Player* player);
-
-    //std::string GetComment(Player* player);
 
     bool IsWarningZoneExist();
     bool IsWarningZone(uint32 ZoneID);
