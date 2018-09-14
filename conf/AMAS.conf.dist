@@ -177,6 +177,20 @@ AMAS.Min.Diff.Character.Create = 86400
 AMAS.Warning.Point.Diff.Account = 10
 AMAS.Warning.Point.Diff.Character = 5
 
+#
+#	SYSTEM SETTINGS: AVERAGE SESSION
+#
+#	AMAS.Min.Average.Session
+#		Description: Min average duration session in seconds
+#		Default: 30000 (5 min)
+#
+#	AMAS.Warning.Point.Min.Average.Session
+#		Description: Warning point at check AMAS.Warning.Point.Min.Average.Session
+#		Default: 10
+
+AMAS.Min.Average.Session = 300000
+AMAS.Warning.Point.Min.Average.Session = 10
+
 #	SYSTEM SETTINGS: CONFIRMED MULTI ACCOUNT
 #
 #	AMAS.Confirmed.Min.Points
@@ -238,7 +252,7 @@ AMAS.Confirmed.Ban.Reason = "This account has been banned for using multiple acc
 #		Default: 1 - Enable
 #
 
-AMAS.Suspicious.Account.Min.Points = 15
+AMAS.Suspicious.Account.Min.Points = 20
 AMAS.Low.GMLevel = 2
 AMAS.High.GMLevel = 3
 AMAS.Warning.Interval = 1800
