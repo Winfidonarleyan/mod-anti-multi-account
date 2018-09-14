@@ -99,7 +99,7 @@ public:
     bool IsWarningZoneExist();
     bool IsWarningZone(uint32 ZoneID);
 	
-	std::string GetAccoutNameByLastIp(std::string IP, uint32 SkipAccount);
+	std::string GetAccountNameByLastIp(std::string IP, uint32 SkipAccount);
 
     WarningZoneContainer &GetWarningZone() { return _warningZoneStore; }
 
