@@ -1,6 +1,6 @@
 SET @FirstID = 40037;
 
-DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 31;
+DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 32;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES 
 (@FirstID, 'Player %s have %.2f point warning.', 'Игрок %s имеет %.2f очков подозрительности'),
 (@FirstID + 1, 'Player %s is offline and has no entry in the Database.', 'Игрок %s не в сети и ещё не сохранён в БД'),
@@ -33,4 +33,5 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 28, '|cFFFF0000#|r |cff00ff00Comment deleted. \n|cFFFF0000# |cff00ff00CommentID:|r %u. \n|cFFFF0000# |cff00ff00Comment:|r |cFFFF0000%s|r.', '|cFFFF0000#|r |cff00ff00Удалён комментарий. Номер:|r %u. |cff00ff00Сообщение|r |cFFFF0000%s|r'),
 (@FirstID + 29, '|cFFFF0000#|r |cff00ff00Edited comment. CommentID:|r %u. |cff00ff00CommentTexts:|r |cFFFF0000%s|r -> |cFFFF0000%s|r.', '|cFFFF0000#|r |cff00ff00Замена комментария. Номер:|r %u. |cff00ff00Сообщения:|r |cFFFF0000%s|r -> |cFFFF0000%s|r'),
 (@FirstID + 30, '|cFFFF0000#|r |cff00ff00List comments for player|r %s.', '|cFFFF0000#|r |cff00ff00Список комментариев для игрока|r %s'),
-(@FirstID + 31, '|cFFFF0000#|r |cff00ff00CommentID:|r %u | |cff00ff00Commenter:|r %s | |cff00ff00Date:|r %s | |cff00ff00Comment:|r %s', '|cFFFF0000#|r |cff00ff00Номер:|r %u. |cff00ff00Автор:|r %s. |cff00ff00Дата:|r %s. |cff00ff00Комментарий:|r %s.');
+(@FirstID + 31, '|cFFFF0000#|r |cff00ff00CommentID:|r %u | |cff00ff00Commenter:|r %s | |cff00ff00Date:|r %s | |cff00ff00Comment:|r %s', '|cFFFF0000#|r |cff00ff00Номер:|r %u. |cff00ff00Автор:|r %s. |cff00ff00Дата:|r %s. |cff00ff00Комментарий:|r %s.'),
+(@FirstID + 32, '|cFFFF0000#|r |cff00ff00AMAS disabled', '|cFFFF0000#|r |cff00ff00АМАС выключена');

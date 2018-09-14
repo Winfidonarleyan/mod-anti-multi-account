@@ -700,26 +700,54 @@ public:
 
 	static bool HandleAMASListAll(ChatHandler *handler, const char *args)
     {
-        sAMAS->GetTopWPOnlineList(handler);
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		sAMAS->GetTopWPOnlineList(handler);
         sAMAS->GetTopWPOfflineList(handler);
         return true;
     }
     
     static bool HandleAMASListOnline(ChatHandler *handler, const char *args)
     {
-        sAMAS->GetTopWPOnlineList(handler);
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		sAMAS->GetTopWPOnlineList(handler);
         return true;
     }
 
     static bool HandleAMASListOffline(ChatHandler *handler, const char *args)
     {
-        sAMAS->GetTopWPOfflineList(handler);
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		sAMAS->GetTopWPOfflineList(handler);
         return true;
     }
 
     static bool HandleAMASCommentAdd(ChatHandler *handler, const char *args)
     {
-        if (!*args)
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		if (!*args)
         {
             handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_PLAYENAME_AND_COMMENT);
             handler->SetSentErrorMessage(true);
@@ -772,7 +800,14 @@ public:
 
     static bool HandleAMASCommentDelete(ChatHandler *handler, const char *args)
     {
-        if (!*args)
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		if (!*args)
         {
             handler->SendSysMessage(amas::AMAS_COMMENT_NEED_ENTER_COMMENTID);
             handler->SetSentErrorMessage(true);
@@ -801,7 +836,14 @@ public:
 
     static bool HandleAMASCommentEdit(ChatHandler *handler, const char *args)
     {
-        if (!*args)
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		if (!*args)
         {
             handler->PSendSysMessage(amas::AMAS_COMMENT_NEED_COMMENTID_AND_COMMENT);
             handler->SetSentErrorMessage(true);
@@ -853,7 +895,14 @@ public:
 
     static bool HandleAMASCommentList(ChatHandler *handler, const char *args)
     {
-        Player* target = handler->getSelectedPlayer();
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		Player* target = handler->getSelectedPlayer();
         uint64 targetGuid;
         std::string targetName;
 
@@ -901,7 +950,14 @@ public:
  
     static bool HandleAMASZoneList(ChatHandler *handler, const char* /*args*/)
     {
-        if (!sAMAS->IsWarningZoneExist())
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		if (!sAMAS->IsWarningZoneExist())
         {
             handler->PSendSysMessage(amas::AMAS_WARNING_ZONE_NOT_LOADED);
             handler->SetSentErrorMessage(true);
@@ -938,7 +994,14 @@ public:
 
     static bool HandleAMASZoneAdd(ChatHandler *handler, const char *args)
     {
-        uint32 ZoneID = 0;
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		uint32 ZoneID = 0;
 
         if (!*args)
             ZoneID = handler->GetSession()->GetPlayer()->GetZoneId();
@@ -973,7 +1036,14 @@ public:
 
     static bool HandleAMASZoneDelete(ChatHandler *handler, const char *args)
     {
-        uint32 ZoneID = 0;
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		uint32 ZoneID = 0;
 
         if (!*args)
             ZoneID = handler->GetSession()->GetPlayer()->GetZoneId();
@@ -1008,7 +1078,14 @@ public:
 
     static bool HandleAMASZoneRelaod(ChatHandler *handler, const char* /*args*/)
     {
-        sLog->outString("Reload warning zone for AMAS...");
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		sLog->outString("Reload warning zone for AMAS...");
         sAMAS->LoadWarningZone();
         handler->SendGlobalGMSysMessage("|cff6C8CD5#|cFFFF0000 DB table|r `amas_warning_zone` |cFFFF0000reloading|r");
         return true;
@@ -1016,7 +1093,14 @@ public:
     
     static bool HandleAMASInfo(ChatHandler *handler, const char *args)
     {
-        Player* player;
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+        {
+            handler->SendSysMessage(amas::AMAS_DISABLED);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+		
+		Player* player;
         uint64 playerGUID;
         std::string PlayerName;
         if (!handler->extractPlayerTarget((char*)args, &player, &playerGUID, &PlayerName))
