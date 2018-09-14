@@ -53,6 +53,7 @@ void AMASConfig::LoadConfig()
     m_int[conf::AMAS_WARNING_INTERVAL]                  = sConfigMgr->GetIntDefault("AMAS.Warning.Interval", 20);
     m_int[conf::AMAS_MIN_TIME_TO_DB_HISTORY]            = sConfigMgr->GetIntDefault("AMAS.Min.Time.For.DB.History", DAY / 2);
     m_bool[conf::AMAS_GM_CHECK_ENABLE]                  = sConfigMgr->GetBoolDefault("AMAS.GM.Check.Enable", false);
+	m_bool[conf::AMAS_FULL_IP_CHECK_ENABLE]     		= sConfigMgr->GetBoolDefault("AMAS.Full.IP.Check.Enable", false);
 }
 
 float AMAS::GetWPTotalTimeAccount(uint32 TotalTimeAccount)
@@ -585,7 +586,7 @@ int8 AMAS::GetOnlineIPCount(std::string IP)
     return IPCount;
 }
 
-std::string AMAS::GetAccoutNameByLastIp(std::string IP, uint32 SkipAccount)
+std::string AMAS::GetAccountNameByLastIp(std::string IP, uint32 SkipAccount)
 {
     QueryResult result = LoginDatabase.PQuery("SELECT username FROM `account` WHERE `last_ip` LIKE '%%%s%%' AND NOT id = %u", IP.c_str(), SkipAccount);
     if (result)
@@ -1110,7 +1111,7 @@ public:
         uint32 _AccountID = sObjectMgr->GetPlayerAccountIdByGUID(playerGUID);
 
         if (IpCount == 2)
-            _AccountName = sAMAS->GetAccoutNameByLastIp(PlayerIP, _AccountID);*/
+            _AccountName = sAMAS->GetAccountNameByLastIp(PlayerIP, _AccountID);*/
 
         if (IpCount > 1)
             IsUniqueIP = handler->GetTrinityString(LANG_NO);

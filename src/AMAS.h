@@ -116,6 +116,7 @@ namespace conf
     {
         AMAS_ENABLE,
         AMAS_GM_CHECK_ENABLE,
+		AMAS_FULL_IP_CHECK_ENABLE,
 
         BOOL_VALUE_COUNT
     };
