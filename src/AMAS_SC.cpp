@@ -4,6 +4,7 @@
 #include "DBCStores.h"
 #include "Language.h"
 #include "AMAS_Config.h"
+#include "AccountMgr.h"
 
 // AMAS SC
 class AMAS_SC : public PlayerScript
