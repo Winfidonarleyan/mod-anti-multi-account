@@ -1,4 +1,5 @@
 [worldserver]
+
 #########################################################
 #
 #    ANTI MULTI ACCOUNT SYSTEM (AMAS)
@@ -17,13 +18,13 @@ AMAS.Enable = 1
 #		Description: Minimum playing time for the account, so as not to cause suspicion (sec)
 #		Default: 86400 (1 day)
 #
-#	AMAS.Warning.Point.Total.Time.Account
+#	AMAS.WP.Total.Time.Account
 #		Description: Warning point at check AMAS.Min.Total.Time.Account
 #		Default: 10
 #
 
 AMAS.Min.Total.Time.Account = 86400
-AMAS.Warning.Point.Total.Time.Account = 10
+AMAS.WP.Total.Time.Account = 10
 
 #
 #	SYSTEM SETTINGS: ITEM LEVEL
@@ -32,22 +33,22 @@ AMAS.Warning.Point.Total.Time.Account = 10
 #		Description: Minimum item level for player, so as not to cause suspicion
 #		Default: 50
 #
-#	AMAS.Warning.Point.Average.Ilvl
+#	AMAS.WP.Average.Ilvl
 #		Description: Warning point at check AMAS.Min.Average.Ilvl
 #		Default: 10
 #
 
 AMAS.Min.Average.Ilvl = 50
-AMAS.Warning.Point.Average.Ilvl = 10
+AMAS.WP.Average.Ilvl = 10
 
 #
 #	SYSTEM SETTINGS: TALENT
 #
-#	AMAS.Warning.Point.Free.Talent
+#	AMAS.WP.Free.Talent
 #		Description: Warning point at check free talent
 #		Default: 5
 
-AMAS.Warning.Point.Free.Talent = 5
+AMAS.WP.Free.Talent = 5
 
 #
 #	SYSTEM SETTINGS: QUEST
@@ -56,13 +57,13 @@ AMAS.Warning.Point.Free.Talent = 5
 #		Description: Minimum quest rewarded count for player, so as not to cause suspicion
 #		Default: 10
 #
-#	AMAS.Warning.Point.Completed.Quest.Count
+#	AMAS.WP.Completed.Quest.Count
 #		Description: Warning point at check AMAS.Min.Completed.Quest.Count
 #		Default: 10
 #
 
 AMAS.Min.Completed.Quest.Count = 10
-AMAS.Warning.Point.Completed.Quest.Count = 10
+AMAS.WP.Completed.Quest.Count = 10
 
 #
 #	SYSTEM SETTINGS: FRIEND
@@ -71,22 +72,22 @@ AMAS.Warning.Point.Completed.Quest.Count = 10
 #		Description: Minimum friend count for player, so as not to cause suspicion
 #		Default: 2
 #
-#	AMAS.Warning.Point.Min.Friend
+#	AMAS.WP.Min.Friend
 #		Description: Warning point at check AMAS.Min.Friend.Count
 #		Default: 5
 
 AMAS.Min.Friend.Count = 2
-AMAS.Warning.Point.Min.Friend = 5
+AMAS.WP.Min.Friend = 5
 
 #
 #	SYSTEM SETTINGS: PVP
 #
-#	AMAS.Warning.Point.NULL.Honor.And.Kills
+#	AMAS.WP.NULL.Honor.And.Kills
 #		Description: Warning point at check honor = 0 and pvp kills = 0
 #		Default: 10
 #
 
-AMAS.Warning.Point.NULL.Honor.And.Kills = 10
+AMAS.WP.NULL.Honor.And.Kills = 10
 
 #
 #	SYSTEM SETTINGS: MONEY
@@ -95,13 +96,13 @@ AMAS.Warning.Point.NULL.Honor.And.Kills = 10
 #		Description: Maximum money count (gold) for player, so as not to cause suspicion
 #		Default: 2
 #
-#	AMAS.Warning.Point.Max.Count.Money
+#	AMAS.WP.Max.Count.Money
 #		Description: Warning point at check AMAS.Max.Count.Money
 #		Default: 5
 #
 
 AMAS.Max.Count.Money = 10000
-AMAS.Warning.Point.Max.Count.Money = 10
+AMAS.WP.Max.Count.Money = 10
 
 #
 #	SYSTEM SETTINGS: SPELLS
@@ -110,23 +111,23 @@ AMAS.Warning.Point.Max.Count.Money = 10
 #		Description: Minimum missing tainer spell for player, so as not to cause suspicion
 #		Default: 1
 #
-#	AMAS.Warning.Point.Missing.One.Trainer.Spell
+#	AMAS.WP.Missing.One.Trainer.Spell
 #		Description: Add warning point at check spell trainer (if > AMAS.Min.Missing.Trainer.Spells) (for each don't learn spell)
 #		Default: 5
 #
 
 AMAS.Min.Missing.Trainer.Spells = 1
-AMAS.Warning.Point.Missing.One.Trainer.Spell = 5
+AMAS.WP.Missing.One.Trainer.Spell = 5
 
 #
 #	SYSTEM SETTINGS: ZONE
 #
-#	AMAS.Warning.Point.Warning.Zone
+#	AMAS.WP.Warning.Zone
 #		Description: Warning point at check warning zone (in DB amas_warning_zone)
 #		Default: 10
 #
 
-AMAS.Warning.Point.Warning.Zone = 10
+AMAS.WP.Warning.Zone = 10
 
 #
 #	SYSTEM SETTINGS: SKILLS (PROFESSION)
@@ -135,22 +136,27 @@ AMAS.Warning.Point.Warning.Zone = 10
 #		Description: Minimum profession for player, so as not to cause suspicion
 #		Default: 1
 #
-#	AMAS.Warning.Point.Trainer.Spells
+#	AMAS.WP.Trainer.Spells
 #		Description: Warning point at check profession (if < 1)
 #		Default: 10
 
 AMAS.Min.Profession = 1
-AMAS.Warning.Point.Professions = 10
+AMAS.WP.Professions = 10
 
 #
 #	SYSTEM SETTINGS: IP
 #
-#	AMAS.Warning.Point.More.IP
-#		Description: Warning point at check all playes ip in world > 1
-#		Default: 5
+#	AMAS.WP.More.IP.Full
+#		Description: Warning point at check all playes ip (full ip) in world > 1
+#		Default: 20
+#
+#	AMAS.WP.More.IP.First
+#		Description: Warning point at check all playes ip (first byte) in world > 1
+#		Default: 10
 #
 
-AMAS.Warning.Point.More.IP = 20
+AMAS.WP.More.IP.Full = 20
+AMAS.WP.More.IP.FirstByte = 10
 
 #
 #	SYSTEM SETTINGS: CREATION DATE
@@ -163,19 +169,19 @@ AMAS.Warning.Point.More.IP = 20
 #		Description: Min difference between character creation date and now
 #		Default: 86400 (1 day)
 #
-#	AMAS.Warning.Point.Diff.Account
+#	AMAS.WP.Diff.Account
 #		Description: Warning point at check AMAS.Min.Diff.Account.Create 
 #		Default: 10
 #
-#	AMAS.Warning.Point.Diff.Character
+#	AMAS.WP.Diff.Character
 #		Description: Warning point at check AMAS.Min.Diff.Character.Create
 #		Default: 5
 #
 
 AMAS.Min.Diff.Account.Create = 86400
 AMAS.Min.Diff.Character.Create = 86400
-AMAS.Warning.Point.Diff.Account = 10
-AMAS.Warning.Point.Diff.Character = 5
+AMAS.WP.Diff.Account = 10
+AMAS.WP.Diff.Character = 5
 
 #
 #	SYSTEM SETTINGS: AVERAGE SESSION
@@ -184,12 +190,12 @@ AMAS.Warning.Point.Diff.Character = 5
 #		Description: Min average duration session in seconds
 #		Default: 30000 (5 min)
 #
-#	AMAS.Warning.Point.Min.Average.Session
-#		Description: Warning point at check AMAS.Warning.Point.Min.Average.Session
+#	AMAS.WP.Min.Average.Session
+#		Description: Warning point at check AMAS.WP.Min.Average.Session
 #		Default: 10
 
 AMAS.Min.Average.Session = 300000
-AMAS.Warning.Point.Min.Average.Session = 10
+AMAS.WP.Min.Average.Session = 10
 
 #	SYSTEM SETTINGS: CONFIRMED MULTI ACCOUNT
 #
