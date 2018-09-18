@@ -15,9 +15,9 @@ float AMAS::GetWPTotalTimeAccount(uint32 TotalTimeAccount)
     TotalTimeAccount += 1;
 
     uint32 MinTimeAccount = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC);
-    uint32 PointWarning = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC_POINT);
 
-    float Total = float(PointWarning) / float(MinTimeAccount) / float(TotalTimeAccount) * DAY * IN_MILLISECONDS;
+    float Total = float(WP) / float(MinTimeAccount) / float(TotalTimeAccount) * DAY * IN_MILLISECONDS;
 
     return std::max<float>(0.1f, Total);
 }
@@ -25,20 +25,20 @@ float AMAS::GetWPTotalTimeAccount(uint32 TotalTimeAccount)
 float AMAS::GetWPAverageItemLevel(float AverageItemLevel)
 {
     uint32 MinAVGILvl = CONF_INT(conf::AMAS_MIN_AVG_ILVL);
-    uint32 PointWarning = CONF_INT(conf::AMAS_MIN_AVG_ILVL_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_MIN_AVG_ILVL_POINT);
 
     if (AverageItemLevel < float(MinAVGILvl))
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
 
 float AMAS::GetWPFreeTalent(uint32 FreeTalent)
 {
-    uint32 PointWarning = CONF_INT(conf::AMAS_FREE_TALENT_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_FREE_TALENT_POINT);
 
     if (FreeTalent > 0)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
@@ -46,10 +46,10 @@ float AMAS::GetWPFreeTalent(uint32 FreeTalent)
 float AMAS::GetWPCompletedQuestCount(uint32 CompleteQuest)
 {
     uint32 MinQuestCount = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST);
-    uint32 PointWarning = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST_POINT);
 
     if (CompleteQuest < MinQuestCount)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
@@ -57,10 +57,10 @@ float AMAS::GetWPCompletedQuestCount(uint32 CompleteQuest)
 float AMAS::GetWPFriend(uint32 FriendCount)
 {
     uint32 MinFriendCount = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND);
-    uint32 PointWarning = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND_POINT);
 
     if (FriendCount < MinFriendCount)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
@@ -68,20 +68,20 @@ float AMAS::GetWPFriend(uint32 FriendCount)
 float AMAS::GetWPMoney(uint32 Money)
 {
     uint32 MaxMoneyCount = CONF_INT(conf::AMAS_MAX_COUNT_MONEY) * GOLD;
-    uint32 PointWarning = CONF_INT(conf::AMAS_MAX_COUNT_MONEY_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_MAX_COUNT_MONEY_POINT);
 
     if (Money > MaxMoneyCount)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
 
 float AMAS::GetWPHonorAndKills(uint32 Honor, uint32 Kills)
 {
-    uint32 PointWarning = CONF_INT(conf::AMAS_NULL_HONOR_AND_KILLS);
+    uint32 WP = CONF_INT(conf::AMAS_NULL_HONOR_AND_KILLS);
 
     if (!Honor && !Kills)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
@@ -95,42 +95,42 @@ float AMAS::GetWPIP(std::string IP)
     else
         IPCount = sAMAS->GetOnlineIPCount(IP);
 	
-    uint32 PointWarning = CONF_INT(conf::AMAS_MORE_IP_POINT);    
+    uint32 WP = CONF_INT(conf::AMAS_MORE_IP_POINT);    
 
     if (IPCount > 1)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
 
 float AMAS::GetWPTrainerSpells(uint32 MissingTrainerSpells)
 {
-    uint32 PointWarning = CONF_INT(conf::AMAS_MISSING_TRAINER_SPELL_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_MISSING_TRAINER_SPELL_POINT);
     uint32 MinMissingSpells = CONF_INT(conf::AMAS_MIN_TRAINER_SPELL_MISSING);
 
     if (MissingTrainerSpells > MinMissingSpells)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
 
 float AMAS::GetWPWarningZone(uint32 ZoneID)
 {
-    uint32 PointWarning = CONF_INT(conf::AMAS_WARNING_ZONE_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_WARNING_ZONE_POINT);
 
     if (this->IsWarningZone(ZoneID))
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
 
 float AMAS::GetWPProfession(uint32 ProfCount)
 {
-    uint32 PointWarning = CONF_INT(conf::AMAS_PROFESSION_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_PROFESSION_POINT);
     uint32 MinProf = CONF_INT(conf::AMAS_MIN_PROFESSION);
 
     if (ProfCount < MinProf)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
@@ -138,10 +138,10 @@ float AMAS::GetWPProfession(uint32 ProfCount)
 float AMAS::GetWPJoinAccount(uint32 DateUnix)
 {
     uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_ACC_CREATE);
-    uint32 PointWarning = CONF_INT(conf::AMAS_DIFF_ACC_CREATE_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_DIFF_ACC_CREATE_POINT);
 
     if (DateUnix < MinDiff)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
@@ -149,10 +149,10 @@ float AMAS::GetWPJoinAccount(uint32 DateUnix)
 float AMAS::GetWPJoinCharacter(uint32 DateUnix)
 {
     uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE);
-    uint32 PointWarning = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE_POINT);
+    uint32 WP = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE_POINT);
 
     if (DateUnix < MinDiff)
-        return float(PointWarning);
+        return float(WP);
 
     return 0.0f;
 }
