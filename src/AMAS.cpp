@@ -12,7 +12,10 @@ bool Prev(const std::pair<uint64, float> &a, const std::pair<uint64, float> &b)
 
 float AMAS::GetWPTotalTimeAccount(uint32 TotalTimeAccount)
 {
-    TotalTimeAccount += 1;
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	TotalTimeAccount += 1;
 
     uint32 MinTimeAccount = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC);
     uint32 WP = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC_POINT);
@@ -24,7 +27,10 @@ float AMAS::GetWPTotalTimeAccount(uint32 TotalTimeAccount)
 
 float AMAS::GetWPAverageItemLevel(float AverageItemLevel)
 {
-    uint32 MinAVGILvl = CONF_INT(conf::AMAS_MIN_AVG_ILVL);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 MinAVGILvl = CONF_INT(conf::AMAS_MIN_AVG_ILVL);
     uint32 WP = CONF_INT(conf::AMAS_MIN_AVG_ILVL_POINT);
 
     if (AverageItemLevel < float(MinAVGILvl))
@@ -35,7 +41,10 @@ float AMAS::GetWPAverageItemLevel(float AverageItemLevel)
 
 float AMAS::GetWPFreeTalent(uint32 FreeTalent)
 {
-    uint32 WP = CONF_INT(conf::AMAS_FREE_TALENT_POINT);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 WP = CONF_INT(conf::AMAS_FREE_TALENT_POINT);
 
     if (FreeTalent > 0)
         return float(WP);
@@ -45,7 +54,10 @@ float AMAS::GetWPFreeTalent(uint32 FreeTalent)
 
 float AMAS::GetWPCompletedQuestCount(uint32 CompleteQuest)
 {
-    uint32 MinQuestCount = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 MinQuestCount = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST);
     uint32 WP = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST_POINT);
 
     if (CompleteQuest < MinQuestCount)
@@ -56,7 +68,10 @@ float AMAS::GetWPCompletedQuestCount(uint32 CompleteQuest)
 
 float AMAS::GetWPFriend(uint32 FriendCount)
 {
-    uint32 MinFriendCount = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 MinFriendCount = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND);
     uint32 WP = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND_POINT);
 
     if (FriendCount < MinFriendCount)
@@ -67,7 +82,10 @@ float AMAS::GetWPFriend(uint32 FriendCount)
 
 float AMAS::GetWPMoney(uint32 Money)
 {
-    uint32 MaxMoneyCount = CONF_INT(conf::AMAS_MAX_COUNT_MONEY) * GOLD;
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 MaxMoneyCount = CONF_INT(conf::AMAS_MAX_COUNT_MONEY) * GOLD;
     uint32 WP = CONF_INT(conf::AMAS_MAX_COUNT_MONEY_POINT);
 
     if (Money > MaxMoneyCount)
@@ -78,7 +96,10 @@ float AMAS::GetWPMoney(uint32 Money)
 
 float AMAS::GetWPHonorAndKills(uint32 Honor, uint32 Kills)
 {
-    uint32 WP = CONF_INT(conf::AMAS_NULL_HONOR_AND_KILLS);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 WP = CONF_INT(conf::AMAS_NULL_HONOR_AND_KILLS);
 
     if (!Honor && !Kills)
         return float(WP);
@@ -88,7 +109,10 @@ float AMAS::GetWPHonorAndKills(uint32 Honor, uint32 Kills)
 
 float AMAS::GetWPIP(std::string IP)
 {
-    int8 IPCount = 0;
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	int8 IPCount = 0;
 
     if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE))
         IPCount = sAMAS->GetFullIPCount(IP);
@@ -105,7 +129,10 @@ float AMAS::GetWPIP(std::string IP)
 
 float AMAS::GetWPTrainerSpells(uint32 MissingTrainerSpells)
 {
-    uint32 WP = CONF_INT(conf::AMAS_MISSING_TRAINER_SPELL_POINT);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 WP = CONF_INT(conf::AMAS_MISSING_TRAINER_SPELL_POINT);
     uint32 MinMissingSpells = CONF_INT(conf::AMAS_MIN_TRAINER_SPELL_MISSING);
 
     if (MissingTrainerSpells > MinMissingSpells)
@@ -116,7 +143,10 @@ float AMAS::GetWPTrainerSpells(uint32 MissingTrainerSpells)
 
 float AMAS::GetWPWarningZone(uint32 ZoneID)
 {
-    uint32 WP = CONF_INT(conf::AMAS_WARNING_ZONE_POINT);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 WP = CONF_INT(conf::AMAS_WARNING_ZONE_POINT);
 
     if (this->IsWarningZone(ZoneID))
         return float(WP);
@@ -126,7 +156,10 @@ float AMAS::GetWPWarningZone(uint32 ZoneID)
 
 float AMAS::GetWPProfession(uint32 ProfCount)
 {
-    uint32 WP = CONF_INT(conf::AMAS_PROFESSION_POINT);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 WP = CONF_INT(conf::AMAS_PROFESSION_POINT);
     uint32 MinProf = CONF_INT(conf::AMAS_MIN_PROFESSION);
 
     if (ProfCount < MinProf)
@@ -137,7 +170,10 @@ float AMAS::GetWPProfession(uint32 ProfCount)
 
 float AMAS::GetWPJoinAccount(uint32 DateUnix)
 {
-    uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_ACC_CREATE);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_ACC_CREATE);
     uint32 WP = CONF_INT(conf::AMAS_DIFF_ACC_CREATE_POINT);
 
     if (DateUnix < MinDiff)
@@ -148,7 +184,10 @@ float AMAS::GetWPJoinAccount(uint32 DateUnix)
 
 float AMAS::GetWPJoinCharacter(uint32 DateUnix)
 {
-    uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+	
+	uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE);
     uint32 WP = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE_POINT);
 
     if (DateUnix < MinDiff)
@@ -223,7 +262,10 @@ bool AMAS::IsWarningZone(uint32 ZoneID)
 
 void AMAS::AddWarningZone(uint32 ZoneID, bool IsDB)
 {
-    _warningZoneStore.push_back(ZoneID);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+	
+	_warningZoneStore.push_back(ZoneID);
 
     if (!IsDB)
         return;
@@ -241,7 +283,10 @@ void AMAS::AddWarningZone(uint32 ZoneID, bool IsDB)
 
 void AMAS::DeleteWarningZone(uint32 ZoneID, bool IsDB)
 {
-    _warningZoneStore.erase(std::remove(_warningZoneStore.begin(), _warningZoneStore.end(), ZoneID), _warningZoneStore.end());
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+	
+	_warningZoneStore.erase(std::remove(_warningZoneStore.begin(), _warningZoneStore.end(), ZoneID), _warningZoneStore.end());
 
     if (!IsDB)
         return;
@@ -281,7 +326,10 @@ void AMAS::LogoutPlayer(Player * player)
 
 void AMAS::PushDBPlayerInfo(Player* player)
 {
-    uint64 PlayerGUID = player->GetGUID();
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+	
+	uint64 PlayerGUID = player->GetGUID();
     uint32 TotalTimeAccount = player->GetSession()->GetTotalTime();
     uint32 AVGILvl = this->GetAverageItemLevel(player);
     uint32 FreeTalent = player->GetFreeTalentPoints();
@@ -422,10 +470,12 @@ uint32 AMAS::GetDateUnixJoinCharacter(uint32 PlayerGuid)
     return DateUnix;
 }
 
-
 void AMAS::GetTopWPOnlineList(ChatHandler * handler)
 {
-    std::map<uint64, float> WPMap;
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+	
+	std::map<uint64, float> WPMap;
 
     int8 Count = 0;
 
@@ -473,7 +523,10 @@ void AMAS::GetTopWPOnlineList(ChatHandler * handler)
 
 void AMAS::GetTopWPOfflineList(ChatHandler * handler)
 {
-    QueryResult result = CharacterDatabase.PQuery("SELECT PlayerGUID, TotalWarningPoint FROM `amas_player_info` WHERE TotalWarningPoint > %u ORDER BY `TotalWarningPoint` DESC LIMIT 0, 20", CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT));
+	if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+	
+	QueryResult result = CharacterDatabase.PQuery("SELECT PlayerGUID, TotalWarningPoint FROM `amas_player_info` WHERE TotalWarningPoint > %u ORDER BY `TotalWarningPoint` DESC LIMIT 0, 20", CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT));
     if (!result)
     {
         handler->PSendSysMessage(amas::AMAS_LIST_OFFLINE_PLAYER_NOT_FOUND);
@@ -506,7 +559,10 @@ void AMAS::GetTopWPOfflineList(ChatHandler * handler)
 
 int8 AMAS::GetCommentCount(uint64 PlayerGuid)
 {
-    QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `amas_player_comment` WHERE `PlayerGuid` = %u", PlayerGuid);
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0;
+	
+	QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `amas_player_comment` WHERE `PlayerGuid` = %u", PlayerGuid);
     if (result)
         return result->Fetch()->GetInt8();
 
