@@ -1,6 +1,6 @@
 SET @FirstID = 40037;
 
-DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 32;
+DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 34;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES 
 (@FirstID, 'Player %s have %.2f point warning.', 'Игрок %s имеет %.2f очков подозрительности'),
 (@FirstID + 1, 'Player %s is offline and has no entry in the Database.', 'Игрок %s не в сети и ещё не сохранён в БД'),
@@ -15,7 +15,7 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 10, '|cff00ff00This warning zone already exists:|r %u - %s', '|cff00ff00Такая подозрительная зона уже существует:|r %u - %s'),
 (@FirstID + 11, '|cff00ff00List warning zone is empty.', '|cff00ff00Список подозрительных зон пуст'),
 (@FirstID + 12, '|cff00ff00Not found zoneid:|r %u', '|cff00ff00Такой зоны не существует:|r %u'),
-(@FirstID + 13, 'Player %s. |cffff0000%.2f|r\n|cffff0000%.2f|r. Time played on account: %s\n|cffff0000%.2f|r. Average item level: %u\n|cffff0000%.2f|r. Unused talent points: %u\n|cffff0000%.2f|r. Completed quests count: %u\n|cffff0000%.2f|r. Friend count: %u\n|cffff0000%.2f|r. Money: %s\n|cffff0000%.2f|r. Honor: %u. Kills: %u\n|cffff0000%.2f|r. IP: %s. Unique? (%s). Ip Count (%i)\n|cffff0000%.2f|r. Missing trainer spells: %u\n|cffff0000%.2f|r. Current zone: %u - %s%s\n|cffff0000%.2f|r. Profession count: %u.\nTime played in char: %s\nComment count: %i', 'Игрок %s. |cffff0000%.2f|r\n|cffff0000%.2f|r. Игровое время на аккаунте: %s\n|cffff0000%.2f|r. Средний уровень предметов: %u\n|cffff0000%.2f|r. Свободных талантов: %u\n|cffff0000%.2f|r. Пройденных заданий: %u\n|cffff0000%.2f|r. Количество друзей: %u\n|cffff0000%.2f|r. Деньги: %s\n|cffff0000%.2f|r. Очки чести: %u. Убийства: %u\n|cffff0000%.2f|r. Айпи: %s. Унивальное? (%s). Количество таких же (%i)\n|cffff0000%.2f|r. Не изученных заклинаний: %u\n|cffff0000%.2f|r. Находится в зоне: %u - %s%s\n|cffff0000%.2f|r. Количество профессий: %u\nИгровое время на персонаже: %s\nКоличество комментариев: %i'),
+(@FirstID + 13, 'Player %s. |cffff0000%.2f|r\n|cffff0000%.2f|r. Time played on account: %s\n|cffff0000%.2f|r. Average item level: %u\n|cffff0000%.2f|r. Unused talent points: %u\n|cffff0000%.2f|r. Completed quests count: %u\n|cffff0000%.2f|r. Friend count: %u\n|cffff0000%.2f|r. Money: %s\n|cffff0000%.2f|r. Honor: %u. Kills: %u\n|cffff0000%.2f|r. IP: %s. Unique? (%s).%s%s\n|cffff0000%.2f|r. Missing trainer spells: %u\n|cffff0000%.2f|r. Current zone: %u - %s%s\n|cffff0000%.2f|r. Profession count: %u.\nTime played in char: %s\nComment count: %i', 'Игрок %s. |cffff0000%.2f|r\n|cffff0000%.2f|r. Игровое время на аккаунте: %s\n|cffff0000%.2f|r. Средний уровень предметов: %u\n|cffff0000%.2f|r. Свободных талантов: %u\n|cffff0000%.2f|r. Пройденных заданий: %u\n|cffff0000%.2f|r. Количество друзей: %u\n|cffff0000%.2f|r. Деньги: %s\n|cffff0000%.2f|r. Очки чести: %u. Убийства: %u\n|cffff0000%.2f|r. Айпи: %s. Унивальное? (%s).%s%s\n|cffff0000%.2f|r. Не изученных заклинаний: %u\n|cffff0000%.2f|r. Находится в зоне: %u - %s%s\n|cffff0000%.2f|r. Количество профессий: %u\nИгровое время на персонаже: %s\nКоличество комментариев: %i'),
 (@FirstID + 14, ' (is warning zone).', ' (подозрительная зона)'),
 (@FirstID + 15, 'Suspicious online players:', 'Список топа онлайн игроков по очкам подозреваемости:'),
 (@FirstID + 16, 'There is no suspicious online player.', 'Такие онлайн игроки не найдены'),
@@ -34,4 +34,7 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 29, '|cFFFF0000#|r |cff00ff00Edited comment. CommentID:|r %u. |cff00ff00CommentTexts:|r |cFFFF0000%s|r -> |cFFFF0000%s|r.', '|cFFFF0000#|r |cff00ff00Замена комментария. Номер:|r %u. |cff00ff00Сообщения:|r |cFFFF0000%s|r -> |cFFFF0000%s|r'),
 (@FirstID + 30, '|cFFFF0000#|r |cff00ff00List comments for player|r %s.', '|cFFFF0000#|r |cff00ff00Список комментариев для игрока|r %s'),
 (@FirstID + 31, '|cFFFF0000#|r |cff00ff00CommentID:|r %u | |cff00ff00Commenter:|r %s | |cff00ff00Date:|r %s | |cff00ff00Comment:|r %s', '|cFFFF0000#|r |cff00ff00Номер:|r %u. |cff00ff00Автор:|r %s. |cff00ff00Дата:|r %s. |cff00ff00Комментарий:|r %s.'),
-(@FirstID + 32, '|cFFFF0000#|r |cff00ff00AMAS disabled', '|cFFFF0000#|r |cff00ff00АМАС выключена');
+(@FirstID + 32, '|cFFFF0000#|r |cff00ff00AMAS disabled', '|cFFFF0000#|r |cff00ff00АМАС выключена'),
+(@FirstID + 33, ' PERFECT MATCH with account ', ' совпадение с акками '),
+(@FirstID + 34, ' Same first byte ip ', ' Cовпадение первых цифр айпи');
+

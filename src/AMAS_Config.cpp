@@ -22,7 +22,8 @@ void AMASConfig::LoadConfig()
     m_int[conf::AMAS_MAX_COUNT_MONEY]                   = sConfigMgr->GetIntDefault("AMAS.Max.Count.Money", 2) * GOLD;
     m_int[conf::AMAS_MAX_COUNT_MONEY_POINT]             = sConfigMgr->GetIntDefault("AMAS.WP.Max.Count.Money", 5);
     m_int[conf::AMAS_NULL_HONOR_AND_KILLS]              = sConfigMgr->GetIntDefault("AMAS.WP.NULL.Honor.And.Kills", 10);
-    m_int[conf::AMAS_MORE_IP_POINT]                     = sConfigMgr->GetIntDefault("AMAS.WP.More.IP", 20);
+    m_int[conf::AMAS_MORE_IP_POINT_FULL]        		= sConfigMgr->GetIntDefault("AMAS.WP.More.IP.Full", 20);
+    m_int[conf::AMAS_MORE_IP_POINT_FIRST_BYTE]  		= sConfigMgr->GetIntDefault("AMAS.WP.More.IP.FirstByte", 20);
     m_int[conf::AMAS_MIN_TRAINER_SPELL_MISSING]         = sConfigMgr->GetIntDefault("AMAS.Min.Missing.Trainer.Spells", 1);
     m_int[conf::AMAS_MISSING_TRAINER_SPELL_POINT]       = sConfigMgr->GetIntDefault("AMAS.WP.Missing.One.Trainer.Spell", 20);
     m_int[conf::AMAS_WARNING_ZONE_POINT]                = sConfigMgr->GetIntDefault("AMAS.WP.Warning.Zone", 20);

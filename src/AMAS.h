@@ -43,7 +43,9 @@ namespace amas
 		AMAS_COMMENT_EDITED,
 		AMAS_COMMENT_LIST,
 		AMAS_COMMENT_LIST_FOR,
-		AMAS_DISABLED
+		AMAS_DISABLED,
+		AMAS_IS_SAME_IP_FULL,
+        AMAS_IS_SAME_IP_FIRST
     };
 }
 
@@ -74,6 +76,9 @@ public:
 	int8 GetCommentCount(uint64 PlayerGuid);
 	int8 GetFullIPCount(std::string IP);
     int8 GetOnlineIPCount(std::string IP);
+	int8 GetSameFirstByteFullIPCount(std::string IP);
+    int8 GetSameFirstByteIPCount(std::string IP);
+    int8 GetFirstByteIP(std::string IP);
 
     float GetAverageItemLevel(Player* player);
 
@@ -93,8 +98,9 @@ public:
 
     bool IsWarningZoneExist();
     bool IsWarningZone(uint32 ZoneID);
+	bool IsFirstByteIPSame(std::string IP1, std::string IP2);
 	
-	std::string GetAccountNameByLastIp(std::string IP, uint32 SkipAccount);
+	std::string GetListAccountForIP(std::string IP);
 
     WarningZoneContainer &GetWarningZone() { return _warningZoneStore; }
 

@@ -593,23 +593,35 @@ public:
         float WPProfession = sAMAS->GetWPProfession(ProfCount);
         float WPIp = sAMAS->GetWPIP(PlayerIP);
         float WPAll = WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp;
-        
-		int8 IpCount = 0;
+		
+		int8 SameIpCountFull = 0;
+        int8 SameIpCountFirstByte = 0;
         std::string IsUniqueIP = handler->GetTrinityString(LANG_YES);
+        std::string AccountListSameIP;
+        std::string IsSameIp;
 
         if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE))
-            IpCount = sAMAS->GetFullIPCount(PlayerIP);
+        {
+            SameIpCountFull = sAMAS->GetFullIPCount(PlayerIP);
+            SameIpCountFirstByte = sAMAS->GetSameFirstByteFullIPCount(PlayerIP);
+        }            
         else
-            IpCount = sAMAS->GetOnlineIPCount(PlayerIP);
+        {
+            SameIpCountFull = sAMAS->GetOnlineIPCount(PlayerIP);
+            SameIpCountFirstByte = sAMAS->GetSameFirstByteIPCount(PlayerIP);
+        }            
 
-        /*std::string _AccountName;
-        uint32 _AccountID = sObjectMgr->GetPlayerAccountIdByGUID(playerGUID);
-
-        if (IpCount == 2)
-            _AccountName = sAMAS->GetAccountNameByLastIp(PlayerIP, _AccountID);*/
-
-        if (IpCount > 1)
+        if (SameIpCountFull > 1)
+        {
             IsUniqueIP = handler->GetTrinityString(LANG_NO);
+            IsSameIp = handler->GetTrinityString(lang::AMAS_IS_SAME_IP_FULL);
+            AccountListSameIP = "(" + sAMAS->GetListAccountForIP(PlayerIP) + ")";
+        }
+        else if (SameIpCountFirstByte > 1)
+        {
+            IsUniqueIP = handler->GetTrinityString(LANG_NO);
+            IsSameIp = handler->GetTrinityString(lang::AMAS_IS_SAME_IP_FIRST);
+        }	
 
         handler->PSendSysMessage(amas::AMAS_INFO,
             PlayerName.c_str(), WPAll,
@@ -620,7 +632,7 @@ public:
             WPFriend, FriendCount,
             WPMoney, MoneyStr.c_str(),
             WPHonorAndKills, TotalHonorPoint, TotalKill,
-            WPIp, PlayerIP.c_str(), IsUniqueIP.c_str(), IpCount,
+            WPIp, PlayerIP.c_str(), IsUniqueIP.c_str(), IsSameIp.c_str(), AccountListSameIP.c_str(),
             WPTrainerSpells, MissingTrainerSpells,
             WPWarningZone, CurrentZone, ZoneName.c_str(), IsWarningZone.c_str(),
             WPProfession, ProfCount,
