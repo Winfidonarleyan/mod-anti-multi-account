@@ -55,9 +55,6 @@ public:
 
     void OnAfterConfigLoad(bool /*reload*/) override
     {
-        if (!CONF_BOOL(conf::AMAS_ENABLE))
-            return;
-
         sLog->outString("Loading AMAS configuration...");
         sAMASConfig->LoadConfig();
     }
