@@ -610,7 +610,7 @@ int8 AMAS::GetOnlineIPCount(std::string IP)
 
 int8 AMAS::GetSameFirstByteFullIPCount(std::string IP)
 {
-    QueryResult result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%%i%%'", this->GetFirstByteIP(IP));
+    QueryResult result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%i%%'", this->GetFirstByteIP(IP));
     if (result)
         return result->Fetch()->GetInt8();
 
