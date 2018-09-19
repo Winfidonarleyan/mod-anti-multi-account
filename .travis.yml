@@ -16,7 +16,7 @@ before_install:
 
 install:
   - cd ..
-  - git clone --depth=1 --branch=acctime https://github.com/Winfidonarleyan/azerothcore-wotlk.git azerothcore
+  - git clone https://github.com/azerothcore/azerothcore-wotlk.git azerothcore
   - mv mod-anti-multi-account azerothcore/modules
   - cd azerothcore
   - git submodule update --init --recursive

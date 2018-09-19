@@ -614,13 +614,13 @@ public:
         if (SameIpCountFull > 1)
         {
             IsUniqueIP = handler->GetTrinityString(LANG_NO);
-            IsSameIp = handler->GetTrinityString(lang::AMAS_IS_SAME_IP_FULL);
+            IsSameIp = handler->GetTrinityString(amas::AMAS_IS_SAME_IP_FULL);
             AccountListSameIP = "(" + sAMAS->GetListAccountForIP(PlayerIP) + ")";
         }
         else if (SameIpCountFirstByte > 1)
         {
             IsUniqueIP = handler->GetTrinityString(LANG_NO);
-            IsSameIp = handler->GetTrinityString(lang::AMAS_IS_SAME_IP_FIRST);
+            IsSameIp = handler->GetTrinityString(amas::AMAS_IS_SAME_IP_FIRST);
         }	
 
         handler->PSendSysMessage(amas::AMAS_INFO,

@@ -608,15 +608,6 @@ int8 AMAS::GetOnlineIPCount(std::string IP)
     return IPCount;
 }
 
-std::string AMAS::GetAccountNameByLastIp(std::string IP, uint32 SkipAccount)
-{
-    QueryResult result = LoginDatabase.PQuery("SELECT username FROM `account` WHERE `last_ip` LIKE '%%%s%%' AND NOT id = %u", IP.c_str(), SkipAccount);
-    if (result)
-        return result->Fetch()->GetString();
-
-    return "";
-}
-
 int8 AMAS::GetSameFirstByteFullIPCount(std::string IP)
 {
     QueryResult result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%%i%%'", this->GetFirstByteIP(IP));
