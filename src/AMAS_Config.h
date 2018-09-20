@@ -2,6 +2,7 @@
 #define _AMAS_CONFIG_H_
 
 #include "Common.h"
+#include "Timer.h"
 #include <ace/Singleton.h>
 
 namespace conf
@@ -62,6 +63,7 @@ namespace conf
         AMAS_HIGH_GMLEVEL,
         AMAS_WARNING_INTERVAL,
         AMAS_MIN_TIME_TO_DB_HISTORY,
+		AMAS_TIME_CHECK_RND_BAN,
 
         INT_VALUE_COUNT
     };
@@ -101,12 +103,16 @@ public:
     }
 
     void LoadConfig();
+	
+	IntervalTimer &GetUpdateTimerRandomBan() { return _UpdateTimerRandomBan; }
 
 private:
     bool m_bool[conf::BOOL_VALUE_COUNT];
     float m_float[conf::FLOAT_VALUE_COUNT];
     uint32 m_int[conf::INT_VALUE_COUNT];
     std::string m_string[conf::STRING_VALUE_COUNT];
+	
+	IntervalTimer _UpdateTimerRandomBan;
 };
 
 #define sAMASConfig ACE_Singleton<AMASConfig, ACE_Null_Mutex>::instance()

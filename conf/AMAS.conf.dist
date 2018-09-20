@@ -257,6 +257,10 @@ AMAS.Confirmed.Ban.Reason = "This account has been banned for using multiple acc
 #		Description: Enable full check ip (online and offline) or only online
 #		Default: 1 - Enable
 #
+#	AMAS.Time.Check.Ban.Random
+#		Description: Interval time for check random ban in seconds
+#		Default: 300 - 5 min
+#
 
 AMAS.Suspicious.Account.Min.Points = 20
 AMAS.Low.GMLevel = 2
@@ -265,6 +269,7 @@ AMAS.Warning.Interval = 1800
 AMAS.Min.Time.For.DB.History = 43200
 AMAS.GM.Check.Enable = 1
 AMAS.Full.IP.Check.Enable = 1
+AMAS.Time.Check.Ban.Random = 300
 
 #
 ###################################################################################################

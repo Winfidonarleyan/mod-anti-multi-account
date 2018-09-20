@@ -51,4 +51,13 @@ void AMASConfig::LoadConfig()
     m_int[conf::AMAS_MIN_TIME_TO_DB_HISTORY]            = sConfigMgr->GetIntDefault("AMAS.Min.Time.For.DB.History", DAY / 2);
     m_bool[conf::AMAS_GM_CHECK_ENABLE]                  = sConfigMgr->GetBoolDefault("AMAS.GM.Check.Enable", false);
 	m_bool[conf::AMAS_FULL_IP_CHECK_ENABLE]     		= sConfigMgr->GetBoolDefault("AMAS.Full.IP.Check.Enable", false);
+	
+	m_int[conf::AMAS_TIME_CHECK_RND_BAN]        		= sConfigMgr->GetIntDefault("AMAS.Time.Check.Ban.Random", MINUTE * 5);
+    _UpdateTimerRandomBan.SetInterval(m_int[conf::AMAS_TIME_CHECK_RND_BAN] * IN_MILLISECONDS);
+	
+	if (_UpdateTimerRandomBan.GetInterval() < 1 * IN_MILLISECONDS)
+    {
+		sLog->outError("Time check random ban (%d) sec, this will freatly load worldserver. Set as default (%d)", _UpdateTimerRandomBan.GetInterval(), MINUTE * 5);
+        _UpdateTimerRandomBan.SetInterval(MINUTE * 5);
+    }
 }

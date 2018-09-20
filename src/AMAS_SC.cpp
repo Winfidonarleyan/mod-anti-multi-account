@@ -5,6 +5,7 @@
 #include "Language.h"
 #include "AMAS_Config.h"
 #include "AccountMgr.h"
+#include "AMAS_Random_Ban.h"
 
 // AMAS SC
 class AMAS_SC : public PlayerScript
@@ -58,6 +59,23 @@ public:
         sLog->outString("Loading AMAS configuration...");
         sAMASConfig->LoadConfig();
     }
+	
+	void OnUpdate(uint32 Diff) override
+    {
+        if (!CONF_BOOL(conf::AMAS_ENABLE))
+            return;
+
+        UpdateTimer.Update(Diff);
+
+        if (UpdateTimer.Passed())
+        {
+            sAMASRandomBan->Start();
+            UpdateTimer.Reset();
+        }
+    }
+	
+private:
+	IntervalTimer& UpdateTimer = sAMASConfig->GetUpdateTimerRandomBan();
 };
 
 class CS_AMAS : public CommandScript
