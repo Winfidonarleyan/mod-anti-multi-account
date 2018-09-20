@@ -11,6 +11,7 @@ class AMASRandomBan
 public:
     
     void Start();
+	void AddRandomBan(uint32 AccountID, uint32 StartBanDate, std::string Duration, std::string BanReason, std::string BanAuthor);
 
 private:
     

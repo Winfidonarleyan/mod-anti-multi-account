@@ -1,13 +1,13 @@
 SET @FirstID = 40037;
 
-DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 29;
+DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 30;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 
 -- Amas general
-(@FirstID, '|cFFFF0000#|r |cff00ff00AMAS disabled', '|cFFFF0000#|r |cff00ff00АМАС выключена'),
+(@FirstID, '[|cFFFF0000AMAS|r]: System disabled', '[|cFFFF0000AMAS|r]: Система выключена'),
 
 -- Announce GM
-(@FirstID + 1, 'Character %s just logged in and has %.2f AMAS points.', 'Игрок %s имеет %.2f очков подозрительности'),
+(@FirstID + 1, '[|cFFFF0000AMAS|r]: |cff00ff00Character|r %s |cff00ff00just logged in and has|r %.2f |cff00ff00AMAS points.|r', '[|cFFFF0000AMAS|r]: |cff00ff00Игрок|r %s |cff00ff00имеет|r %.2f |cff00ff00очков подозрительности|r'),
 
 -- AMAS info
 (@FirstID + 2, 'Character %s\n-------\nTotal points: |cffff0000%.2f|r\n|cffff0000%.2f|r - Time played on account: %s\n|cffff0000%.2f|r - Average item level: %u\n|cffff0000%.2f|r - Unused talent points: %u\n|cffff0000%.2f|r - Completed quests count: %u\n|cffff0000%.2f|r - Friend count: %u\n|cffff0000%.2f|r - Money: %s\n|cffff0000%.2f|r - Honor: %u. Kills: %u\n|cffff0000%.2f|r - IP: %s. Unique? (%s).%s%s\n|cffff0000%.2f|r - Missing trainer spells: %u\n|cffff0000%.2f|r - Current zone: %u - %s%s\n|cffff0000%.2f|r - Profession count: %u.\nTime played on character: %s\nComment count: %i', 'Игрок %s. |cffff0000%.2f|r\n|cffff0000%.2f|r - Игровое время на аккаунте: %s\n|cffff0000%.2f|r - Средний уровень предметов: %u\n|cffff0000%.2f|r - Свободных талантов: %u\n|cffff0000%.2f|r - Пройденных заданий: %u\n|cffff0000%.2f|r - Количество друзей: %u\n|cffff0000%.2f|r - Деньги: %s\n|cffff0000%.2f|r - Очки чести: %u. Убийства: %u\n|cffff0000%.2f|r - Айпи: %s. Унивальное? (%s).%s%s\n|cffff0000%.2f|r - Не изученных заклинаний: %u\n|cffff0000%.2f|r - Находится в зоне: %u - %s%s\n|cffff0000%.2f|r - Количество профессий: %u\nИгровое время на персонаже: %s\nКоличество комментариев: %i'),
@@ -45,4 +45,7 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 
 -- Amas same ip
 (@FirstID + 28, ' PERFECT MATCH with account ', ' Совпадение с акками '),
-(@FirstID + 29, ' Same first byte ip ', ' Cовпадение первых цифр айпи');
+(@FirstID + 29, ' Same first byte ip ', ' Cовпадение первых цифр айпи'),
+
+-- Amas confirmed
+(@FirstID + 30, '[|cFFFF0000AMAS|r]: |cff00ff00Confirmed player|r %s |cff00ff00has|r %.2f |cff00ff00warning point. This more min|r %u', '[|cFFFF0000AMAS|r]: |cff00ff00Подтверждённый игрок|r %s |cff00ff00имеет|r %.2f |cff00ff00очков подозрительности. Это больше минимума|r %u');

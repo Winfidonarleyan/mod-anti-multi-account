@@ -39,3 +39,20 @@ void AMASRandomBan::Start()
 
 	LoginDatabase.Execute("DELETE FROM `account_rnd_ban` WHERE UNIX_TIMESTAMP(Date) <= UNIX_TIMESTAMP()");
 }
+
+void AMASRandomBan::AddRandomBan(uint32 AccountID, uint32 StartBanDate, std::string Duration, std::string BanReason, std::string BanAuthor)
+{
+    // Check if accounts exists
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_BY_ID);
+    stmt->setUInt32(0, AccountID);
+    PreparedQueryResult Presult = LoginDatabase.Query(stmt);
+
+    if (!Presult)
+        return;
+
+    QueryResult result = LoginDatabase.PQuery("SELECT * FROM `account_rnd_ban` WHERE `AccountID` = %u", AccountID);
+    if (result)
+        return;
+
+    LoginDatabase.PExecute("INSERT INTO `account_rnd_ban`(`AccountID`, `Date`, `Duration`, `BanReason`, `Author`) VALUES (%u, FROM_UNIXTIME(%u), '%s', '%s', '%s')", AccountID, StartBanDate, Duration.c_str(), BanReason.c_str(), BanAuthor.c_str());
+}

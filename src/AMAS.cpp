@@ -324,6 +324,56 @@ void AMAS::LogoutPlayer(Player * player)
     this->PushDBPlayerInfo(player);
 }
 
+void AMAS::LoginPlayer(Player * player)
+{
+    if (!player || !CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+
+    uint32 MinWP = CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT);    
+    float PlayerWP = sAMAS->GetAllWarningPoint(player);
+
+    if (PlayerWP > float(MinWP))
+        sWorld->SendGMText(amas::AMAS_ANNOUNCE_GM, player->GetName().c_str(), PlayerWP);
+
+    this->CheckConfirmed(player);
+}
+
+void AMAS::CheckConfirmed(Player* player)
+{
+    if (!player || !CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+    
+    uint32 MinWPConfirmed = CONF_INT(conf::AMAS_CONFIRMED_MIN_POINT);
+    float PlayerWP = sAMAS->GetAllWarningPoint(player);
+
+    if (PlayerWP < MinWPConfirmed)
+        return;
+
+    ConfirmedAction AMASConfirmedAction = ConfirmedAction(CONF_INT(conf::AMAS_CONFIRMED_ACTION));
+    uint32 RandomIntervalMin = CONF_INT(conf::AMAS_CONFIRMED_BAN_INTERVAL_MIN);
+    uint32 RandomIntervalMax = CONF_INT(conf::AMAS_CONFIRMED_BAN_INTERVAL_MAX);
+    std::string Reason = CONF_STR(conf::AMAS_BAN_REASON);
+    uint32 TimeNow = uint32(time(NULL));
+    uint32 RandomInterval = urand(RandomIntervalMin, RandomIntervalMax);
+    uint32 StartBanDate = TimeNow + RandomInterval;
+
+    switch (AMASConfirmedAction)
+    {
+    case ACTION_BAN:
+        sAMASRandomBan->AddRandomBan(player->GetSession()->GetAccountId(), StartBanDate, "0s", Reason, "System");
+        break;
+    case ACTION_GM_MESSAGE:
+        sWorld->SendGMText(amas::AMAS_GM_ANNOUNCE_CONFIRMED, player->GetName().c_str(), PlayerWP, MinWPConfirmed);
+        break;
+    case ACTION_ALL:
+        sWorld->SendGMText(amas::AMAS_GM_ANNOUNCE_CONFIRMED, player->GetName().c_str(), PlayerWP, MinWPConfirmed);
+        sAMASRandomBan->AddRandomBan(player->GetSession()->GetAccountId(), StartBanDate, "0s", Reason, "System");
+        break;
+    default:
+        break;
+    }
+}
+
 void AMAS::PushDBPlayerInfo(Player* player)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))

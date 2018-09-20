@@ -21,11 +21,7 @@ public:
         if (!(CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity())))
             return;
 
-        uint32 MinWaringPoint = CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT);
-        float PlayerWarningPoint = sAMAS->GetAllWarningPoint(player);
-
-        if (PlayerWarningPoint > float(MinWaringPoint))
-            sWorld->SendGMText(amas::AMAS_ANNOUNCE_GM, player->GetName().c_str(), PlayerWarningPoint);
+        sAMAS->LoginPlayer(player);
     }
 
     void OnLogout(Player* player) override

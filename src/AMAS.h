@@ -52,9 +52,19 @@ namespace amas
 
         // AMAS same ip
         AMAS_IS_SAME_IP_FULL,
-        AMAS_IS_SAME_IP_FIRST
+        AMAS_IS_SAME_IP_FIRST,
+		
+		// Amas confirmed
+        AMAS_GM_ANNOUNCE_CONFIRMED
     };
 }
+
+enum ConfirmedAction
+{
+    ACTION_BAN = 1,
+    ACTION_GM_MESSAGE,
+    ACTION_ALL
+};
 
 class AMAS
 {
@@ -69,11 +79,13 @@ public:
 
     float GetAllWarningPoint(Player* player);
     void LogoutPlayer(Player* player);
+	void LoginPlayer(Player* player);
     void LoadWarningZone();
     void AddWarningZone(uint32 ZoneID, bool IsDB);
     void DeleteWarningZone(uint32 ZoneID, bool IsDB);
 	void GetTopWPOnlineList(ChatHandler* handler);
     void GetTopWPOfflineList(ChatHandler* handler);
+	void CheckConfirmed(Player* player);
 
     uint32 GetFriendCount(Player* player);
     uint32 GetMissingTrainerSpells(Player* player);
