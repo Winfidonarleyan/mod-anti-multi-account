@@ -1,6 +1,6 @@
 SET @FirstID = 40037;
 
-DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 30;
+DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 31;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 
 -- Amas general
@@ -48,4 +48,5 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 29, ' Same first byte ip ', ' Cовпадение первых цифр айпи'),
 
 -- Amas confirmed
-(@FirstID + 30, '[|cFFFF0000AMAS|r]: |cff00ff00Confirmed player|r %s |cff00ff00has|r %.2f |cff00ff00warning point. This more min|r %u', '[|cFFFF0000AMAS|r]: |cff00ff00Подтверждённый игрок|r %s |cff00ff00имеет|r %.2f |cff00ff00очков подозрительности. Это больше минимума|r %u');
+(@FirstID + 30, '[|cFFFF0000AMAS|r]: |cff00ff00Confirmed player|r %s |cff00ff00has|r %.2f |cff00ff00warning point. This more min|r %u', '[|cFFFF0000AMAS|r]: |cff00ff00Подтверждённый игрок|r %s |cff00ff00имеет|r %.2f |cff00ff00очков подозрительности. Это больше минимума|r %u'),
+(@FirstID + 31, 'Recipient %s\n- Money: %u\n- Item: %u\n- Only Text: %u\n- Auction House: %u\n- Account: %s - %u', '');

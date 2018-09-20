@@ -55,7 +55,10 @@ namespace amas
         AMAS_IS_SAME_IP_FIRST,
 		
 		// Amas confirmed
-        AMAS_GM_ANNOUNCE_CONFIRMED
+        AMAS_GM_ANNOUNCE_CONFIRMED,
+		
+		// Amas mail
+        AMAS_MAIL_INFO
     };
 }
 

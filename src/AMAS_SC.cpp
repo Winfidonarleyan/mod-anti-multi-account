@@ -107,6 +107,7 @@ public:
         static std::vector<ChatCommand> TableCommandAmas = // .amas
         {
             { "info",				SEC_ADMINISTRATOR, 		true, &HandleAMASInfo,             	   			    "" },
+			{ "mail",				SEC_ADMINISTRATOR, 		true, &HandleAMASMail,             	   			    "" },
 			{ "zone",				SEC_ADMINISTRATOR, 		true, nullptr,             	   					    "", TableCommandAmasZone },            
             { "comment",			SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasComment },
             { "list",			    SEC_ADMINISTRATOR, 		true, nullptr,             	   						"", TableCommandAmasList }
@@ -118,7 +119,48 @@ public:
         };
 
         return commandTable;
-    }    
+    }
+
+	static bool HandleAMASMail(ChatHandler *handler, const char *args)
+    {
+        Player* player;
+        uint64 playerGUID;
+        std::string PlayerName;
+        if (!handler->extractPlayerTarget((char*)args, &player, &playerGUID, &PlayerName))
+            return false;
+
+        uint32 AccountID = 0;
+        std::string AccountName;
+
+        player ? AccountID = player->GetSession()->GetAccountId() : AccountID = sObjectMgr->GetPlayerAccountIdByGUID(playerGUID);
+                
+        sAccountMgr->GetName(AccountID, AccountName);
+        QueryResult result = nullptr;        
+        uint32 MailCountMoney = 0;
+        uint32 MailCountItem = 0;
+        uint32 MailCountOnlyText = 0;
+        uint32 MailCountAuction = 0;
+
+        result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `mail` WHERE messageType = 0 AND money > 0 AND sender <> receiver AND receiver = %u", playerGUID);
+        if (result)
+            MailCountMoney = result->Fetch()->GetUInt32();
+
+        result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `mail` WHERE messageType = 0 AND has_items > 0 AND sender <> receiver AND receiver = %u", playerGUID);
+        if (result)
+            MailCountItem = result->Fetch()->GetUInt32();
+
+        result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `mail` WHERE messageType = 0 AND has_items = 0 AND money = 0 AND sender <> receiver AND receiver = %u", playerGUID);
+        if (result)
+            MailCountOnlyText = result->Fetch()->GetUInt32();
+
+        result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `mail` WHERE messageType = 2 AND receiver = %u", playerGUID);
+        if (result)
+            MailCountAuction = result->Fetch()->GetUInt32();
+
+        handler->PSendSysMessage(amas::AMAS_MAIL_INFO, PlayerName.c_str(), MailCountMoney, MailCountItem, MailCountOnlyText, MailCountAuction, AccountName.c_str(), AccountID);
+
+        return true;
+    }
 
 	static bool HandleAMASListAll(ChatHandler *handler, const char * /*args*/)
     {
