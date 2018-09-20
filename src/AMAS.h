@@ -81,11 +81,8 @@ public:
     uint32 GetDateUnixJoinAccount(uint32 AccountID);
     uint32 GetDateUnixJoinCharacter(uint32 PlayerGuid);
 	int8 GetCommentCount(uint64 PlayerGuid);
-	int8 GetFullIPCount(std::string IP);
-    int8 GetOnlineIPCount(std::string IP);
-	int8 GetSameFirstByteFullIPCount(std::string IP);
-    int8 GetSameFirstByteIPCount(std::string IP);
     int8 GetFirstByteIP(std::string IP);
+	int8 GetIPCount(std::string IP, bool IsFirstByte = false);
 
     float GetAverageItemLevel(Player* player);
 

@@ -576,8 +576,6 @@ public:
         if (sAMAS->IsWarningZone(CurrentZone))
             IsWarningZone = handler->GetTrinityString(amas::AMAS_IS_WARNING_ZONE);
 		
-		int8 CommentCount = sAMAS->GetCommentCount(playerGUID);
-
         float WPTimeAcc = sAMAS->GetWPTotalTimeAccount(TotalTimeAccount);
         float WPAverageIlvl = sAMAS->GetWPAverageItemLevel(AVGILvl);
         float WPFreeTalent = sAMAS->GetWPFreeTalent(FreeTalent);
@@ -590,23 +588,13 @@ public:
         float WPProfession = sAMAS->GetWPProfession(ProfCount);
         float WPIp = sAMAS->GetWPIP(PlayerIP);
         float WPAll = WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp;
+		int8 CommentCount = sAMAS->GetCommentCount(playerGUID);
 		
-		int8 SameIpCountFull = 0;
-        int8 SameIpCountFirstByte = 0;
+		int8 SameIpCountFull = sAMAS->GetIPCount(PlayerIP);
+        int8 SameIpCountFirstByte = sAMAS->GetIPCount(PlayerIP, true);
         std::string IsUniqueIP = handler->GetTrinityString(LANG_YES);
         std::string AccountListSameIP;
         std::string IsSameIp;
-
-        if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE))
-        {
-            SameIpCountFull = sAMAS->GetFullIPCount(PlayerIP);
-            SameIpCountFirstByte = sAMAS->GetSameFirstByteFullIPCount(PlayerIP);
-        }            
-        else
-        {
-            SameIpCountFull = sAMAS->GetOnlineIPCount(PlayerIP);
-            SameIpCountFirstByte = sAMAS->GetSameFirstByteIPCount(PlayerIP);
-        }            
 
         if (SameIpCountFull > 1)
         {

@@ -111,23 +111,10 @@ float AMAS::GetWPIP(std::string IP)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
-	int8 IPCount = 0;
-    int8 SameFirstByteIpCount = 0;
-	
-	if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE))
-        IPCount = sAMAS->GetFullIPCount(IP);
-    else
-        IPCount = sAMAS->GetOnlineIPCount(IP);
 
-    if (IPCount == 1)
-    {
-        if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE))
-            SameFirstByteIpCount = this->GetSameFirstByteFullIPCount(IP);
-        else
-            SameFirstByteIpCount = this->GetSameFirstByteIPCount(IP);
-    }
-
+    int8 IPCount = this->GetIPCount(IP);
+    int8 SameFirstByteIpCount = this->GetIPCount(IP, true);
+    
     uint32 WPSameIpFull = CONF_INT(conf::AMAS_MORE_IP_POINT_FULL);
     uint32 WPSameIpFirsByte = CONF_INT(conf::AMAS_MORE_IP_POINT_FIRST_BYTE);
 
@@ -581,60 +568,6 @@ int8 AMAS::GetCommentCount(uint64 PlayerGuid)
     return 0;
 }
 
-int8 AMAS::GetFullIPCount(std::string IP)
-{
-    QueryResult result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%%%s%%'", IP.c_str());
-    if (result)
-        return result->Fetch()->GetInt8();
-
-    return 0;
-}
-
-int8 AMAS::GetOnlineIPCount(std::string IP)
-{
-    int8 IPCount = 0;
-
-    SessionMap::iterator itr;
-    SessionMap m_sessions = sWorld->GetAllSessions();
-    for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
-    {
-        if (!itr->second && !itr->second->GetPlayer() && !itr->second->GetPlayer()->IsInWorld())
-            continue;
-
-        if (itr->second->GetRemoteAddress() == IP)
-            IPCount++;
-    }
-
-    return IPCount;
-}
-
-int8 AMAS::GetSameFirstByteFullIPCount(std::string IP)
-{
-    QueryResult result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%i%%'", this->GetFirstByteIP(IP));
-    if (result)
-        return result->Fetch()->GetInt8();
-
-    return 0;
-}
-
-int8 AMAS::GetSameFirstByteIPCount(std::string IP)
-{
-    int8 IPCount = 0;
-
-    SessionMap::iterator itr;
-    SessionMap m_sessions = sWorld->GetAllSessions();
-    for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
-    {
-        if (!itr->second && !itr->second->GetPlayer() && !itr->second->GetPlayer()->IsInWorld())
-            continue;
-
-        if (this->IsFirstByteIPSame(itr->second->GetRemoteAddress(), IP))
-            IPCount++;
-    }
-
-    return IPCount;
-}
-
 int8 AMAS::GetFirstByteIP(std::string IP)
 {
     std::string Buff;
@@ -656,6 +589,64 @@ bool AMAS::IsFirstByteIPSame(std::string IP1, std::string IP2)
     int8 FirsByteIP2 = this->GetFirstByteIP(IP2);
 
     return FirsByteIP1 == FirsByteIP2;
+}
+
+int8 AMAS::GetIPCount(std::string IP, bool IsFirstByte /*= false*/)
+{
+    if (IP.empty())
+        return 0;
+
+    int8 IPCount = 0;
+    QueryResult result = nullptr;
+
+    if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE) && IsFirstByte)
+    {
+        result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%i%%'", this->GetFirstByteIP(IP));
+        if (result)
+            return result->Fetch()->GetInt8();
+
+        return 0;
+    }
+    else if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE) && !IsFirstByte)
+    {
+        result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%%%s%%'", IP.c_str());
+        if (result)
+            return result->Fetch()->GetInt8();
+
+        return 0;
+    }
+    else if (!CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE) && IsFirstByte)
+    {
+        SessionMap::iterator itr;
+        SessionMap m_sessions = sWorld->GetAllSessions();
+        for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+        {
+            if (!itr->second && !itr->second->GetPlayer() && !itr->second->GetPlayer()->IsInWorld())
+                continue;
+
+            if (this->IsFirstByteIPSame(itr->second->GetRemoteAddress(), IP))
+                IPCount++;
+        }
+
+        return IPCount;
+    }
+    else if (!CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE) && !IsFirstByte)
+    {
+        SessionMap::iterator itr;
+        SessionMap m_sessions = sWorld->GetAllSessions();
+        for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+        {
+            if (!itr->second && !itr->second->GetPlayer() && !itr->second->GetPlayer()->IsInWorld())
+                continue;
+
+            if (itr->second->GetRemoteAddress() == IP)
+                IPCount++;
+        }
+
+        return IPCount;
+    }
+    else
+        return 0;
 }
 
 std::string AMAS::GetListAccountForIP(std::string IP)
