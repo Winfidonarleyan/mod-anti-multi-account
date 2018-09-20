@@ -30,7 +30,7 @@ void AMASRandomBan::Start()
 		uint32 TimeNow = uint32(time(NULL));
 
 		std::string AccountName;
-		sAccountMgr->GetName(AccountID, AccountName);
+		AccountMgr::GetName(AccountID, AccountName);
 
 		if (TimeNow > Time)
 			sWorld->BanAccount(BAN_ACCOUNT, AccountName, DurationStr, BanReason, Author);
