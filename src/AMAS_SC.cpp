@@ -124,7 +124,7 @@ public:
         return commandTable;
     }    
 
-	static bool HandleAMASListAll(ChatHandler *handler, const char *args)
+	static bool HandleAMASListAll(ChatHandler *handler, const char * /*args*/)
     {
         if (!CONF_BOOL(conf::AMAS_ENABLE))
         {
@@ -138,7 +138,7 @@ public:
         return true;
     }
     
-    static bool HandleAMASListOnline(ChatHandler *handler, const char *args)
+    static bool HandleAMASListOnline(ChatHandler *handler, const char * /*args*/)
     {
         if (!CONF_BOOL(conf::AMAS_ENABLE))
         {
@@ -151,7 +151,7 @@ public:
         return true;
     }
 
-    static bool HandleAMASListOffline(ChatHandler *handler, const char *args)
+    static bool HandleAMASListOffline(ChatHandler *handler, const char * /*args*/)
     {
         if (!CONF_BOOL(conf::AMAS_ENABLE))
         {

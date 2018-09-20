@@ -57,7 +57,7 @@ void AMASConfig::LoadConfig()
 	
 	if (_UpdateTimerRandomBan.GetInterval() < 1 * IN_MILLISECONDS)
     {
-		sLog->outError("Time check random ban (%d) sec, this will freatly load worldserver. Set as default (%d)", _UpdateTimerRandomBan.GetInterval(), MINUTE * 5);
+		sLog->outError("Time check random ban (%ld) sec, this will freatly load worldserver. Set as default (%d)", _UpdateTimerRandomBan.GetInterval(), MINUTE * 5);
         _UpdateTimerRandomBan.SetInterval(MINUTE * 5);
     }
 }

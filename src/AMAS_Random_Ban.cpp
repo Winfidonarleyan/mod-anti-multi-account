@@ -1,6 +1,6 @@
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
-#include "AMAS_Config.h"
+#include "AMAS_Random_Ban.h"
 
 void AMASRandomBan::Start()
 {
