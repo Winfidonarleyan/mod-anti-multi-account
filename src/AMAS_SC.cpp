@@ -134,7 +134,7 @@ public:
 
         player ? AccountID = player->GetSession()->GetAccountId() : AccountID = sObjectMgr->GetPlayerAccountIdByGUID(playerGUID);
                 
-        sAccountMgr->GetName(AccountID, AccountName);
+        AccountMgr::GetName(AccountID, AccountName);
         QueryResult result = nullptr;        
         uint32 MailCountMoney = 0;
         uint32 MailCountItem = 0;
