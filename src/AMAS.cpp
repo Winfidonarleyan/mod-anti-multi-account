@@ -260,7 +260,7 @@ void AMAS::LoadWarningZone()
 
     if (_warningZoneStore.size())
     {
-        sLog->outString(">> Loaded zones %i за %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+        sLog->outString(">> Loaded zones %i in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
         sLog->outString();
     }
     else
