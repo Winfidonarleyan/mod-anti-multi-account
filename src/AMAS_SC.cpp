@@ -15,23 +15,11 @@ public:
 
     void OnLogin(Player* player) override
     {
-        if (!CONF_BOOL(conf::AMAS_ENABLE))
-            return;
-
-        if (!(CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity())))
-            return;
-
         sAMAS->LoginPlayer(player);
     }
 
     void OnLogout(Player* player) override
     {
-        if (!CONF_BOOL(conf::AMAS_ENABLE))
-            return;
-
-        if (!(CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity())))
-            return;
-
         sAMAS->LogoutPlayer(player);
     }
 };
