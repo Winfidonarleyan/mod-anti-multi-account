@@ -143,19 +143,19 @@ public:
 
         result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `mail` WHERE messageType = 0 AND money > 0 AND sender <> receiver AND receiver = %u", playerGUID);
         if (result)
-            MailCountMoney = result->Fetch()->GetUInt32();
+            MailCountMoney = (uint32)result->Fetch()->GetUInt64();
 
         result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `mail` WHERE messageType = 0 AND has_items > 0 AND sender <> receiver AND receiver = %u", playerGUID);
         if (result)
-            MailCountItem = result->Fetch()->GetUInt32();
+            MailCountItem = (uint32)result->Fetch()->GetUInt64();
 
         result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `mail` WHERE messageType = 0 AND has_items = 0 AND money = 0 AND sender <> receiver AND receiver = %u", playerGUID);
         if (result)
-            MailCountOnlyText = result->Fetch()->GetUInt32();
+            MailCountOnlyText = (uint32)result->Fetch()->GetUInt64();
 
         result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `mail` WHERE messageType = 2 AND receiver = %u", playerGUID);
         if (result)
-            MailCountAuction = result->Fetch()->GetUInt32();
+            MailCountAuction = (uint32)result->Fetch()->GetUInt64();
 
         handler->PSendSysMessage(amas::AMAS_MAIL_INFO, PlayerName.c_str(), MailCountMoney, MailCountItem, MailCountOnlyText, MailCountAuction, AccountName.c_str(), AccountID);
 
@@ -644,10 +644,10 @@ public:
         float WPProfession = sAMAS->GetWPProfession(ProfCount);
         float WPIp = sAMAS->GetWPIP(PlayerIP);
         float WPAll = WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp;
-		int8 CommentCount = sAMAS->GetCommentCount(playerGUID);
+		uint32 CommentCount = sAMAS->GetCommentCount(playerGUID);
 		
-		int8 SameIpCountFull = sAMAS->GetIPCount(PlayerIP);
-        int8 SameIpCountFirstByte = sAMAS->GetIPCount(PlayerIP, true);
+		uint32 SameIpCountFull = sAMAS->GetIPCount(PlayerIP);
+        uint32 SameIpCountFirstByte = sAMAS->GetIPCount(PlayerIP, true);
         std::string IsUniqueIP = handler->GetTrinityString(LANG_YES);
         std::string AccountListSameIP;
         std::string IsSameIp;

@@ -405,7 +405,7 @@ uint32 AMAS::GetFriendCount(Player* player)
 
     QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM character_social JOIN characters ON characters.guid = character_social.friend WHERE character_social.guid = %u AND deleteinfos_name IS NULL LIMIT 255;", player->GetGUID());
     if (result)
-        FriendCount = result->Fetch()->GetUInt32();
+        FriendCount = (uint32)result->Fetch()->GetUInt64();
 
     return FriendCount;
 }
@@ -504,7 +504,7 @@ uint32 AMAS::GetDateUnixJoinAccount(uint32 AccountID)
 
     QueryResult result = LoginDatabase.PQuery("SELECT UNIX_TIMESTAMP(joindate) FROM account WHERE id = %u", AccountID);
     if (result)
-        DateUnix = result->Fetch()->GetUInt32();
+        DateUnix = (uint32)result->Fetch()->GetUInt64();
 
     return DateUnix;
 }
@@ -515,7 +515,7 @@ uint32 AMAS::GetDateUnixJoinCharacter(uint32 PlayerGuid)
 
     QueryResult result = CharacterDatabase.PQuery("SELECT UNIX_TIMESTAMP(create_date) FROM characters WHERE guid = %u", PlayerGuid);
     if (result)
-        DateUnix = result->Fetch()->GetUInt32();
+        DateUnix = (uint32)result->Fetch()->GetUInt64();
 
     return DateUnix;
 }
@@ -607,14 +607,14 @@ void AMAS::GetTopWPOfflineList(ChatHandler * handler)
     } while (result->NextRow());
 }
 
-int8 AMAS::GetCommentCount(uint64 PlayerGuid)
+uint32 AMAS::GetCommentCount(uint64 PlayerGuid)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0;
 	
 	QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `amas_player_comment` WHERE `PlayerGuid` = %u", PlayerGuid);
     if (result)
-        return result->Fetch()->GetInt8();
+        return (uint32)result->Fetch()->GetUInt64();
 
     return 0;
 }
@@ -642,19 +642,19 @@ bool AMAS::IsFirstByteIPSame(std::string IP1, std::string IP2)
     return FirsByteIP1 == FirsByteIP2;
 }
 
-int8 AMAS::GetIPCount(std::string IP, bool IsFirstByte /*= false*/)
+uint32 AMAS::GetIPCount(std::string IP, bool IsFirstByte /*= false*/)
 {
     if (IP.empty())
         return 0;
 
-    int8 IPCount = 0;
+    uint32 IPCount = 0;
     QueryResult result = nullptr;
 
     if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE) && IsFirstByte)
     {
         result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%i%%'", this->GetFirstByteIP(IP));
         if (result)
-            return result->Fetch()->GetInt8();
+            return (uint32)result->Fetch()->GetUInt64();
 
         return 0;
     }
@@ -662,7 +662,7 @@ int8 AMAS::GetIPCount(std::string IP, bool IsFirstByte /*= false*/)
     {
         result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%%%s%%'", IP.c_str());
         if (result)
-            return result->Fetch()->GetInt8();
+            return (uint32)result->Fetch()->GetUInt64();
 
         return 0;
     }
