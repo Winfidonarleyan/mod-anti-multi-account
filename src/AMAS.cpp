@@ -11,6 +11,19 @@ bool Prev(const std::pair<uint64, float> &a, const std::pair<uint64, float> &b)
     return a.second > b.second;
 }
 
+AMAS::AMAS()
+{
+    _sessionTimeStore.clear();
+}
+
+AMAS::~AMAS()
+{
+    while (!_sessionTimeStore.empty())
+    {
+        _sessionTimeStore.erase(_sessionTimeStore.begin());
+    }
+}
+
 float AMAS::GetWPTotalTimeAccount(uint32 TotalTimeAccount)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
@@ -196,6 +209,20 @@ float AMAS::GetWPJoinCharacter(uint32 DateUnix)
     return 0.0f;
 }
 
+float AMAS::GetWPAverageSessionTime(uint32 Time)
+{
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0.0f;
+
+    uint32 MitTime = CONF_INT(conf::AMAS_MIN_TIME_AVG_SESSION);
+    uint32 WP = CONF_INT(conf::AMAS_MIN_TIME_AVG_SESSION_POINT);
+
+    if (Time < MitTime)
+        return float(WP);
+
+    return 0.0f;
+}
+
 void AMAS::LoadWarningZone()
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
@@ -312,21 +339,31 @@ float AMAS::GetAllWarningPoint(Player * player)
     float WPIp = this->GetWPIP(player->GetSession()->GetRemoteAddress());
     float WPJoinAcc = this->GetWPJoinAccount(this->GetDateUnixJoinAccount(player->GetSession()->GetAccountId()));
     float WPJoinChar = this->GetWPJoinCharacter(this->GetDateUnixJoinCharacter(player->GetGUID()));
+	float WPAVGSessionTime = this->GetWPAverageSessionTime(this->GetAverageSessionTime(player->GetGUID()));
 
-    return WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp + WPJoinAcc + WPJoinChar;
+    return WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp + WPJoinAcc + WPJoinChar + WPAVGSessionTime;
 }
 
 void AMAS::LogoutPlayer(Player * player)
 {
-    if (!CONF_BOOL(conf::AMAS_ENABLE))
+    if (!player || !CONF_BOOL(conf::AMAS_ENABLE))
         return;
 
+    if (!CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && sAccountMgr->IsGMAccount(player->GetSession()->GetSecurity()))
+        return;
+	
     this->PushDBPlayerInfo(player);
+	this->AddAverageSessionTime(player->GetGUID());
+
+    _sessionTimeStore.erase(player->GetGUID());
 }
 
 void AMAS::LoginPlayer(Player * player)
 {
     if (!player || !CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+
+    if (!CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && sAccountMgr->IsGMAccount(player->GetSession()->GetSecurity()))
         return;
 
     uint32 MinWP = CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT);    
@@ -336,6 +373,9 @@ void AMAS::LoginPlayer(Player * player)
         sWorld->SendGMText(amas::AMAS_ANNOUNCE_GM, player->GetName().c_str(), PlayerWP);
 
     this->CheckConfirmed(player);
+	
+	uint32 TimeNow = uint32(time(NULL));
+    _sessionTimeStore[player->GetGUID()] = TimeNow;
 }
 
 void AMAS::CheckConfirmed(Player* player)
@@ -720,3 +760,60 @@ std::string AMAS::GetListAccountForIP(std::string IP)
     return Buff;
 }
 
+uint32 AMAS::GetAverageSessionTime(uint64 PlayerGuid)
+{
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return 0;
+
+    uint32 TimeNow = uint32(time(NULL));
+    
+    if (!this->IsFoundAVGHistoryInDB(PlayerGuid))
+        return TimeNow - _sessionTimeStore[PlayerGuid];
+
+    QueryResult result = CharacterDatabase.PQuery("SELECT SessionDurationAverage FROM `amas_avg_session` WHERE `PlayerGuid` = %u", PlayerGuid);
+    if (result)
+        return result->Fetch()->GetUInt32();
+
+    return 0;
+}
+
+bool AMAS::IsFoundAVGHistoryInDB(uint64 PlayerGuid)
+{
+    QueryResult result = CharacterDatabase.PQuery("SELECT * FROM `amas_avg_session` WHERE `PlayerGuid` = %u", PlayerGuid);
+    if (result)
+        return true;
+
+    return false;
+}
+
+void AMAS::AddAverageSessionTime(uint64 PlayerGuid)
+{
+    if (!CONF_BOOL(conf::AMAS_ENABLE))
+        return;
+
+    uint32 TimeNow = uint32(time(NULL));
+    uint32 SessionDuration = TimeNow - _sessionTimeStore[PlayerGuid];
+
+    if (this->IsFoundAVGHistoryInDB(PlayerGuid))
+    {
+        QueryResult result = CharacterDatabase.PQuery("SELECT SessionDurationAverage, SessionNumber FROM `amas_avg_session` WHERE `PlayerGuid` = %u", PlayerGuid);
+        if (!result)
+            return;
+
+        Field* fields = result->Fetch();
+        uint32 SessionDurationAverage = fields[0].GetUInt32();
+        uint32 SessionNumber = fields[1].GetUInt32();
+
+        if (!SessionNumber)
+            SessionNumber = 1; // not crash :D
+
+        uint32 AVG = (SessionDurationAverage * (SessionNumber - 1) + SessionDuration) / SessionNumber;
+
+        SessionNumber++;
+
+        CharacterDatabase.PExecute("UPDATE `amas_avg_session` SET `SessionDurationLast` = %u, `SessionDurationAverage` = %u, `SessionNumber` = `SessionNumber` + 1 WHERE `PlayerGuid` = %u", SessionDuration, AVG, PlayerGuid);
+
+    }
+    else
+        CharacterDatabase.PExecute("INSERT INTO `amas_avg_session`(`PlayerGuid`, `SessionDurationAverage`, `SessionDurationLast`, `SessionNumber`) VALUES (%u, %u%u, 1)", PlayerGuid, SessionDuration, SessionDuration);
+}

@@ -74,11 +74,11 @@ class AMAS
     friend class ACE_Singleton<AMAS, ACE_Null_Mutex>;
 
 public:
-    AMAS() {}
-    ~AMAS() {}
+    AMAS();
+    ~AMAS();
 
     typedef std::vector<uint32> WarningZoneContainer;
-    WarningZoneContainer _warningZoneStore;
+    typedef UNORDERED_MAP<uint64, uint32> SessionTimeContainer;
 
     float GetAllWarningPoint(Player* player);
     void LogoutPlayer(Player* player);
@@ -89,6 +89,7 @@ public:
 	void GetTopWPOnlineList(ChatHandler* handler);
     void GetTopWPOfflineList(ChatHandler* handler);
 	void CheckConfirmed(Player* player);
+	void AddAverageSessionTime(uint64 PlayerGuid);
 
     uint32 GetFriendCount(Player* player);
     uint32 GetMissingTrainerSpells(Player* player);
@@ -98,9 +99,8 @@ public:
 	uint32 GetCommentCount(uint64 PlayerGuid);
     int8 GetFirstByteIP(std::string IP);
 	uint32 GetIPCount(std::string IP, bool IsFirstByte = false);
-
-    float GetAverageItemLevel(Player* player);
-
+	uint32 GetAverageSessionTime(uint64 PlayerGuid);
+    
     float GetWPTotalTimeAccount(uint32 TotalTimeAccount);
     float GetWPAverageItemLevel(float AverageItemLevel);
     float GetWPFreeTalent(uint32 FreeTalent);
@@ -114,16 +114,22 @@ public:
     float GetWPProfession(uint32 ProffCount);
     float GetWPJoinAccount(uint32 DateUnix);
     float GetWPJoinCharacter(uint32 DateUnix);
+	float GetWPAverageSessionTime(uint32 Time);	
+	float GetAverageItemLevel(Player* player);
 
     bool IsWarningZoneExist();
     bool IsWarningZone(uint32 ZoneID);
 	bool IsFirstByteIPSame(std::string IP1, std::string IP2);
+	bool IsFoundAVGHistoryInDB(uint64 PlayerGuid);
 	
 	std::string GetListAccountForIP(std::string IP);
 
     WarningZoneContainer &GetWarningZone() { return _warningZoneStore; }
 
 private:
+
+	WarningZoneContainer _warningZoneStore;
+    SessionTimeContainer _sessionTimeStore;
     
     void PushDBPlayerInfo(Player* player);
 };

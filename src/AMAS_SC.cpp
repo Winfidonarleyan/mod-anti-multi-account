@@ -558,7 +558,7 @@ public:
         if (!handler->extractPlayerTarget((char*)args, &player, &playerGUID, &PlayerName))
             return false;
 
-        uint32 TotalTimeAccount, AVGILvl, FreeTalent, TotalRewardQuest, TotalTimePlayed, FriendCount, TotalMoney, TotalHonorPoint, TotalKill, MissingTrainerSpells, CurrentZone, ProfCount;
+        uint32 TotalTimeAccount, AVGILvl, FreeTalent, TotalRewardQuest, TotalTimePlayed, FriendCount, TotalMoney, TotalHonorPoint, TotalKill, MissingTrainerSpells, CurrentZone, ProfCount, AVGSessionTime;
         std::string PlayerIP;
 
         if (player)
@@ -620,6 +620,8 @@ public:
         if (sAMAS->IsWarningZone(CurrentZone))
             IsWarningZone = handler->GetTrinityString(amas::AMAS_IS_WARNING_ZONE);
 		
+		AVGSessionTime = sAMAS->GetAverageSessionTime(playerGUID);
+		
         float WPTimeAcc = sAMAS->GetWPTotalTimeAccount(TotalTimeAccount);
         float WPAverageIlvl = sAMAS->GetWPAverageItemLevel(AVGILvl);
         float WPFreeTalent = sAMAS->GetWPFreeTalent(FreeTalent);
@@ -631,8 +633,9 @@ public:
         float WPWarningZone = sAMAS->GetWPWarningZone(CurrentZone);
         float WPProfession = sAMAS->GetWPProfession(ProfCount);
         float WPIp = sAMAS->GetWPIP(PlayerIP);
-        float WPAll = WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp;
-		uint32 CommentCount = sAMAS->GetCommentCount(playerGUID);
+        float WPAVGSessionTime = sAMAS->GetWPAverageSessionTime(AVGSessionTime);
+        float WPAll = WPTimeAcc + WPAverageIlvl + WPFreeTalent + WPCompletedQuest + WPFriend + WPMoney + WPHonorAndKills + WPTrainerSpells + WPWarningZone + WPProfession + WPIp + WPAVGSessionTime;
+        uint32 CommentCount = sAMAS->GetCommentCount(playerGUID);
 		
 		uint32 SameIpCountFull = sAMAS->GetIPCount(PlayerIP);
         uint32 SameIpCountFirstByte = sAMAS->GetIPCount(PlayerIP, true);
@@ -665,6 +668,7 @@ public:
             WPTrainerSpells, MissingTrainerSpells,
             WPWarningZone, CurrentZone, ZoneName.c_str(), IsWarningZone.c_str(),
             WPProfession, ProfCount,
+			WPAVGSessionTime, AVGSessionTime,
             TotalTimePlayedStr.c_str(),
             CommentCount);
 
