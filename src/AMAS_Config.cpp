@@ -33,8 +33,8 @@ void AMASConfig::LoadConfig()
     m_int[conf::AMAS_DIFF_CHAR_CREATE]                  = sConfigMgr->GetIntDefault("AMAS.Min.Diff.Character.Create", DAY);
     m_int[conf::AMAS_DIFF_ACC_CREATE_POINT]             = sConfigMgr->GetIntDefault("AMAS.WP.Diff.Account", 10);
     m_int[conf::AMAS_DIFF_CHAR_CREATE_POINT]            = sConfigMgr->GetIntDefault("AMAS.WP.Diff.Character", 5);
-    m_int[conf::AMAS_MIN_AVERAGE_SESSION]               = sConfigMgr->GetIntDefault("AMAS.Min.Average.Session", 5 * MINUTE * IN_MILLISECONDS);
-    m_int[conf::AMAS_MIN_AVERAGE_SESSION_POINT]         = sConfigMgr->GetIntDefault("AMAS.WP.Min.Average.Session", 10);
+    m_int[conf::AMAS_MIN_TIME_AVG_SESSION]               = sConfigMgr->GetIntDefault("AMAS.Min.Average.Session", 5 * MINUTE * IN_MILLISECONDS);
+    m_int[conf::AMAS_MIN_TIME_AVG_SESSION_POINT]         = sConfigMgr->GetIntDefault("AMAS.WP.Min.Average.Session", 10);
 
     // Amas confirmed
     m_int[conf::AMAS_CONFIRMED_MIN_POINT]               = sConfigMgr->GetIntDefault("AMAS.Confirmed.Min.Points", 20);
