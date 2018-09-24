@@ -349,7 +349,7 @@ void AMAS::LogoutPlayer(Player * player)
     if (!player || !CONF_BOOL(conf::AMAS_ENABLE))
         return;
 
-    if (!CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && sAccountMgr->IsGMAccount(player->GetSession()->GetSecurity()))
+    if (!CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity()))
         return;
 	
     this->PushDBPlayerInfo(player);
@@ -363,7 +363,7 @@ void AMAS::LoginPlayer(Player * player)
     if (!player || !CONF_BOOL(conf::AMAS_ENABLE))
         return;
 
-    if (!CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && sAccountMgr->IsGMAccount(player->GetSession()->GetSecurity()))
+    if (!CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity()))
         return;
 
     uint32 MinWP = CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT);    
