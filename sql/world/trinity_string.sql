@@ -51,4 +51,4 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 30, '[|cFFFF0000AMAS|r]: |cff00ff00Confirmed player|r %s |cff00ff00has|r %.2f |cff00ff00warning point. This more min|r %u', '[|cFFFF0000AMAS|r]: |cff00ff00Подтверждённый игрок|r %s |cff00ff00имеет|r %.2f |cff00ff00очков подозрительности. Это больше минимума|r %u'),
 
 -- Amas mail
-(@FirstID + 31, 'Recipient %s\n- Money: %u\n- Item: %u\n- Only Text: %u\n- Auction House: %u\n- Account: %s - %u', '');
+(@FirstID + 31, 'Recipient %s\n- Money: %u\n- Item: %u\n- Only Text: %u\n- Auction House: %u\n- Account: %s - %u', 'Получатель %s\n- Деньги: %u\n- Итемы: %u\n- Только текст: %u\n- Аукционный дом: %u\n- Аккаунт: %s - %u');
