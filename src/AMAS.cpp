@@ -815,5 +815,5 @@ void AMAS::AddAverageSessionTime(uint64 PlayerGuid)
 
     }
     else
-        CharacterDatabase.PExecute("INSERT INTO `amas_avg_session`(`PlayerGuid`, `SessionDurationAverage`, `SessionDurationLast`, `SessionNumber`) VALUES (%u, %u%u, 1)", PlayerGuid, SessionDuration, SessionDuration);
+        CharacterDatabase.PExecute("INSERT INTO `amas_avg_session`(`PlayerGuid`, `SessionDurationAverage`, `SessionDurationLast`, `SessionNumber`) VALUES (%u, %u, %u, 1)", PlayerGuid, SessionDuration, SessionDuration);
 }
