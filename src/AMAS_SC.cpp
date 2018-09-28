@@ -621,6 +621,7 @@ public:
             IsWarningZone = handler->GetTrinityString(amas::AMAS_IS_WARNING_ZONE);
 		
 		AVGSessionTime = sAMAS->GetAverageSessionTime(playerGUID);
+		std::string AVGStr = secsToTimeString(AVGSessionTime);
 		
         float WPTimeAcc = sAMAS->GetWPTotalTimeAccount(TotalTimeAccount);
         float WPAverageIlvl = sAMAS->GetWPAverageItemLevel(AVGILvl);
@@ -668,7 +669,7 @@ public:
             WPTrainerSpells, MissingTrainerSpells,
             WPWarningZone, CurrentZone, ZoneName.c_str(), IsWarningZone.c_str(),
             WPProfession, ProfCount,
-			WPAVGSessionTime, AVGSessionTime,
+			WPAVGSessionTime, AVGStr.c_str(),
             TotalTimePlayedStr.c_str(),
             CommentCount);
 
