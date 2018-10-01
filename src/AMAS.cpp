@@ -219,7 +219,7 @@ void AMAS::LoadWarningZone()
 
     _warningZoneStore.clear();
 
-    QueryResult result = CharacterDatabase.Query("SELECT ZoneID FROM `amas_warning_zone`");
+    QueryResult result = WorldDatabase.Query("SELECT ZoneID FROM `amas_warning_zone`");
     if (!result)
     {
         sLog->outString(">> Loaded 0 zones. Table `amas_warning_zone` is empty.");
