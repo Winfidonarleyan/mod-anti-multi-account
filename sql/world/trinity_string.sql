@@ -1,10 +1,12 @@
 SET @FirstID = 40037;
+SET @r = "|r"; -- Reset color
+SET @red = "|cFFFF0000";
 
 DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 31;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 
 -- Amas general
-(@FirstID, '[|cFFFF0000AMAS|r]: System disabled', '[|cFFFF0000AMAS|r]: Система выключена'),
+(@FirstID, CONCAT( '[', @red,'AMAS', @r, ']: System disabled'), CONCAT( '[', @red,'AMAS', @r, ']: Система выключена'),
 
 -- Announce GM
 (@FirstID + 1, '[|cFFFF0000AMAS|r]: |cff00ff00Character|r %s |cff00ff00just logged in and has|r %.2f |cff00ff00AMAS points.|r', '[|cFFFF0000AMAS|r]: |cff00ff00Игрок|r %s |cff00ff00имеет|r %.2f |cff00ff00очков подозрительности|r'),
