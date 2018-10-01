@@ -763,7 +763,7 @@ uint32 AMAS::GetAverageSessionTime(uint64 PlayerGuid)
 
 bool AMAS::IsFoundSessionInDB(uint64 PlayerGuid)
 {
-    QueryResult result = CharacterDatabase.PQuery("SELECT * FROM `amas_session` WHERE `PlayerGuid` = %u", PlayerGuid);
+    QueryResult result = CharacterDatabase.PQuery("SELECT * FROM `amas_sessions` WHERE `PlayerGuid` = %u", PlayerGuid);
     if (result)
         return true;
 
@@ -776,9 +776,9 @@ void AMAS::AddSessionNumber(uint64 PlayerGuid)
         return;
     
     if (this->IsFoundSessionInDB(PlayerGuid))
-        CharacterDatabase.PExecute("UPDATE `amas_session` SET `SessionNumber` = `SessionNumber` + 1 WHERE `PlayerGuid` = %u", PlayerGuid);
+        CharacterDatabase.PExecute("UPDATE `amas_sessions` SET `SessionNumber` = `SessionNumber` + 1 WHERE `PlayerGuid` = %u", PlayerGuid);
     else
-        CharacterDatabase.PExecute("INSERT INTO `amas_session`(`PlayerGuid`, `SessionNumber`) VALUES (%u, 1)", PlayerGuid);
+        CharacterDatabase.PExecute("INSERT INTO `amas_sessions`(`PlayerGuid`, `SessionNumber`) VALUES (%u, 1)", PlayerGuid);
 }
 
 uint32 AMAS::GetTotalTimePlayer(uint64 PlayerGuid)
@@ -792,7 +792,7 @@ uint32 AMAS::GetTotalTimePlayer(uint64 PlayerGuid)
 
 uint32 AMAS::GetSessionCount(uint64 PlayerGuid)
 {
-    QueryResult result = CharacterDatabase.PQuery("SELECT SessionNumber FROM `amas_session` WHERE `PlayerGuid` = %u", PlayerGuid);
+    QueryResult result = CharacterDatabase.PQuery("SELECT SessionNumber FROM `amas_sessions` WHERE `PlayerGuid` = %u", PlayerGuid);
     if (result)
         return result->Fetch()->GetUInt32();
 
