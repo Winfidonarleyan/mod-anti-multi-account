@@ -3,9 +3,11 @@ SET
 @r = "|r", -- Reset color
 @red = "|cFFFF0000",
 @green = "|cFF00FF00",
-@n = "\n", -- New line
-@logo = "|cFFFF0000#|r |cFF00FF00", -- Winfi logo
-@sytemlogo = "[|cFFFF0000AMAS|r]:|cFF00FF00 "; -- AMAS logo
+@n = "\n"; -- New line
+
+SET
+@logo = CONCAT(@red, "#", @r, " ", @green), -- Winfi logo
+@sytemlogo = CONCAT("[", @red, "AMAS", @r, "]:", @green, " "); -- AMAS logo
 
 DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 31;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
