@@ -587,20 +587,20 @@ public:
                 return false;
             }
 
-            Field* field = result->Fetch();
-            TotalTimeAccount = field[0].GetUInt32();
-            AVGILvl = field[1].GetUInt32();
-            FreeTalent = field[12].GetUInt32();
-            TotalRewardQuest = field[5].GetUInt32();
-            TotalTimePlayed = field[6].GetUInt32();
-            FriendCount = field[3].GetUInt32();
-            TotalMoney = field[4].GetUInt32();
-            TotalHonorPoint = field[7].GetUInt32();
-            TotalKill = field[8].GetUInt32();
-            PlayerIP = field[2].GetString();
-            MissingTrainerSpells = field[10].GetUInt32();
-            CurrentZone = field[9].GetUInt32();
-            ProfCount = field[11].GetUInt32();
+            Field* field            = result->Fetch();
+            TotalTimeAccount        = field[0].GetUInt32();
+            AVGILvl                 = (uint32)field[1].GetUInt16();
+            FreeTalent              = (uint32)field[12].GetUInt8();
+            TotalRewardQuest        = (uint32)field[5].GetUInt16();
+            TotalTimePlayed         = field[6].GetUInt32();
+            FriendCount             = (uint32)field[3].GetUInt8();
+            TotalMoney              = field[4].GetUInt32();
+            TotalHonorPoint         = field[7].GetUInt32();
+            TotalKill               = field[8].GetUInt32();
+            PlayerIP                = field[2].GetString();
+            MissingTrainerSpells    = (uint32)field[10].GetUInt8();
+            CurrentZone             = (uint32)field[9].GetUInt8();
+            ProfCount               = (uint32)field[11].GetUInt8();
         }
 
         uint32 gold = TotalMoney / GOLD;
