@@ -204,7 +204,9 @@ AMAS.WP.Min.Average.Session = 10
 #		Default: 100
 #
 #	AMAS.Confirmed.Action
-#		Description: Type action. 1 - Ban, 2 - GM message, 3 - All
+#		Description: 1 = Ban
+#                    2 = Notify GM
+#                    3 = Ban + Notify GM
 #		Default: 2
 #
 #	AMAS.Confirmed.Action.Ban.RandomInterval.Min
