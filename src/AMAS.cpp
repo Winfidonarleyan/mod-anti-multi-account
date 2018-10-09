@@ -798,3 +798,12 @@ uint32 AMAS::GetSessionCount(uint64 PlayerGuid)
 
     return 0;
 }
+
+uint32 AMAS::GetTotalTimeAccount(uint32 AccountID)
+{
+    QueryResult result = LoginDatabase.PQuery("SELECT totaltime FROM `account` WHERE `id` = %u", AccountID);
+    if (result)
+        return result->Fetch()->GetUInt32();
+
+    return 0;
+}

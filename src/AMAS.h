@@ -101,6 +101,7 @@ public:
 	uint32 GetAverageSessionTime(uint64 PlayerGuid);
 	uint32 GetTotalTimePlayer(uint64 PlayerGuid);
     uint32 GetSessionCount(uint64 PlayerGuid);
+	uint32 GetTotalTimeAccount(uint32 AccountID);
     
     float GetWPTotalTimeAccount(uint32 TotalTimeAccount);
     float GetWPAverageItemLevel(float AverageItemLevel);
