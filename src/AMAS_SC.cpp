@@ -558,12 +558,11 @@ public:
         if (!handler->extractPlayerTarget((char*)args, &player, &playerGUID, &PlayerName))
             return false;
 
-        uint32 TotalTimeAccount, AVGILvl, FreeTalent, TotalRewardQuest, TotalTimePlayed, FriendCount, TotalMoney, TotalHonorPoint, TotalKill, MissingTrainerSpells, CurrentZone, ProfCount, AVGSessionTime;
+        uint32 TotalTimeAccount, AVGILvl, FreeTalent, TotalRewardQuest, TotalTimePlayed, FriendCount, TotalMoney, TotalHonorPoint, TotalKill, MissingTrainerSpells, CurrentZone, ProfCount, AVGSessionTime, SessionNumber;
         std::string PlayerIP;
 
         if (player)
         {
-            TotalTimeAccount = player->GetSession()->GetTotalTime();
             AVGILvl = sAMAS->GetAverageItemLevel(player);
             FreeTalent = player->GetFreeTalentPoints();
             TotalRewardQuest = player->GetRewardedQuestCount();
@@ -577,8 +576,9 @@ public:
             ProfCount = sAMAS->GetProfessionCount(player);
         }
         else
-        {                                                    //         0                  1           2       3         4           5                6           7      8         9            10                11             12    
-            QueryResult result = CharacterDatabase.PQuery("SELECT TotalTimeAccount, AverageItemLevel, IP, FriendCount, Money, CompletedQuests, TotalTimePlayed, Honor, Kills, CurrentZone, MissingSpells, ProfessionLearned, FreeTalent FROM `amas_player_info` WHERE PlayerGUID = %u", playerGUID);
+        {
+            //                                                             0           1             2                 3                   4               5           6          7               8                9          10                                                          
+            QueryResult result = CharacterDatabase.PQuery("SELECT a.AverageItemLevel, a.IP, a.CompletedQuests, a.MissingSpells, a.ProfessionLearned, a.FreeTalent, c.money, c.totaltime, c.totalHonorPoints, c.totalKills, c.zone c. FROM amas_player_info a INNER JOIN characters c ON a.PlayerGUID = c.guid WHERE a.PlayerGUID = %u", playerGUID);
             if (!result)
             {
                 handler->PSendSysMessage(amas::AMAS_PLAYER_NOT_SAVED_DB, PlayerName.c_str());
@@ -587,21 +587,22 @@ public:
             }
 
             Field* field            = result->Fetch();
-            TotalTimeAccount        = field[0].GetUInt32();
-            AVGILvl                 = (uint32)field[1].GetUInt16();
-            FreeTalent              = (uint32)field[12].GetUInt8();
-            TotalRewardQuest        = (uint32)field[5].GetUInt16();
-            TotalTimePlayed         = field[6].GetUInt32();
-            TotalMoney              = field[4].GetUInt32();
-            TotalHonorPoint         = field[7].GetUInt32();
-            TotalKill               = field[8].GetUInt32();
-            PlayerIP                = field[2].GetString();
-            MissingTrainerSpells    = (uint32)field[10].GetUInt8();
+            AVGILvl                 = (uint32)field[0].GetUInt16();
+            PlayerIP                = field[1].GetString();
+            TotalRewardQuest        = (uint32)field[2].GetUInt16();
+            MissingTrainerSpells    = (uint32)field[3].GetUInt8();
+            ProfCount               = (uint32)field[4].GetUInt8();
+            FreeTalent              = (uint32)field[5].GetUInt8();
+            TotalMoney              = field[6].GetUInt32();
+            TotalTimePlayed         = field[7].GetUInt32();
+            TotalHonorPoint         = field[8].GetUInt32();
+            TotalKill               = field[9].GetUInt32();
             CurrentZone             = (uint32)field[9].GetUInt8();
-            ProfCount               = (uint32)field[11].GetUInt8();
         }
 		
-		FriendCount = sAMAS->GetFriendCount(playerGUID);
+		TotalTimeAccount = sAMAS->GetTotalTimeAccount(sObjectMgr->GetPlayerAccountIdByGUID(playerGUID));
+        FriendCount = sAMAS->GetFriendCount(playerGUID);
+        SessionNumber = sAMAS->GetSessionCount(playerGUID) + 1;
 
         uint32 gold = TotalMoney / GOLD;
         uint32 silv = (TotalMoney % GOLD) / SILVER;
@@ -669,7 +670,7 @@ public:
             WPTrainerSpells, MissingTrainerSpells,
             WPWarningZone, CurrentZone, ZoneName.c_str(), IsWarningZone.c_str(),
             WPProfession, ProfCount,
-			WPAVGSessionTime, AVGStr.c_str(),
+			WPAVGSessionTime, SessionNumber, AVGStr.c_str(),
             TotalTimePlayedStr.c_str(),
             CommentCount);
 
