@@ -578,7 +578,7 @@ public:
         else
         {
             //                                                             0           1             2                 3                   4               5           6          7               8                9          10                                                          
-            QueryResult result = CharacterDatabase.PQuery("SELECT a.AverageItemLevel, a.IP, a.CompletedQuests, a.MissingSpells, a.ProfessionLearned, a.FreeTalent, c.money, c.totaltime, c.totalHonorPoints, c.totalKills, c.zone c. FROM amas_player_info a INNER JOIN characters c ON a.PlayerGUID = c.guid WHERE a.PlayerGUID = %u", playerGUID);
+            QueryResult result = CharacterDatabase.PQuery("SELECT a.AverageItemLevel, a.IP, a.CompletedQuests, a.MissingSpells, a.ProfessionLearned, a.FreeTalent, c.money, c.totaltime, c.totalHonorPoints, c.totalKills, c.zone FROM amas_player_info a INNER JOIN characters c ON a.PlayerGUID = c.guid WHERE a.PlayerGUID = %u", playerGUID);
             if (!result)
             {
                 handler->PSendSysMessage(amas::AMAS_PLAYER_NOT_SAVED_DB, PlayerName.c_str());
@@ -597,7 +597,7 @@ public:
             TotalTimePlayed         = field[7].GetUInt32();
             TotalHonorPoint         = field[8].GetUInt32();
             TotalKill               = field[9].GetUInt32();
-            CurrentZone             = (uint32)field[9].GetUInt8();
+            CurrentZone             = (uint32)field[10].GetUInt8();
         }
 		
 		TotalTimeAccount = sAMAS->GetTotalTimeAccount(sObjectMgr->GetPlayerAccountIdByGUID(playerGUID));
