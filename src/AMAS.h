@@ -88,7 +88,6 @@ public:
 	void GetTopWPOnlineList(ChatHandler* handler);
     void GetTopWPOfflineList(ChatHandler* handler);
 	void CheckConfirmed(Player* player);
-	void AddSessionNumber(uint64 PlayerGuid);
 
     uint32 GetFriendCount(uint64 PlayerGuid);
     uint32 GetMissingTrainerSpells(Player* player);
@@ -122,7 +121,7 @@ public:
     bool IsWarningZoneExist();
     bool IsWarningZone(uint32 ZoneID);
 	bool IsFirstByteIPSame(std::string IP1, std::string IP2);
-	bool IsFoundSessionInDB(uint64 PlayerGuid);
+	bool IsFoundInfoInDB(uint64 PlayerGuid);
 	
 	std::string GetListAccountForIP(std::string IP);
 

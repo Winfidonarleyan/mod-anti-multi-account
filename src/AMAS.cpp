@@ -340,7 +340,6 @@ void AMAS::LogoutPlayer(Player * player)
         return;
 	
     this->PushDBPlayerInfo(player);
-	this->AddSessionNumber(player->GetGUID());
 }
 
 void AMAS::LoginPlayer(Player * player)
@@ -402,23 +401,21 @@ void AMAS::PushDBPlayerInfo(Player* player)
         return;
 	
 	uint64 PlayerGUID = player->GetGUID();
-    uint32 TotalTimeAccount = player->GetSession()->GetTotalTime();
     uint32 AVGILvl = this->GetAverageItemLevel(player);
     uint32 FreeTalent = player->GetFreeTalentPoints();
     uint32 TotalRewardQuest = player->GetRewardedQuestCount();
-    uint32 TotalTimePlayed = player->GetTotalPlayedTime();
-    uint32 FriendCount = this->GetFriendCount(player->GetGUID());
-    uint32 TotalMoney = player->GetMoney();
-    uint32 TotalHonorPoint = player->GetHonorPoints();
-    uint32 TotalKill = player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS);
     std::string PlayerIP = player->GetSession()->GetRemoteAddress();
     uint32 MissingTrainerSpells = this->GetMissingTrainerSpells(player);
-    uint32 CurrentZone = player->GetZoneId();
     uint32 ProfCount = this->GetProfessionCount(player);
     float WPAll = this->GetAllWarningPoint(player);
-   
-    CharacterDatabase.PExecute("REPLACE INTO `amas_player_info`(`PlayerGUID`, `TotalWarningPoint`, `TotalTimeAccount`, `AverageItemLevel`, `IP`, `FriendCount`, `Money`, `CompletedQuests`, `TotalTimePlayed`, `Honor`, `Kills`, `CurrentZone`, `MissingSpells`, `ProfessionLearned`, `FreeTalent`) VALUES (%u, %f, %u, %u, '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, %u)",
-        PlayerGUID, WPAll, TotalTimeAccount, AVGILvl, PlayerIP.c_str(), FriendCount, TotalMoney, TotalRewardQuest, TotalTimePlayed, TotalHonorPoint, TotalKill, CurrentZone, MissingTrainerSpells, ProfCount, FreeTalent);
+
+    if (this->IsFoundInfoInDB(player->GetGUID()))
+        CharacterDatabase.PExecute("UPDATE `amas_player_info` SET `TotalWarningPoint` = %f, `AverageItemLevel` = %u, `IP` = '%s', `CompletedQuests` = %u, `MissingSpells` = %u, `ProfessionLearned` = %u, `FreeTalent` = %u WHERE `PlayerGUID` = %u",
+            WPAll, AVGILvl, PlayerIP.c_str(), TotalRewardQuest, MissingTrainerSpells, ProfCount, FreeTalent, PlayerGUID);
+    else
+        CharacterDatabase.PExecute("REPLACE INTO `amas_player_info`(`PlayerGUID`, `TotalWarningPoint`, `AverageItemLevel`, `IP`, `CompletedQuests`, `MissingSpells`, `ProfessionLearned`, `FreeTalent`, `SessionNumber`) VALUES "
+            "(%u, %f, %u, '%s', %u, %u, %u, %u, 1)",
+            PlayerGUID, WPAll, AVGILvl, PlayerIP.c_str(), TotalRewardQuest, MissingTrainerSpells, ProfCount, FreeTalent);
 }
 
 uint32 AMAS::GetFriendCount(uint64 PlayerGuid)
@@ -749,36 +746,25 @@ uint32 AMAS::GetAverageSessionTime(uint64 PlayerGuid)
 
     uint32 TimeNow = uint32(time(NULL));
 
-    if (!this->IsFoundSessionInDB(PlayerGuid))
+    if (!this->IsFoundInfoInDB(PlayerGuid))
         return this->GetTotalTimePlayer(PlayerGuid);
 
     uint32 TotalTime = this->GetTotalTimePlayer(PlayerGuid);
     uint32 SessionCount = this->GetSessionCount(PlayerGuid);
 
-    if ((TotalTime != 0) && SessionCount != 0)
+    if (TotalTime != 0 && SessionCount != 0)
         return TotalTime / SessionCount;
 
     return 0;
 }
 
-bool AMAS::IsFoundSessionInDB(uint64 PlayerGuid)
+bool AMAS::IsFoundInfoInDB(uint64 PlayerGuid)
 {
-    QueryResult result = CharacterDatabase.PQuery("SELECT * FROM `amas_sessions` WHERE `CharacterGUID` = %u", PlayerGuid);
+    QueryResult result = CharacterDatabase.PQuery("SELECT * FROM `amas_player_info` WHERE `PlayerGUID` = %u", PlayerGuid);
     if (result)
         return true;
 
     return false;
-}
-
-void AMAS::AddSessionNumber(uint64 PlayerGuid)
-{
-    if (!CONF_BOOL(conf::AMAS_ENABLE))
-        return;
-    
-    if (this->IsFoundSessionInDB(PlayerGuid))
-        CharacterDatabase.PExecute("UPDATE `amas_sessions` SET `SessionNumber` = `SessionNumber` + 1 WHERE `CharacterGUID` = %u", PlayerGuid);
-    else
-        CharacterDatabase.PExecute("INSERT INTO `amas_sessions`(`CharacterGUID`, `SessionNumber`) VALUES (%u, 1)", PlayerGuid);
 }
 
 uint32 AMAS::GetTotalTimePlayer(uint64 PlayerGuid)
@@ -792,7 +778,7 @@ uint32 AMAS::GetTotalTimePlayer(uint64 PlayerGuid)
 
 uint32 AMAS::GetSessionCount(uint64 PlayerGuid)
 {
-    QueryResult result = CharacterDatabase.PQuery("SELECT SessionNumber FROM `amas_sessions` WHERE `CharacterGUID` = %u", PlayerGuid);
+    QueryResult result = CharacterDatabase.PQuery("SELECT SessionNumber FROM `amas_player_info` WHERE `PlayerGUID` = %u", PlayerGuid);
     if (result)
         return result->Fetch()->GetUInt32();
 
