@@ -90,7 +90,7 @@ public:
 	void CheckConfirmed(Player* player);
 	void AddSessionNumber(uint64 PlayerGuid);
 
-    uint32 GetFriendCount(Player* player);
+    uint32 GetFriendCount(uint64 PlayerGuid);
     uint32 GetMissingTrainerSpells(Player* player);
     uint32 GetProfessionCount(Player* player);
     uint32 GetDateUnixJoinAccount(uint32 AccountID);

@@ -568,7 +568,6 @@ public:
             FreeTalent = player->GetFreeTalentPoints();
             TotalRewardQuest = player->GetRewardedQuestCount();
             TotalTimePlayed = player->GetTotalPlayedTime();
-            FriendCount = sAMAS->GetFriendCount(player);
             TotalMoney = player->GetMoney();
             TotalHonorPoint = player->GetHonorPoints();
             TotalKill = player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS);
@@ -593,7 +592,6 @@ public:
             FreeTalent              = (uint32)field[12].GetUInt8();
             TotalRewardQuest        = (uint32)field[5].GetUInt16();
             TotalTimePlayed         = field[6].GetUInt32();
-            FriendCount             = (uint32)field[3].GetUInt8();
             TotalMoney              = field[4].GetUInt32();
             TotalHonorPoint         = field[7].GetUInt32();
             TotalKill               = field[8].GetUInt32();
@@ -602,6 +600,8 @@ public:
             CurrentZone             = (uint32)field[9].GetUInt8();
             ProfCount               = (uint32)field[11].GetUInt8();
         }
+		
+		FriendCount = sAMAS->GetFriendCount(playerGUID);
 
         uint32 gold = TotalMoney / GOLD;
         uint32 silv = (TotalMoney % GOLD) / SILVER;

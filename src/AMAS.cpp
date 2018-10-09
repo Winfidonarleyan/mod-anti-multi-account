@@ -317,7 +317,7 @@ float AMAS::GetAllWarningPoint(Player * player)
     float WPAverageIlvl = this->GetWPAverageItemLevel(this->GetAverageItemLevel(player));
     float WPFreeTalent = this->GetWPFreeTalent(player->GetFreeTalentPoints());
     float WPCompletedQuest = this->GetWPCompletedQuestCount(player->GetRewardedQuestCount());
-    float WPFriend = this->GetWPFriend(this->GetFriendCount(player));
+    float WPFriend = this->GetWPFriend(this->GetFriendCount(player->GetGUID()));
     float WPMoney = this->GetWPMoney(player->GetMoney());
     float WPHonorAndKills = this->GetWPHonorAndKills(player->GetHonorPoints(), player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS));
     float WPTrainerSpells = this->GetWPTrainerSpells(this->GetMissingTrainerSpells(player));
@@ -407,7 +407,7 @@ void AMAS::PushDBPlayerInfo(Player* player)
     uint32 FreeTalent = player->GetFreeTalentPoints();
     uint32 TotalRewardQuest = player->GetRewardedQuestCount();
     uint32 TotalTimePlayed = player->GetTotalPlayedTime();
-    uint32 FriendCount = this->GetFriendCount(player);;
+    uint32 FriendCount = this->GetFriendCount(player->GetGUID());
     uint32 TotalMoney = player->GetMoney();
     uint32 TotalHonorPoint = player->GetHonorPoints();
     uint32 TotalKill = player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS);
@@ -421,11 +421,11 @@ void AMAS::PushDBPlayerInfo(Player* player)
         PlayerGUID, WPAll, TotalTimeAccount, AVGILvl, PlayerIP.c_str(), FriendCount, TotalMoney, TotalRewardQuest, TotalTimePlayed, TotalHonorPoint, TotalKill, CurrentZone, MissingTrainerSpells, ProfCount, FreeTalent);
 }
 
-uint32 AMAS::GetFriendCount(Player* player)
+uint32 AMAS::GetFriendCount(uint64 PlayerGuid)
 {
     uint32 FriendCount = 0;
 
-    QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM character_social JOIN characters ON characters.guid = character_social.friend WHERE character_social.guid = %u AND deleteinfos_name IS NULL LIMIT 255;", player->GetGUID());
+    QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM character_social JOIN characters ON characters.guid = character_social.friend WHERE character_social.guid = %u AND deleteinfos_name IS NULL LIMIT 255;", PlayerGuid);
     if (result)
         FriendCount = (uint32)result->Fetch()->GetUInt64();
 
