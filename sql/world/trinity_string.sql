@@ -8,7 +8,7 @@ SET
 SET
 @separator = "--------- \n", -- Line separator
 @logo = CONCAT(@red, "#", @r, " ", @green), -- Winfi logo
-@sytemlogo = CONCAT("[", @red, "AMAS", @r, "]:", @green, " "); -- AMAS logo
+@sytemlogo = CONCAT("[", @red, "AMAS", @r, "]", @green, " "); -- AMAS logo
 
 DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 31;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
