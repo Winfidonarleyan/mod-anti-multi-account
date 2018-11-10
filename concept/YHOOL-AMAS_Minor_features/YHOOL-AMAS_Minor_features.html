@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="generator" content="http://www.nongnu.org/elyxer/"/>
+<meta name="create-date" content="2018-11-11"/>
+<link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
+<title>YHOOL-AMAS: Minor features</title>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+<body>
+<div id="globalWrapper">
+<script type="math/tex">
+\newcommand{\lyxlock}{}
+</script>
+<noscript>
+<div class="warning">
+Warning: <a href="http://www.mathjax.org/">MathJax</a> requires JavaScript to correctly process the mathematics on this page. Please enable JavaScript on your browser.
+</div><hr/>
+</noscript>
+<h1 class="title">
+YHOOL-AMAS: Minor features
+</h1>
+<div class="fulltoc">
+<div class="tocheader">
+Table of Contents
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Section-1">Section 1: NEW CHECKS</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.1">Subsection 1.1: EXPLORED ZONES</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-2">Section 2: CHECKS TO IMPROVE</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-2.1">Subsection 2.1: IMPROVED IP</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-3">Section 3: GM COMMANDS</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-3.1">Subsection 3.1: IMPROVED OUTPUT</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-3.2">Subsection 3.2: IMPROVED .AMAS LIST</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-3.3">Subsection 3.3: ADDITIONAL .AMAS COMMENT</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-3.4">Subsection 3.4: .AMAS MINIMUM</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.4.1">Subsubsection 3.4.1: Concept</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.4.2">Subsubsection 3.4.2: Example</a>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-1">1</a> NEW CHECKS
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-1.1">1.1</a> EXPLORED ZONES
+</h2>
+<div class="Unindented">
+Analyse the data from the column &ldquo;exploredZones&rdquo; in the database &ldquo;characters&rdquo;, in the table &ldquo;characters&rdquo;.
+</div>
+<div class="Indented">
+See this for more explanation: https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/3
+</div>
+<div class="Indented">
+(I have a backup of the issue just in case)
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-2">2</a> CHECKS TO IMPROVE
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-2.1">2.1</a> IMPROVED IP
+</h2>
+<div class="Unindented">
+If there are multiple accounts with the same <b>full IP</b> only, then it awards more points.
+</div>
+<pre class="LyX-Code">
+<b>Example:</b>
+Account 1 has IP aaa.aaa.aaa.aaa -&gt; 20 pts
+Account 2 has IP aaa.aaa.aaa.aaa -&gt; 20 pts
+Account 3 has IP aaa.aaa.aaa.zzz -&gt; 10 pts
+
+.amas full Barbz
+IP: 164.154.101.244 Perfect match (2) | 40 pts
+</pre>
+<h1 class="Section">
+<a class="toc" name="toc-Section-3">3</a> GM COMMANDS
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.1">3.1</a> IMPROVED OUTPUT
+</h2>
+<div class="Unindented">
+Open the file &ldquo;Improved_command_output.yml&rdquo; (because YAML syntax highlighting is good :P). It shows how it can be improved
+</div>
+<div class="Indented">
+The problem is how to align values ingame, it would prob need some custom C++ function to fill the correct number of empty spaces (since TABS don’t work).
+</div>
+<div class="Indented">
+Quote from Rochet2:
+</div>
+<pre class="LyX-Code">
+Well, you could do that with sprintf for example. You can control the width of the output, so you pick a max width and then the text is formatted to that width with rest being 0 or spaces etc. I dont really like such stuff myself though
+</pre>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.2">3.2</a> IMPROVED .AMAS LIST
+</h2>
+<pre class="LyX-Code">
+.amas list -&gt; list below subcommands (normally it’s default when filling &ldquo;command&rdquo; table in the db)
+.amas list suspicious all -&gt; list ALL <u>suspicious</u> players’ names. They are separated between OFFLINE and ONLINE
+.amas list suspicious online -&gt; list only the ONLINE <u>suspicious</u> players
+.amas list suspicious offline -&gt; list only the OFFLINE <u>suspicious</u> players
+.amas list guilty -&gt; list only the <u>guilty</u> players (so probably banned)
+.amas list all -&gt; list ALL <u>suspicious AND guilty</u> players’ names. They are separated between suspicious and guilty.
+</pre>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.3">3.3</a> ADDITIONAL .AMAS COMMENT
+</h2>
+<pre class="LyX-Code">
+.amas comment read #commentID -&gt; Read that comment
+</pre>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.4">3.4</a> .AMAS MINIMUM
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.4.1">3.4.1</a> Concept
+</h3>
+<div class="Unindented">
+Show minimum info
+</div>
+<pre class="LyX-Code">
+<span class="red">.amas minimum #character_name</span>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+AMAS comments count: <i><span class="magenta">CommentCountValue</span></i>
+<u>Anti Multi-Account Points (AMAP):</u> [<i><span class="magenta">Total<b>AMAP</b></span></i>/<i><span class="magenta">TotalMax<b>AMAP</b></span></i>] pts (<i><span class="magenta">TotalAMAPct</span></i>%) --&gt; <i><span class="magenta">CharacterName</span></i> is <i><span class="magenta">AMAS_Status</span></i> of multi-accounting
+Account Banned: <i><span class="magenta">Yes/No</span></i>
+Ip Banned: <i><span class="magenta">Yes/No</span></i>
+</pre>
+
+</li>
+
+</ul>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.4.2">3.4.2</a> Example
+</h3>
+<pre class="LyX-Code">
+<span class="red">.amas minimum Barbz</span>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+AMAS comments count: 3
+<u>Anti Multi-Account Points (AMAP):</u> [150/100] pts (150%) --&gt; Barbz is guilty of multi-accounting
+Account Banned: Yes
+Ip Banned: No
+</pre>
+
+</li>
+
+</ul>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+YHOOL-AMAS: Polishing
+
+1 TESTING AND TWEAKING
+
+I need to test in depth and then we can tweak last few things.
+
+2 POLISHING
+
+• Change variables' name
+
+• Improve code
+
+• Set correct mySQL data types in each table
+

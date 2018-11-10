@@ -1,0 +1,1378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="generator" content="http://www.nongnu.org/elyxer/"/>
+<meta name="create-date" content="2018-11-11"/>
+<link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
+<title>YHOOL-AMAS: Major features</title>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+<body>
+<div id="globalWrapper">
+<script type="math/tex">
+\newcommand{\lyxlock}{}
+</script>
+<noscript>
+<div class="warning">
+Warning: <a href="http://www.mathjax.org/">MathJax</a> requires JavaScript to correctly process the mathematics on this page. Please enable JavaScript on your browser.
+</div><hr/>
+</noscript>
+<h1 class="title">
+YHOOL-AMAS: Major features
+</h1>
+<div class="fulltoc">
+<div class="tocheader">
+Table of Contents
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Section-1">Section 1: DEPENDENCIES</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-2">Section 2: LEXICON</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-3">Section 3: CHECKS TO PERFORM</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-3.1">Subsection 3.1: IP</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.1.1">Subsubsection 3.1.1: Concept</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.1.2">Subsubsection 3.1.2: Config</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.1.3">Subsubsection 3.1.3: Pseudo-code</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.1.4">Subsubsection 3.1.4: GM command output</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.1.5">Subsubsection 3.1.5: Old</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-3.2">Subsection 3.2: EMAIL</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.2.1">Subsubsection 3.2.1: Concept</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.2.2">Subsubsection 3.2.2: Config</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.2.3">Subsubsection 3.2.3: Pseudo-code</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-3.2.4">Subsubsection 3.2.4: GM command output</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-3.3">Subsection 3.3</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-3.4">Subsection 3.4: DEPRECATED/MOVED CHECKS</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-4">Section 4: CONFIGURATION FILE</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-5">Section 5: C++ - PSEUDO-CODE</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-5.1">Subsection 5.1: GENERAL</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-5.2">Subsection 5.2: POINTS</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-5.2.1">Subsubsection 5.2.1: Inactivity points</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-5.2.2">Subsubsection 5.2.2: AMAS points</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-5.3">Subsection 5.3: PERCENTAGES</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-5.3.1">Subsubsection 5.3.1: Inactivity percentages</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-5.3.2">Subsubsection 5.3.2: AMAS percentages</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-5.4">Subsection 5.4: FUNCTIONS</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-5.5">Subsection 5.5: ACTIONS ON HOOKS</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-5.6">Subsection 5.6: VARIABLES</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-5.6.1">Subsubsection 5.6.1: AMAS STATUS </a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-5.6.2">Subsubsection 5.6.2: COMMON VARIABLES</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-5.7">Subsection 5.7: CORE MODIFICATIONS</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-5.7.1">Subsubsection 5.7.1: ALREADY CODED</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-5.7.2">Subsubsection 5.7.2: TO MOVE</a>
+</div>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-6">Section 6: GM COMMANDS</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-6.1">Subsection 6.1: ALL COMMANDS</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-6.1.1">Subsubsection 6.1.1: General</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-6.1.2">Subsubsection 6.1.2: List</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-6.2">Subsection 6.2: .amas list</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-6.3">Subsection 6.3: .amas</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-6.3.1">Subsubsection 6.3.1: .amas basic</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-6.3.2">Subsubsection 6.3.2: .amas details</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-6.3.3">Subsubsection 6.3.3: .amas full</a>
+</div>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-7">Section 7: SQL</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-7.1">Subsection 7.1: amas_comment</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-7.2">Subsection 7.2: amas</a>
+</div>
+</div>
+</div>
+
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-1">1</a> DEPENDENCIES
+</h1>
+<div class="Unindented">
+Required modules:
+</div>
+<ul>
+<li>
+YHOOL-CXS (Character Xtra Stats)
+</li>
+<li>
+YHOOL-AXS (Account Xtra Stats)
+</li>
+<li>
+YHOOL-PA (Player Activity)
+</li>
+
+</ul>
+<h1 class="Section">
+<a class="toc" name="toc-Section-2">2</a> LEXICON
+</h1>
+<ul>
+<li>
+AMAP = Anti Multi-Account Points (more points = more suspicious) 
+</li>
+<li>
+AMAPct = Anti Multi-Account Percentage
+</li>
+<li>
+Player = Account + Character (since 1 char = 1 account = 1 player on YHOOL)
+</li>
+
+</ul>
+<div class="Unindented">
+Also, check Lexicon from modules dependencies.
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-3">3</a> CHECKS TO PERFORM
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.1">3.1</a> IP
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.1.1">3.1.1</a> Concept
+</h3>
+<div class="Unindented">
+If IP is used on multiple accounts, it will give a high rating because it’s a huge warning (most of the time it will mean it’s the same user but I know some students use the same network for example, or guys in the same family).
+</div>
+<div class="Indented">
+After using the command, we can identify the other account with .lookup player ip $ip
+</div>
+<div class="Indented">
+<b>Note:</b> Maybe it’s not needed to print the IP, it just saves some time for the GM.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.1.2">3.1.2</a> Config
+</h3>
+<pre class="LyX-Code">
+<b>## Points awarded for a perfect IP match.</b>
+AMAS.IP.PerfectMatch.Points = 20
+<b>## Partial match (only first 3 bytes)</b>
+AMAS.IP.PartialMatch.Points = ( AMAS.IP.PerfectMatch.Points / 2 )
+</pre>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.1.3">3.1.3</a> Pseudo-code
+</h3>
+<pre class="LyX-Code">
+if PlayerIP already used by another player (perfect match)
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+IpAMAP = AMAS.Email.PerfectMatch.Points ;
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+else if PlayerIP already used by another player (partial match)
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+IpAMAP = AMAS.Email.PartialMatch.Points ;
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+</pre>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.1.4">3.1.4</a> GM command output
+</h3>
+<pre class="LyX-Code">
+IP: Unique | [0/20] pts
+</pre>
+<div class="Unindented">
+Means the IP is unique so no point given.
+</div>
+<pre class="LyX-Code">
+-----------
+IP: 164.154.101.244 --&gt; Perfect match | [20/20] pts
+</pre>
+<div class="Unindented">
+Perfect match is when the IPs are exactly the same.
+</div>
+<pre class="LyX-Code">
+-----------
+IP: 164.154.101.??? --&gt; Partial match | [10/20] pts
+</pre>
+<div class="Unindented">
+Dynamic IP match is when the first 3 bytes are similar (example: <span class="cyan">164.154.101</span>.6 and <span class="cyan">164.154.101</span>.254).
+</div>
+<div class="Indented">
+On most programs, I use this notation xxx.xxx.xxx.0/24 or xxx.xxx.xxx.0/32 because with dynamic IPs, the last byte is always changing.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.1.5">3.1.5</a> Old
+</h3>
+<div class="Unindented">
+<i>Old explanation here: <a class="URL" href="https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/19">https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/19</a></i>
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.2">3.2</a> EMAIL
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.2.1">3.2.1</a> Concept
+</h3>
+<div class="Unindented">
+If an email address has been used to register twice or more (check &ldquo;reg_mail&rdquo; in &ldquo;account&rdquo; table), award X AMAP.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.2.2">3.2.2</a> Config
+</h3>
+<pre class="LyX-Code">
+<b>## Points awarded for a perfect Email match.</b>
+AMAS.Email.PerfectMatch.Points = 20
+</pre>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.2.3">3.2.3</a> Pseudo-code
+</h3>
+<pre class="LyX-Code">
+if PlayerEmail already used by another player
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+EmailAMAP = AMAS.Email.PerfectMatch.Points ;
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+</pre>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-3.2.4">3.2.4</a> GM command output
+</h3>
+<pre class="LyX-Code">
+Email: Unique | [0/20] pts
+Email: email@url.com --&gt; Perfect match | [0/20] pts
+</pre>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.3">3.3</a> <strike>ACTUAL MONEY</strike>
+</h2>
+<div class="Unindented">
+<strike>Display the actual money of the player, but give NO POINTS</strike>
+</div>
+<div class="Indented">
+It will be added to this normally https://github.com/azerothcore/azerothcore-wotlk/issues/1067
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-3.4">3.4</a> DEPRECATED/MOVED CHECKS
+</h2>
+<div class="Unindented">
+All the other checks have been moved to the module Player Activity.
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-4">4</a> CONFIGURATION FILE
+</h1>
+<pre class="LyX-Code">
+AMAS.Enable = 1
+<b>## Enable detection on GM accounts (for debugging only)</b>
+AMAS.DetectGM.Enable = 1
+
+<b>## Minimum points before a player is considered suspicious (to be watched by GMs).</b>
+<b>## Notify GMs on login and store AMAP in the database.</b>
+AMAS.Suspicious.MinAMAP = 15
+
+<b>## Minimum points before a player is considered a multi-account user.</b>
+AMAS.Guilty.MinAMAP = 100
+<strike><span class="black">## Action when confirmed guilty (ban or notify GMs)</span></strike>
+<strike><span class="black">AMAS.Guilty.Action = Ban | Notify</span></strike>
+
+<b>## This should depend on the BanRandom function/module</b>
+<b>## This is a random interval to ban the account between X,Y seconds. Reason = Multiple account</b>
+AMAS.Guilty.BanRandom.Interval = 86440,172880 (1 - 2 days)
+AMAS.Guilty.BanRandom.Reason = &ldquo;This account has been banned for using multiple accounts, which is against the rules of this server. Do it again and we will ban your IPs.&rdquo; <b>(or empty)</b>
+
+<b>## Every 30 minutes, display the result of the command &ldquo;.amas list all&rdquo; to online GMs</b>
+AMAS.Notify.Interval = 1800 (30 min by default)
+
+## Removed because history needs to be added as a minor feature later
+<strike><span class="black">AMAS.Min.Time.For.DB.History = 43200</span></strike>
+</pre>
+<div class="Unindented">
+Maybe some conf options are missing.
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-5">5</a> C++ - PSEUDO-CODE
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-5.1">5.1</a> GENERAL
+</h2>
+<ul>
+<li>
+Ideally, if I add a new check to the module PA, it is (almost) automatically inherited/added to AMAS thanks to smart coding.
+</li>
+<li>
+Separate the commands part in a specific file if possible (like &ldquo;commands.cpp&rdquo;).
+</li>
+<li>
+Separate the conf part in a specific file (&ldquo;configuration.cpp&rdquo;).
+</li>
+<li>
+If result is a float value (floating-point number), it is rounded in that form: 0.0 or 0,0 (only one decimal number after the &ldquo;,&rdquo;).
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<b>Example:</b>
+2,49 -&gt; 2,5
+2,50 -&gt; 2,5
+2,51 -&gt; 2,5
+</pre>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-5.2">5.2</a> POINTS
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-5.2.1">5.2.1</a> Inactivity points
+</h3>
+<div class="Unindented">
+See YHOOL-PA for the variable names used in the AMAS command (.amas).
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-5.2.2">5.2.2</a> AMAS points
+</h3>
+<pre class="LyX-Code">
+<b>## Total AMAS Points</b>
+Total<b>AMAP</b> = ( Ip<b>AMAP</b> + Email<b>AMAP</b> + ... + Total<b>PIP</b> )
+
+<b>## Maximum AMAS Points possible</b>
+TotalMax<b>AMAP</b> = ( AMAS.IP.PerfectMatch.Points + AMAS.Email.PerfectMatch.Points + ... + TotalMax<b>PIP</b> )
+</pre>
+<div class="Unindented">
+<b>Example:</b>
+</div>
+<pre class="LyX-Code">
+Ip<b>AMAP</b> = 10
+Email<b>AMAP</b> = 20
+Total<b>PIP</b> = 62
+Total<b>AMAP</b> = 10 + 20 + 62 = 92
+-----
+AMAS.IP.PerfectMatch.Points = 20
+AMAS.Email.PerfectMatch.Points = 20
+TotalMax<b>PIP</b> = 90
+TotalMax<b>AMAP</b> = 20 + 20 + 90 = 130
+</pre>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-5.3">5.3</a> PERCENTAGES
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-5.3.1">5.3.1</a> Inactivity percentages
+</h3>
+<div class="Unindented">
+See YHOOL-PA for the variable names used in the AMAS command (.amas).
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-5.3.2">5.3.2</a> AMAS percentages
+</h3>
+<pre class="LyX-Code">
+<b>## Percentage for Anti Multi-Account Points</b>
+Total<b>AMAPct</b> = ( Total<b>AMAP</b> / Max<b>AMAP</b> ) * 100
+</pre>
+<div class="Unindented">
+<b>Example:</b>
+</div>
+<pre class="LyX-Code">
+Total<b>AMAPct</b> = (92 / 130) * 100 = 71 (%)
+</pre>
+<div class="Unindented">
+Percentage is useful for the total points, because it’s hard to understand &ldquo;298 / 344&rdquo; for example. It’s easier to read &ldquo;87%&rdquo; instead.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-5.4">5.4</a> FUNCTIONS
+</h2>
+<pre class="LyX-Code">
+NotifyGmSuspect()
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+notify each GM with :
+[AMAS] <i><span class="magenta">CharacterName</span></i> is <i><span class="magenta">Online/Offline</span></i> and is <i><span class="magenta">AMAS_Status</span></i> of multi-accounting with [<i><span class="magenta">TotalAMAP</span></i>/<i><span class="magenta">TotalMaxAMAP</span></i>] pts (<i><span class="magenta">TotalAMAPct</span></i>%) !!!&rdquo;
+Or :
+[AMAS] Player <i><span class="magenta">CharacterName </span></i>just logged in.
+[AMAS] AMAP: [<i><span class="magenta">TotalAMAP</span></i>/<i><span class="magenta">TotalMaxAMAP</span></i>] pts (<i><span class="magenta">TotalAMAPct</span></i>%)
+[AMAS] <i><span class="magenta">CharacterName</span></i> is <i><span class="magenta">AMAS_Status</span></i> of multi-accounting !!!
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+NotifyGmList()
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+notify each GM with the output from &ldquo;.amas list online&rdquo; (or &ldquo;.amas list all&rdquo; ? I don’t know, or maybe configurable?)
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+
+StoreAmapToDb()
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+// Replace into = insert if no existing row, and replace if existing row
+REPLACE INTO ‘amas‘ ....
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+
+DeleteAmapFromDb()
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+DELETE * FROM ‘amas‘ WHERE CharacterId = XX ;
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+
+AMAP_exists()
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+query to verify if the user has any AMAP stored in the DB (table &ldquo;amas&rdquo;)
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+</pre>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-5.5">5.5</a> ACTIONS ON HOOKS
+</h2>
+<pre class="LyX-Code">
+OnGMLogin
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+NotifyGmList(); // When a GM logins, he gets the list
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+EveryXXminutes // Config in the .conf
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+NotifyGmList();
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+OnPlayerLogin
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+if <i><span class="magenta">TotalAMAP</span></i> &gt;= AMAS.Suspicious.Points
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+NotifyGmSuspect();
+
+if <i><span class="magenta">TotalAMAP</span></i> &gt;= AMAS.Guilty.Points
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+init_ban_random_account; (or init_ban_random_ip??)
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+OnPlayerLogout
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+if <i><span class="magenta">TotalAMAP</span></i> &lt; AMAS.Suspicious.Points
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+if AMAS_exists()
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+DeleteAmapFromDb(); // Delete entries in “amas” table when the player status evolved from suspicious to innocent
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+if <i><span class="magenta">TotalAMAP</span></i> &gt;= AMAS.Suspicious.Points // (or use an &ldquo;else&rdquo; :P)
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+StoreAmapToDb();
+NotifyGmSuspect();
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+OnCharacterDelete // when the character is deleted from the DB, see the worldserver.conf option CharDelete.KeepDays
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+DeleteAmapFromDb();
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+
+</pre>
+
+</li>
+
+</ul>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-5.6">5.6</a> VARIABLES
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-5.6.1">5.6.1</a> AMAS STATUS 
+</h3>
+<pre class="LyX-Code">
+If <i><span class="magenta">TotalAMAP</span></i> &gt;= AMAS.Suspicious.Points
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<span class="black">AMAS_Status</span> = &ldquo;suspected&rdquo;
+
+if <i><span class="magenta">TotalAMAP</span></i> &gt;= AMAS.Guilty.Points
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<span class="black">AMAS_Status</span> = &ldquo;guilty&rdquo;
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+else
+{
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<span class="black">AMAS_Status</span> = &ldquo;innocent&rdquo;
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+}
+</pre>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-5.6.2">5.6.2</a> COMMON VARIABLES
+</h3>
+<div class="Unindented">
+For each check, use variables &ldquo;CheckName&rdquo;, &ldquo;CheckValue&rdquo; and &ldquo;CheckComment&rdquo; a for clean code.
+</div>
+<pre class="LyX-Code">
+<b>Example:</b>
+CheckName: &ldquo;Check 1&rdquo;
+CheckValue: 46
+CheckComment: &ldquo;(total)&rdquo;
+</pre>
+<div class="Unindented">
+Can also divide each variable into numbered variables.
+</div>
+<pre class="LyX-Code">
+<b>Example:</b>
+CheckName: &ldquo;BagSlots&rdquo;
+CheckValue: 46/16/30
+CheckComment: &ldquo;(total)/(inventory)/(bank)&rdquo;
+
+<b>Or:</b>
+CheckValue1: 46
+CheckValue2: 16
+CheckValue3: 30
+CheckComment: &ldquo;(total)&rdquo;
+CheckComment2: &ldquo;(inventory)&rdquo;
+CheckComment3: &ldquo;(bank)&rdquo;
+-----------------------------
+<b>Result in GM commands would be:</b>
+BagSlots: 46 (total) / 16 (inventory) / 30 (bank)
+</pre>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-5.7">5.7</a> CORE MODIFICATIONS
+</h2>
+<div class="Unindented">
+Modifications that can be useful for AMAS but also for other modules.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-5.7.1">5.7.1</a> ALREADY CODED
+</h3>
+<ol>
+<li>
+GetAverageItemLevel fix (mb need to port to AC)
+</li>
+<li>
+Characters creation date (need to port to AC)
+</li>
+<li>
+Total time played on the ACCOUNT (merged in AC officially)
+</li>
+
+</ol>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-5.7.2">5.7.2</a> TO MOVE
+</h3>
+<ul>
+<li>
+<b>Function:</b> Autoban at random intervals.
+</li>
+<li>
+<b>Example:</b> Something like &ldquo;RandomBan(interval_1,interval_2,ban_reason)&rdquo; or &ldquo;RandomBan(intervals,ban_reason)&rdquo; and then in each script we can use it and change the interval as we want, and we replace by our own configuration interval if needed, and our own ban_reason. Default ban_reason = empty
+</li>
+<li>
+<b>Note:</b> This is already coded in AMAS but needs to be moved to its own module or to the core for everybody to reuse in different situations (but do not remove original ban :D). For example, if I want to random ban a cheater, or a spammer.
+</li>
+
+</ul>
+<h1 class="Section">
+<a class="toc" name="toc-Section-6">6</a> GM COMMANDS
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-6.1">6.1</a> ALL COMMANDS
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-6.1.1">6.1.1</a> General
+</h3>
+<div class="Unindented">
+For all commands (but exceptions like .amas comment), if player is selected with the mouse, apply the command to the selected player’s character/account.
+</div>
+<div class="Indented">
+If player is not selected, apply the command to yourself.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-6.1.2">6.1.2</a> List
+</h3>
+<pre class="LyX-Code">
+.amas -&gt; list all subcommands (normally it’s default when filling &ldquo;command&rdquo; table in the db)
+.amas list -&gt; list below subcommands (normally it’s default when filling &ldquo;command&rdquo; table in the db)
+.amas list all -&gt; list ALL <u>suspicious</u> players’ names. They are separated between OFFLINE and ONLINE
+.amas list online -&gt; list only the ONLINE <u>suspicious</u> players
+.amas list offline -&gt; list only the OFFLINE <u>suspicious</u> players
+------
+<strike>.amas zone</strike>
+<strike>.amas zone -&gt; list all subcommands below</strike>
+<strike>.amas zone list -&gt; list all suspicious zones</strike>
+<strike>.amas zone add -&gt; add the current zone to the suspicious zone table</strike>
+<strike>.amas zone delete -&gt; delete the zone from the table</strike>
+<strike>.amas zone reload -&gt; reload the table</strike>
+-----
+## IF PLAYER SELECTED WITH THE MOUSE, show info for the selected player’s character/account.
+## IF PLAYER NOT SELECTED : <span class="red">display command help</span>
+.amas comment list #character_name -&gt; list comments
+.amas comment add #character_name #comment-&gt; add extra comment (for example if the GM thinks this account is NOT a multi account). This only appends extra comment and when you press enter, you see the result of the comment (so you can edit it if it’s wrong). 
+.amas comment delete #comment_id -&gt; delete comment
+.amas comment edit #comment_id #comment -&gt; delete the comment and add your new comment
+-----
+## IF PLAYER SELECTED WITH THE MOUSE, show info for the selected player’s character/account.
+## IF PLAYER NOT SELECTED : <span class="red">show info for yourself</span>
+.amas basic -&gt; Only show basic info (no details about player activity and no points but the total AMAP, for low level GMs)
+.amas details-&gt; Show detailed info (no points but the total AIP, CIP and AMAP)
+.amas full -&gt; Show everything (for admins)
+</pre>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-6.2">6.2</a> .amas list
+</h2>
+<pre class="LyX-Code">
+<b>Command:</b>
+<span class="red">.amas list all</span>
+
+Suspicious online players:
+Character: <i><span class="magenta">CharacterName</span></i> / Points: [<i><span class="magenta">Total<b>AMAP</b></span></i>/<i><span class="magenta">TotalMax<b>AMAP</b></span></i>] pts (<i><span class="magenta">TotalAMAPct</span></i>%) / Account: <i><span class="magenta">AccountName</span></i> / IP: <i><span class="magenta">xxx.xxx.xxx.xxx</span></i>
+-------------------------
+Suspicious offline players:
+Character: <i><span class="magenta">CharacterName</span></i> / Points: [<i><span class="magenta">Total<b>AMAP</b></span></i>/<i><span class="magenta">TotalMax<b>AMAP</b></span></i>] pts (<i><span class="magenta">TotalAMAPct</span></i>%) / Account: <i><span class="magenta">AccountName</span></i> / IP: <i><span class="magenta">xxx.xxx.xxx.xxx</span></i>
+</pre>
+<div class="Unindented">
+<b>Note:</b> Why do we show accountname and ip? because I have<b> NOT </b>found any command to identify a character’s account or IP ingame o_0. Maybe we should add such command to the core. Maybe we could add this info to &ldquo;.pinfo&rdquo; command too. See this <a class="FlexURL" href="https://github.com/azerothcore/azerothcore-wotlk/issues/1067">https://github.com/azerothcore/azerothcore-wotlk/issues/1067</a>
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-6.3">6.3</a> .amas
+</h2>
+<div class="Unindented">
+The command to display information about a player is now divided into three different commands, so it’s cleaner and we can associate GM levels directly in the database. Also it means an admin can use &ldquo;.amas basic&rdquo; for a short output instead of a very long output.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-6.3.1">6.3.1</a> .amas basic
+</h3>
+<div class="Unindented">
+Show basic output for that player.
+</div>
+<pre class="LyX-Code">
+<span class="red">.amas basic #character_name</span>
+<i><span class="gray">--- Only AMAS checks ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<i><span class="magenta">CheckName</span></i>: <i><span class="magenta">CheckValue CheckComment</span></i>
+------------
+AMAS comments count: <i><span class="magenta">CommentCountValue</span></i>
+<u>Anti Multi-Account Points (AMAP):</u> [<i><span class="magenta">Total<b>AMAP</b></span></i>/<i><span class="magenta">TotalMax<b>AMAP</b></span></i>] pts (<i><span class="magenta">TotalAMAPct</span></i>%) --&gt; <i><span class="magenta">CharacterName</span></i> is <i><span class="magenta">AMAS_Status</span></i> of multi-accounting
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+
+</pre>
+<div class="Unindented">
+<b>Example (values are placeholders) :</b>
+</div>
+<pre class="LyX-Code">
+<span class="red">.amas basic Barbz</span>
+<i><span class="gray">--- Only AMAS checks ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+IP: Unique
+Email: Unique
+------------
+AMAS comments count: 5
+Anti Multi-Account Points (AMAP): [54/195] pts (28%) --&gt; <b>Barbz</b> is <b>suspected</b> of multi-accounting
+</pre>
+
+</li>
+
+</ul>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-6.3.2">6.3.2</a> .amas details
+</h3>
+<div class="Unindented">
+Show detailed rating but without points.
+</div>
+<pre class="LyX-Code">
+<span class="red">.amas details #character_name</span>
+<i><span class="darkgray">--- Checks from PlayerActivity module, including parts from AXS and CXS (This comment must not be printed ingame) ---</span></i>
+<i><span class="gray">--- Checks for Account Inactivity (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<i><span class="magenta">CheckName</span></i>: <i><span class="magenta">CheckValue CheckComment</span></i>
+etc...
+--------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- Checks for Character Inactivity (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<i><span class="magenta">CheckName</span></i>: <i><span class="magenta">CheckValue CheckComment</span></i>
+etc...
+--------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- Checks for AMAS (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<i><span class="magenta">CheckName</span></i>: <i><span class="magenta">CheckValue CheckComment</span></i>
+------------
+AMAS comments count: <i><span class="magenta">CommentCountValue</span></i>
+<u>Anti Multi-Account Points (AMAP):</u> [<i><span class="magenta">Total<b>AMAP</b></span></i>/<i><span class="magenta">TotalMax<b>AMAP</b></span></i>] pts (<i><span class="magenta">TotalAMAPct</span></i>%) --&gt; <i><span class="magenta">CharacterName</span></i> is <i><span class="magenta">AMAS_Status</span></i> of multi-accounting
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+
+</pre>
+<div class="Unindented">
+<b>Example (values are placeholders):</b>
+</div>
+<pre class="LyX-Code">
+<span class="red">.amas details Barbz</span>
+<i><span class="darkgray">--- Checks from PlayerActivity module, including parts from AXS and CXS (This comment must not be printed ingame) ---</span></i>
+<i><span class="gray">--- Checks for Account Inactivity (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<span class="blue">Account played time: 6h</span>
+<span class="blue">Account creation date: 198 days ago</span>
+<span class="green">Dead characters count: 0</span>
+--------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- Checks for Character Inactivity (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<span class="blue">Character played time: 6h</span>
+<span class="blue">Character creation date: 10 days ago</span>
+<span class="blue">Average item level: 15</span>
+<span class="blue">Missing spells: 2</span>
+<span class="blue">Missing talents: 31</span>
+<span class="blue">Primary professions learned: 2</span>
+<span class="blue">Secondary professions learned: 3</span>
+<span class="blue">Friends count: 1</span>
+<span class="blue">Completed quests: 2</span>
+<span class="blue">Kill count: 1 / 15 honor</span>
+<span class="green">Sessions: 30 minutes avg / 2 sessions</span>
+<span class="green">BagSlots: 56 (total) / 16 (inventory) / 40 (bank)</span>
+--------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- Checks for AMAS (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+IP: Unique <i><span class="gray">--- See IP check part for other outputs (This comment must not be printed ingame)---</span></i>
+Email: Unique <i><span class="gray">--- See Email check part for other outputs (This comment must not be printed ingame) ---</span></i>
+-------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- CONCLUSION (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+AMAS comments count: 5
+<u>Anti Multi-Account Points (AMAP):</u> [54/195] pts (28%) --&gt; <b>Barbz</b> is <b>suspected</b> of multi-accounting
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+
+</pre>
+<div class="Unindented">
+<b>Color schema:</b>
+</div>
+<ul>
+<li>
+<span class="green">In green, it’s from YHOOL-AXS and YHOOL-CXS.</span>
+</li>
+<li>
+<span class="blue">In blue, it’s from YHOOL-PA.</span>
+</li>
+<li>
+In black, it’s specific to YHOOL-AMAS.
+</li>
+
+</ul>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-6.3.3">6.3.3</a> .amas full
+</h3>
+<div class="Unindented">
+Show detailed rating + points at the end, so no need to have a second command. Also show total AAP and CAP (the underlined lines). 
+</div>
+<pre class="LyX-Code">
+<span class="red">.amas full #character_name</span>
+<i><span class="darkgray">--- Checks from PlayerActivity module, including parts from AXS and CXS (This comment must not be printed ingame) ---</span></i>
+<i><span class="gray">--- Checks for Account Inactivity (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<i><span class="magenta">CheckName</span></i>: <i><span class="magenta">CheckValue CheckComment</span></i> | [<i><span class="magenta">Check<b>AIP</b></span></i>/<i><span class="magenta">CheckMax<b>AIP</b></span></i>] pts
+etc...
+<u>Account Inactivity Points (AIP):</u> [<i><span class="magenta">Total<b>AIP</b></span></i>/<i><span class="magenta">TotalMax<b>AIP</b></span></i>] pts (<i><span class="magenta">Total<b>AIPct</b></span></i>%) --&gt; Account <i><span class="magenta">AccountName</span></i> is <i><span class="magenta">AccountActivityStatus</span></i>
+--------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- Checks for Character Inactivity (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<i><span class="magenta">CheckName</span></i>: <i><span class="magenta">CheckValue CheckComment</span></i> | [<i><span class="magenta">Check<b>CIP</b></span></i>/<i><span class="magenta">CheckMax<b>CIP</b></span></i>] pts
+etc...
+<u>Character Inactivity Points (CIP):</u> [<i><span class="magenta">Total<b>CIP</b></span></i>/<i><span class="magenta">TotalMax<b>CIP</b></span></i>] pts (<i><span class="magenta">Total<b>CIPct</b></span></i>%) --&gt; Character <i><span class="magenta">CharacterName</span></i> is <i><span class="magenta">CharacterActivityStatus</span></i>
+--------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- Checks for AMAS (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<i><span class="magenta">CheckName</span></i>: <i><span class="magenta">CheckValue CheckComment</span></i> | [<i><span class="magenta">Check<b>AMAP</b></span></i>/<i><span class="magenta">CheckMax<b>AMAP</b></span></i>] pts
+-------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- CONCLUSION (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+AMAS comments count: <i><span class="magenta">CommentCountValue</span></i>
+<u>Anti Multi-Account Points (AMAP):</u> [<i><span class="magenta">Total<b>AMAP</b></span></i>/<i><span class="magenta">TotalMax<b>AMAP</b></span></i>] pts (<i><span class="magenta">TotalAMAPct</span></i>%) --&gt; <i><span class="magenta">CharacterName</span></i> is <i><span class="magenta">AMAS_Status</span></i> of multi-accounting
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+
+</pre>
+<div class="Unindented">
+<b>Example (values are placeholders):</b>
+</div>
+<pre class="LyX-Code">
+<span class="red">.amas full Barbz</span>
+<i><span class="darkgray">--- Checks from PlayerActivity module, including parts from AXS and CXS (This comment must not be printed ingame) ---</span></i>
+<i><span class="gray">--- Checks for Account Inactivity (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<span class="blue">Account played time: 6h | [0/20] pts</span>
+<span class="blue">Account creation date: 198 days ago | [20/20] pts</span>
+<span class="green">Dead characters count: 0 | [0/5] pts</span>
+<u><span class="blue">Account Inactivity Points (AIP)</span></u>: [22/45] pts (49%) --&gt; Account Account_Barbz is active
+--------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- Checks for Character Inactivity (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+<span class="blue">Character played time: 6h | [2/20] pts</span>
+<span class="blue">Character creation date: 10 days ago | [6/20] pts</span>
+<span class="blue">Average item level: 15 | [1/10] pts</span>
+<span class="blue">Missing spells: 2 | [9/10] pts</span>
+<span class="blue">Missing talents: 31 | [10/10] pts</span>
+<span class="blue">Primary professions learned: 2 | [0/5] pts</span>
+<span class="blue">Secondary professions learned: 3 | [0/5] pts</span>
+<span class="blue">Friends count: 1 | [0/5] pts</span>
+<span class="blue">Completed quests: 2 | [0/5] pts</span>
+<span class="blue">Kill count: 1 / 15 honor | [1/10] pts</span>
+<span class="green">Sessions: 30 minutes avg / 2 sessions | [3/10] pts</span>
+<span class="green">BagSlots: 56 (total) / 16 (inventory) / 40 (bank) | No points</span>
+<u><span class="blue">Character Inactivity Points (CIP)</span></u>: [32/110] pts (43%) --&gt; Character Barbz is active
+--------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- Checks for AMAS (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+IP: Unique | [0/20] pts <i><span class="gray">--- See IP check part for other outputs (This comment must not be printed ingame) ---</span></i>
+Email: Unique | [0/20] pts <i><span class="gray">--- See Email check part for other outputs (This comment must not be printed ingame) ---</span></i>
+-------------
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+<i><span class="gray">--- CONCLUSION (This comment must not be printed ingame) ---</span></i>
+</pre>
+<ul>
+<li class="nested">
+<pre class="LyX-Code">
+AMAS comments count: 5
+<u>Anti Multi-Account Points (AMAP):</u> [54/195] pts (28%) --&gt; <b>Barbz</b> is <b>suspected</b> of multi-accounting
+</pre>
+
+</li>
+
+</ul>
+<pre class="LyX-Code">
+
+</pre>
+<div class="Unindented">
+<b>Color schema:</b>
+</div>
+<ul>
+<li>
+<span class="green">In green, it’s from YHOOL-AXS and YHOOL-CXS.</span>
+</li>
+<li>
+<span class="blue">In blue, it’s from YHOOL-PA.</span>
+</li>
+<li>
+In black, it’s specific to YHOOL-AMAS.
+</li>
+
+</ul>
+<h1 class="Section">
+<a class="toc" name="toc-Section-7">7</a> SQL
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-7.1">7.1</a> amas_comment
+</h2>
+<pre class="LyX-Code">
+Table: amas_comments
+<table>
+<tr>
+<td align="center" valign="top">
+CommentId 
+</td>
+<td align="center" valign="top">
+Comment
+</td>
+<td align="center" valign="top">
+PlayerAccount
+</td>
+<td align="center" valign="top">
+CharacterId
+</td>
+<td align="center" valign="top">
+CommenterAccountId
+</td>
+<td align="center" valign="top">
+CommenterCharacterId
+</td>
+<td align="center" valign="top">
+Date
+</td>
+
+</tr>
+<tr>
+<td align="center" valign="top">
+111
+</td>
+<td align="center" valign="top">
+6
+</td>
+<td align="center" valign="top">
+15
+</td>
+<td align="center" valign="top">
+36
+</td>
+<td align="center" valign="top">
+1
+</td>
+<td align="center" valign="top">
+14
+</td>
+<td align="center" valign="top">
+10/10/18
+</td>
+
+</tr>
+
+</table>
+
+</pre>
+<ul>
+<li>
+Comment = maybe set a limit of characters, if you write a too long comment, the core must tell you ingame that it’s too long or maybe display the cut incomplete comment to realize that there is something wrong
+</li>
+<li>
+Commenter = gm who commented
+</li>
+
+</ul>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-7.2">7.2</a> amas
+</h2>
+<pre class="LyX-Code">
+Table: amas
+<table>
+<tr>
+<td align="center" valign="top">
+CharacterId
+</td>
+<td align="center" valign="top">
+AntiMultiAccountPoints
+</td>
+
+</tr>
+<tr>
+<td align="center" valign="top">
+6
+</td>
+<td align="center" valign="top">
+100
+</td>
+
+</tr>
+
+</table>
+
+</pre>
+<ul>
+<li>
+This table is used for offline characters checking.
+</li>
+<li>
+Other checks must be queried inside existing core tables (or in other modules like CXS/AXS).
+</li>
+<li>
+Note: Previous name was amas_player_info but we can just name it &ldquo;amas&rdquo; like the table &ldquo;characters&rdquo;, it is more straightforward.
+</li>
+
+</ul>
+
+</div>
+</body>
+</html>

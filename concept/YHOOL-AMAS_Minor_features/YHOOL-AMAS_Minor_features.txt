@@ -1,0 +1,123 @@
+YHOOL-AMAS: Minor features
+
+Table of Contents
+
+1 NEW CHECKS
+1.1 EXPLORED ZONES
+2 CHECKS TO IMPROVE
+2.1 IMPROVED IP
+3 GM COMMANDS
+3.1 IMPROVED OUTPUT
+3.2 IMPROVED .AMAS LIST
+3.3 ADDITIONAL .AMAS COMMENT
+3.4 .AMAS MINIMUM
+3.4.1 Concept
+3.4.2 Example
+
+
+1 NEW CHECKS
+
+1.1 EXPLORED ZONES
+
+Analyse the data from the column “exploredZones” in the database “
+characters”, in the table “characters”.
+
+See this for more explanation: 
+https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/3
+
+(I have a backup of the issue just in case)
+
+2 CHECKS TO IMPROVE
+
+2.1 IMPROVED IP
+
+If there are multiple accounts with the same full IP only, then 
+it awards more points.
+
+Example:
+
+Account 1 has IP aaa.aaa.aaa.aaa -> 20 pts
+
+Account 2 has IP aaa.aaa.aaa.aaa -> 20 pts
+
+Account 3 has IP aaa.aaa.aaa.zzz -> 10 pts
+
+
+
+.amas full Barbz
+
+IP: 164.154.101.244 Perfect match (2) | 40 pts
+
+3 GM COMMANDS
+
+3.1 IMPROVED OUTPUT
+
+Open the file “Improved_command_output.yml” (because YAML syntax 
+highlighting is good :P). It shows how it can be improved
+
+The problem is how to align values ingame, it would prob need 
+some custom C++ function to fill the correct number of empty 
+spaces (since TABS don't work).
+
+Quote from Rochet2:
+
+Well, you could do that with sprintf for example. You can control 
+the width of the output, so you pick a max width and then the 
+text is formatted to that width with rest being 0 or spaces etc. 
+I dont really like such stuff myself though
+
+3.2 IMPROVED .AMAS LIST
+
+.amas list -> list below subcommands (normally it's default when 
+filling “command” table in the db)
+
+.amas list suspicious all -> list ALL suspicious players' names. 
+They are separated between OFFLINE and ONLINE
+
+.amas list suspicious online -> list only the ONLINE suspicious 
+players
+
+.amas list suspicious offline -> list only the OFFLINE suspicious 
+players
+
+.amas list guilty -> list only the guilty players (so probably 
+banned)
+
+.amas list all -> list ALL suspicious AND guilty players' names. 
+They are separated between suspicious and guilty.
+
+3.3 ADDITIONAL .AMAS COMMENT
+
+.amas comment read #commentID -> Read that comment
+
+3.4 .AMAS MINIMUM
+
+3.4.1 Concept
+
+Show minimum info
+
+.amas minimum #character_name
+
+  AMAS comments count: CommentCountValue
+
+  Anti Multi-Account Points (AMAP): [TotalAMAP/TotalMaxAMAP] pts 
+  (TotalAMAPct%) --> CharacterName is AMAS_Status of 
+  multi-accounting
+
+  Account Banned: Yes/No
+
+  Ip Banned: Yes/No
+
+3.4.2 Example
+
+.amas minimum Barbz
+
+  AMAS comments count: 3
+
+  Anti Multi-Account Points (AMAP): [150/100] pts (150%) --> 
+  Barbz is guilty of multi-accounting
+
+  Account Banned: Yes
+
+  Ip Banned: No
+

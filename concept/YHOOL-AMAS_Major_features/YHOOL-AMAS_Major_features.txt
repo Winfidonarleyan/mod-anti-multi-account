@@ -1,0 +1,1023 @@
+YHOOL-AMAS: Major features
+
+Table of Contents
+
+1 DEPENDENCIES
+2 LEXICON
+3 CHECKS TO PERFORM
+3.1 IP
+3.1.1 Concept
+3.1.2 Config
+3.1.3 Pseudo-code
+3.1.4 GM command output
+3.1.5 Old
+3.2 EMAIL
+3.2.1 Concept
+3.2.2 Config
+3.2.3 Pseudo-code
+3.2.4 GM command output
+3.3 ACTUAL MONEY
+3.4 DEPRECATED/MOVED CHECKS
+4 CONFIGURATION FILE
+5 C++ - PSEUDO-CODE
+5.1 GENERAL
+5.2 POINTS
+5.2.1 Inactivity points
+5.2.2 AMAS points
+5.3 PERCENTAGES
+5.3.1 Inactivity percentages
+5.3.2 AMAS percentages
+5.4 FUNCTIONS
+5.5 ACTIONS ON HOOKS
+5.6 VARIABLES
+5.6.1 AMAS STATUS 
+5.6.2 COMMON VARIABLES
+5.7 CORE MODIFICATIONS
+5.7.1 ALREADY CODED
+5.7.2 TO MOVE
+6 GM COMMANDS
+6.1 ALL COMMANDS
+6.1.1 General
+6.1.2 List
+6.2 .amas list
+6.3 .amas
+6.3.1 .amas basic
+6.3.2 .amas details
+6.3.3 .amas full
+7 SQL
+7.1 amas_comment
+7.2 amas
+
+
+1 DEPENDENCIES
+
+Required modules:
+
+• YHOOL-CXS (Character Xtra Stats)
+
+• YHOOL-AXS (Account Xtra Stats)
+
+• YHOOL-PA (Player Activity)
+
+2 LEXICON
+
+• AMAP = Anti Multi-Account Points (more points = more 
+  suspicious) 
+
+• AMAPct = Anti Multi-Account Percentage
+
+• Player = Account + Character (since 1 char = 1 account = 1 
+  player on YHOOL)
+
+Also, check Lexicon from modules dependencies.
+
+3 CHECKS TO PERFORM
+
+3.1 IP
+
+3.1.1 Concept
+
+If IP is used on multiple accounts, it will give a high rating 
+because it's a huge warning (most of the time it will mean it's 
+the same user but I know some students use the same network for 
+example, or guys in the same family).
+
+After using the command, we can identify the other account with 
+.lookup player ip $ip
+
+Note: Maybe it's not needed to print the IP, it just saves some 
+time for the GM.
+
+3.1.2 Config
+
+## Points awarded for a perfect IP match.
+
+AMAS.IP.PerfectMatch.Points = 20
+
+## Partial match (only first 3 bytes)
+
+AMAS.IP.PartialMatch.Points = ( AMAS.IP.PerfectMatch.Points / 2 )
+
+3.1.3 Pseudo-code
+
+if PlayerIP already used by another player (perfect match)
+
+{
+
+  IpAMAP = AMAS.Email.PerfectMatch.Points ;
+
+}
+
+else if PlayerIP already used by another player (partial match)
+
+{
+
+  IpAMAP = AMAS.Email.PartialMatch.Points ;
+
+}
+
+3.1.4 GM command output
+
+IP: Unique | [0/20] pts
+
+Means the IP is unique so no point given.
+
+-----------
+
+IP: 164.154.101.244 --> Perfect match | [20/20] pts
+
+Perfect match is when the IPs are exactly the same.
+
+-----------
+
+IP: 164.154.101.??? --> Partial match | [10/20] pts
+
+Dynamic IP match is when the first 3 bytes are similar (example: 
+164.154.101.6 and 164.154.101.254).
+
+On most programs, I use this notation xxx.xxx.xxx.0/24 or 
+xxx.xxx.xxx.0/32 because with dynamic IPs, the last byte is 
+always changing.
+
+3.1.5 Old
+
+Old explanation here: [https://github.com/Winfidonarleyan/mod-anti-multi-account/issues/19]
+
+3.2 EMAIL
+
+3.2.1 Concept
+
+If an email address has been used to register twice or more 
+(check “reg_mail” in “account” table), award X AMAP.
+
+3.2.2 Config
+
+## Points awarded for a perfect Email match.
+
+AMAS.Email.PerfectMatch.Points = 20
+
+3.2.3 Pseudo-code
+
+if PlayerEmail already used by another player
+
+{
+
+  EmailAMAP = AMAS.Email.PerfectMatch.Points ;
+
+}
+
+3.2.4 GM command output
+
+Email: Unique | [0/20] pts
+
+Email: email@url.com --> Perfect match | [0/20] pts
+
+3.3 ACTUAL MONEY
+
+Display the actual money of the player, but give NO POINTS
+
+It will be added to this normally 
+https://github.com/azerothcore/azerothcore-wotlk/issues/1067
+
+3.4 DEPRECATED/MOVED CHECKS
+
+All the other checks have been moved to the module Player 
+Activity.
+
+4 CONFIGURATION FILE
+
+AMAS.Enable = 1
+
+## Enable detection on GM accounts (for debugging only)
+
+AMAS.DetectGM.Enable = 1
+
+
+
+## Minimum points before a player is considered suspicious (to be 
+watched by GMs).
+
+## Notify GMs on login and store AMAP in the database.
+
+AMAS.Suspicious.MinAMAP = 15
+
+
+
+## Minimum points before a player is considered a multi-account 
+user.
+
+AMAS.Guilty.MinAMAP = 100
+
+## Action when confirmed guilty (ban or notify GMs)
+
+AMAS.Guilty.Action = Ban | Notify
+
+
+
+## This should depend on the BanRandom function/module
+
+## This is a random interval to ban the account between X,Y 
+seconds. Reason = Multiple account
+
+AMAS.Guilty.BanRandom.Interval = 86440,172880 (1 - 2 days)
+
+AMAS.Guilty.BanRandom.Reason = “This account has been banned for 
+using multiple accounts, which is against the rules of this 
+server. Do it again and we will ban your IPs.” (or empty)
+
+
+
+## Every 30 minutes, display the result of the command “.amas 
+list all” to online GMs
+
+AMAS.Notify.Interval = 1800 (30 min by default)
+
+
+
+## Removed because history needs to be added as a minor feature 
+later
+
+AMAS.Min.Time.For.DB.History = 43200
+
+Maybe some conf options are missing.
+
+5 C++ - PSEUDO-CODE
+
+5.1 GENERAL
+
+• Ideally, if I add a new check to the module PA, it is (almost) 
+  automatically inherited/added to AMAS thanks to smart coding.
+
+• Separate the commands part in a specific file if possible (like 
+  “commands.cpp”).
+
+• Separate the conf part in a specific file (“configuration.cpp”
+  ).
+
+• If result is a float value (floating-point number), it is 
+  rounded in that form: 0.0 or 0,0 (only one decimal number after 
+  the “,”).
+
+Example:
+
+2,49 -> 2,5
+
+2,50 -> 2,5
+
+2,51 -> 2,5
+
+5.2 POINTS
+
+5.2.1 Inactivity points
+
+See YHOOL-PA for the variable names used in the AMAS command 
+(.amas).
+
+5.2.2 AMAS points
+
+## Total AMAS Points
+
+TotalAMAP = ( IpAMAP + EmailAMAP + ... + TotalPIP )
+
+
+
+## Maximum AMAS Points possible
+
+TotalMaxAMAP = ( AMAS.IP.PerfectMatch.Points + 
+AMAS.Email.PerfectMatch.Points + ... + TotalMaxPIP )
+
+Example:
+
+IpAMAP = 10
+
+EmailAMAP = 20
+
+TotalPIP = 62
+
+TotalAMAP = 10 + 20 + 62 = 92
+
+-----
+
+AMAS.IP.PerfectMatch.Points = 20
+
+AMAS.Email.PerfectMatch.Points = 20
+
+TotalMaxPIP = 90
+
+TotalMaxAMAP = 20 + 20 + 90 = 130
+
+5.3 PERCENTAGES
+
+5.3.1 Inactivity percentages
+
+See YHOOL-PA for the variable names used in the AMAS command 
+(.amas).
+
+5.3.2 AMAS percentages
+
+## Percentage for Anti Multi-Account Points
+
+TotalAMAPct = ( TotalAMAP / MaxAMAP ) * 100
+
+Example:
+
+TotalAMAPct = (92 / 130) * 100 = 71 (%)
+
+Percentage is useful for the total points, because it's hard to 
+understand “298 / 344” for example. It's easier to read “87%” 
+instead.
+
+5.4 FUNCTIONS
+
+NotifyGmSuspect()
+
+{
+
+  notify each GM with :
+
+  [AMAS] CharacterName is Online/Offline and is AMAS_Status of 
+  multi-accounting with [TotalAMAP/TotalMaxAMAP] pts 
+  (TotalAMAPct%) !!!”
+
+  Or :
+
+  [AMAS] Player CharacterName just logged in.
+
+  [AMAS] AMAP: [TotalAMAP/TotalMaxAMAP] pts (TotalAMAPct%)
+
+  [AMAS] CharacterName is AMAS_Status of multi-accounting !!!
+
+}
+
+NotifyGmList()
+
+{
+
+  notify each GM with the output from “.amas list online” (or “
+  .amas list all” ? I don't know, or maybe configurable?)
+
+}
+
+
+
+StoreAmapToDb()
+
+{
+
+  // Replace into = insert if no existing row, and replace if 
+  existing row
+
+  REPLACE INTO `amas` ....
+
+}
+
+
+
+DeleteAmapFromDb()
+
+{
+
+  DELETE * FROM `amas` WHERE CharacterId = XX ;
+
+}
+
+
+
+AMAP_exists()
+
+{
+
+  query to verify if the user has any AMAP stored in the DB 
+  (table “amas”)
+
+}
+
+5.5 ACTIONS ON HOOKS
+
+OnGMLogin
+
+{
+
+  NotifyGmList(); // When a GM logins, he gets the list
+
+}
+
+EveryXXminutes // Config in the .conf
+
+{
+
+  NotifyGmList();
+
+}
+
+OnPlayerLogin
+
+{
+
+  if TotalAMAP >= AMAS.Suspicious.Points
+
+  {
+
+    NotifyGmSuspect();
+
+    
+
+    if TotalAMAP >= AMAS.Guilty.Points
+
+    {
+
+      init_ban_random_account; (or init_ban_random_ip??)
+
+    }
+
+  }
+
+}
+
+OnPlayerLogout
+
+{
+
+  if TotalAMAP < AMAS.Suspicious.Points
+
+  {
+
+    if AMAS_exists()
+
+    {
+
+      DeleteAmapFromDb(); // Delete entries in “amas” table when 
+      the player status evolved from suspicious to innocent
+
+    }
+
+  }
+
+  if TotalAMAP >= AMAS.Suspicious.Points // (or use an “else” :P)
+
+  {
+
+    StoreAmapToDb();
+
+    NotifyGmSuspect();
+
+  }
+
+}
+
+OnCharacterDelete // when the character is deleted from the DB, 
+see the worldserver.conf option CharDelete.KeepDays
+
+{
+
+  DeleteAmapFromDb();
+
+}
+
+
+
+  
+
+5.6 VARIABLES
+
+5.6.1 AMAS STATUS 
+
+If TotalAMAP >= AMAS.Suspicious.Points
+
+{
+
+  AMAS_Status = “suspected”
+
+  
+
+  if TotalAMAP >= AMAS.Guilty.Points
+
+  {
+
+    AMAS_Status = “guilty”
+
+  }
+
+}
+
+else
+
+{
+
+  AMAS_Status = “innocent”
+
+}
+
+5.6.2 COMMON VARIABLES
+
+For each check, use variables “CheckName”, “CheckValue” and “
+CheckComment” a for clean code.
+
+Example:
+
+CheckName: “Check 1”
+
+CheckValue: 46
+
+CheckComment: “(total)”
+
+Can also divide each variable into numbered variables.
+
+Example:
+
+CheckName: “BagSlots”
+
+CheckValue: 46/16/30
+
+CheckComment: “(total)/(inventory)/(bank)”
+
+
+
+Or:
+
+CheckValue1: 46
+
+CheckValue2: 16
+
+CheckValue3: 30
+
+CheckComment: “(total)”
+
+CheckComment2: “(inventory)”
+
+CheckComment3: “(bank)”
+
+-----------------------------
+
+Result in GM commands would be:
+
+BagSlots: 46 (total) / 16 (inventory) / 30 (bank)
+
+5.7 CORE MODIFICATIONS
+
+Modifications that can be useful for AMAS but also for other 
+modules.
+
+5.7.1 ALREADY CODED
+
+1. GetAverageItemLevel fix (mb need to port to AC)
+
+2. Characters creation date (need to port to AC)
+
+3. Total time played on the ACCOUNT (merged in AC officially)
+
+5.7.2 TO MOVE
+
+• Function: Autoban at random intervals.
+
+• Example: Something like “
+  RandomBan(interval_1,interval_2,ban_reason)” or “
+  RandomBan(intervals,ban_reason)” and then in each script we can 
+  use it and change the interval as we want, and we replace by 
+  our own configuration interval if needed, and our own 
+  ban_reason. Default ban_reason = empty
+
+• Note: This is already coded in AMAS but needs to be moved to 
+  its own module or to the core for everybody to reuse in 
+  different situations (but do not remove original ban :D). For 
+  example, if I want to random ban a cheater, or a spammer.
+
+6 GM COMMANDS
+
+6.1 ALL COMMANDS
+
+6.1.1 General
+
+For all commands (but exceptions like .amas comment), if player 
+is selected with the mouse, apply the command to the selected 
+player's character/account.
+
+If player is not selected, apply the command to yourself.
+
+6.1.2 List
+
+.amas -> list all subcommands (normally it's default when filling 
+“command” table in the db)
+
+.amas list -> list below subcommands (normally it's default when 
+filling “command” table in the db)
+
+.amas list all -> list ALL suspicious players' names. They are 
+separated between OFFLINE and ONLINE
+
+.amas list online -> list only the ONLINE suspicious players
+
+.amas list offline -> list only the OFFLINE suspicious players
+
+------
+
+.amas zone
+
+.amas zone -> list all subcommands below
+
+.amas zone list -> list all suspicious zones
+
+.amas zone add -> add the current zone to the suspicious zone 
+table
+
+.amas zone delete -> delete the zone from the table
+
+.amas zone reload -> reload the table
+
+-----
+
+## IF PLAYER SELECTED WITH THE MOUSE, show info for the selected 
+player's character/account.
+
+## IF PLAYER NOT SELECTED : display command help
+
+.amas comment list #character_name -> list comments
+
+.amas comment add #character_name #comment-> add extra comment 
+(for example if the GM thinks this account is NOT a multi 
+account). This only appends extra comment and when you press 
+enter, you see the result of the comment (so you can edit it if 
+it's wrong). 
+
+.amas comment delete #comment_id -> delete comment
+
+.amas comment edit #comment_id #comment -> delete the comment and 
+add your new comment
+
+-----
+
+## IF PLAYER SELECTED WITH THE MOUSE, show info for the selected 
+player's character/account.
+
+## IF PLAYER NOT SELECTED : show info for yourself
+
+.amas basic -> Only show basic info (no details about player 
+activity and no points but the total AMAP, for low level GMs)
+
+.amas details-> Show detailed info (no points but the total AIP, 
+CIP and AMAP)
+
+.amas full -> Show everything (for admins)
+
+6.2 .amas list
+
+Command:
+
+.amas list all
+
+
+
+Suspicious online players:
+
+Character: CharacterName / Points: [TotalAMAP/TotalMaxAMAP] pts 
+(TotalAMAPct%) / Account: AccountName / IP: xxx.xxx.xxx.xxx
+
+-------------------------
+
+Suspicious offline players:
+
+Character: CharacterName / Points: [TotalAMAP/TotalMaxAMAP] pts 
+(TotalAMAPct%) / Account: AccountName / IP: xxx.xxx.xxx.xxx
+
+Note: Why do we show accountname and ip? because I have NOT found 
+any command to identify a character's account or IP ingame o_0. 
+Maybe we should add such command to the core. Maybe we could add 
+this info to “.pinfo” command too. See this https://github.com/azerothcore/azerothcore-wotlk/issues/1067
+
+6.3 .amas
+
+The command to display information about a player is now divided 
+into three different commands, so it's cleaner and we can 
+associate GM levels directly in the database. Also it means an 
+admin can use “.amas basic” for a short output instead of a very 
+long output.
+
+6.3.1 .amas basic
+
+Show basic output for that player.
+
+.amas basic #character_name
+
+--- Only AMAS checks ---
+
+  CheckName: CheckValue CheckComment
+
+  ------------
+
+  AMAS comments count: CommentCountValue
+
+  Anti Multi-Account Points (AMAP): [TotalAMAP/TotalMaxAMAP] pts 
+  (TotalAMAPct%) --> CharacterName is AMAS_Status of 
+  multi-accounting
+
+
+
+Example (values are placeholders) :
+
+.amas basic Barbz
+
+--- Only AMAS checks ---
+
+  IP: Unique
+
+  Email: Unique
+
+  ------------
+
+  AMAS comments count: 5
+
+  Anti Multi-Account Points (AMAP): [54/195] pts (28%) --> Barbz 
+  is suspected of multi-accounting
+
+6.3.2 .amas details
+
+Show detailed rating but without points.
+
+.amas details #character_name
+
+--- Checks from PlayerActivity module, including parts from AXS 
+and CXS (This comment must not be printed ingame) ---
+
+--- Checks for Account Inactivity (This comment must not be 
+printed ingame) ---
+
+  CheckName: CheckValue CheckComment
+
+  etc...
+
+  --------------
+
+--- Checks for Character Inactivity (This comment must not be 
+printed ingame) ---
+
+  CheckName: CheckValue CheckComment
+
+  etc...
+
+  --------------
+
+--- Checks for AMAS (This comment must not be printed ingame) ---
+
+  CheckName: CheckValue CheckComment
+
+  ------------
+
+  AMAS comments count: CommentCountValue
+
+  Anti Multi-Account Points (AMAP): [TotalAMAP/TotalMaxAMAP] pts 
+  (TotalAMAPct%) --> CharacterName is AMAS_Status of 
+  multi-accounting
+
+
+
+Example (values are placeholders):
+
+.amas details Barbz
+
+--- Checks from PlayerActivity module, including parts from AXS 
+and CXS (This comment must not be printed ingame) ---
+
+--- Checks for Account Inactivity (This comment must not be 
+printed ingame) ---
+
+  Account played time: 6h
+
+  Account creation date: 198 days ago
+
+  Dead characters count: 0
+
+  --------------
+
+--- Checks for Character Inactivity (This comment must not be 
+printed ingame) ---
+
+  Character played time: 6h
+
+  Character creation date: 10 days ago
+
+  Average item level: 15
+
+  Missing spells: 2
+
+  Missing talents: 31
+
+  Primary professions learned: 2
+
+  Secondary professions learned: 3
+
+  Friends count: 1
+
+  Completed quests: 2
+
+  Kill count: 1 / 15 honor
+
+  Sessions: 30 minutes avg / 2 sessions
+
+  BagSlots: 56 (total) / 16 (inventory) / 40 (bank)
+
+  --------------
+
+--- Checks for AMAS (This comment must not be printed ingame) ---
+
+  IP: Unique --- See IP check part for other outputs (This 
+  comment must not be printed ingame)---
+
+  Email: Unique --- See Email check part for other outputs (This 
+  comment must not be printed ingame) ---
+
+  -------------
+
+--- CONCLUSION (This comment must not be printed ingame) ---
+
+  AMAS comments count: 5
+
+  Anti Multi-Account Points (AMAP): [54/195] pts (28%) --> Barbz 
+  is suspected of multi-accounting
+
+
+
+Color schema:
+
+• In green, it's from YHOOL-AXS and YHOOL-CXS.
+
+• In blue, it's from YHOOL-PA.
+
+• In black, it's specific to YHOOL-AMAS.
+
+6.3.3 .amas full
+
+Show detailed rating + points at the end, so no need to have a 
+second command. Also show total AAP and CAP (the underlined 
+lines). 
+
+.amas full #character_name
+
+--- Checks from PlayerActivity module, including parts from AXS 
+and CXS (This comment must not be printed ingame) ---
+
+--- Checks for Account Inactivity (This comment must not be 
+printed ingame) ---
+
+  CheckName: CheckValue CheckComment | [CheckAIP/CheckMaxAIP] pts
+
+  etc...
+
+  Account Inactivity Points (AIP): [TotalAIP/TotalMaxAIP] pts 
+  (TotalAIPct%) --> Account AccountName is AccountActivityStatus
+
+  --------------
+
+--- Checks for Character Inactivity (This comment must not be 
+printed ingame) ---
+
+  CheckName: CheckValue CheckComment | [CheckCIP/CheckMaxCIP] pts
+
+  etc...
+
+  Character Inactivity Points (CIP): [TotalCIP/TotalMaxCIP] pts 
+  (TotalCIPct%) --> Character CharacterName is 
+  CharacterActivityStatus
+
+  --------------
+
+--- Checks for AMAS (This comment must not be printed ingame) ---
+
+  CheckName: CheckValue CheckComment | [CheckAMAP/CheckMaxAMAP] 
+  pts
+
+  -------------
+
+--- CONCLUSION (This comment must not be printed ingame) ---
+
+  AMAS comments count: CommentCountValue
+
+  Anti Multi-Account Points (AMAP): [TotalAMAP/TotalMaxAMAP] pts 
+  (TotalAMAPct%) --> CharacterName is AMAS_Status of 
+  multi-accounting
+
+
+
+Example (values are placeholders):
+
+.amas full Barbz
+
+--- Checks from PlayerActivity module, including parts from AXS 
+and CXS (This comment must not be printed ingame) ---
+
+--- Checks for Account Inactivity (This comment must not be 
+printed ingame) ---
+
+  Account played time: 6h | [0/20] pts
+
+  Account creation date: 198 days ago | [20/20] pts
+
+  Dead characters count: 0 | [0/5] pts
+
+  Account Inactivity Points (AIP): [22/45] pts (49%) --> Account 
+  Account_Barbz is active
+
+  --------------
+
+--- Checks for Character Inactivity (This comment must not be 
+printed ingame) ---
+
+  Character played time: 6h | [2/20] pts
+
+  Character creation date: 10 days ago | [6/20] pts
+
+  Average item level: 15 | [1/10] pts
+
+  Missing spells: 2 | [9/10] pts
+
+  Missing talents: 31 | [10/10] pts
+
+  Primary professions learned: 2 | [0/5] pts
+
+  Secondary professions learned: 3 | [0/5] pts
+
+  Friends count: 1 | [0/5] pts
+
+  Completed quests: 2 | [0/5] pts
+
+  Kill count: 1 / 15 honor | [1/10] pts
+
+  Sessions: 30 minutes avg / 2 sessions | [3/10] pts
+
+  BagSlots: 56 (total) / 16 (inventory) / 40 (bank) | No points
+
+  Character Inactivity Points (CIP): [32/110] pts (43%) --> 
+  Character Barbz is active
+
+  --------------
+
+--- Checks for AMAS (This comment must not be printed ingame) ---
+
+  IP: Unique | [0/20] pts --- See IP check part for other outputs 
+  (This comment must not be printed ingame) ---
+
+  Email: Unique | [0/20] pts --- See Email check part for other 
+  outputs (This comment must not be printed ingame) ---
+
+  -------------
+
+--- CONCLUSION (This comment must not be printed ingame) ---
+
+  AMAS comments count: 5
+
+  Anti Multi-Account Points (AMAP): [54/195] pts (28%) --> Barbz 
+  is suspected of multi-accounting
+
+
+
+Color schema:
+
+• In green, it's from YHOOL-AXS and YHOOL-CXS.
+
+• In blue, it's from YHOOL-PA.
+
+• In black, it's specific to YHOOL-AMAS.
+
+7 SQL
+
+7.1 amas_comment
+
+Table: amas_comments
+
+
++-------------+----------+----------------+--------------+---------------------+-----------------------+----------+
+| CommentId   | Comment  | PlayerAccount  | CharacterId  | CommenterAccountId  | CommenterCharacterId  |   Date   |
++-------------+----------+----------------+--------------+---------------------+-----------------------+----------+
++-------------+----------+----------------+--------------+---------------------+-----------------------+----------+
+|    111      |    6     |      15        |     36       |         1           |          14           | 10/10/18 |
++-------------+----------+----------------+--------------+---------------------+-----------------------+----------+
+
+
+• Comment = maybe set a limit of characters, if you write a too 
+  long comment, the core must tell you ingame that it's too long 
+  or maybe display the cut incomplete comment to realize that 
+  there is something wrong
+
+• Commenter = gm who commented
+
+7.2 amas
+
+Table: amas
+
+
++--------------+------------------------+
+| CharacterId  | AntiMultiAccountPoints |
++--------------+------------------------+
++--------------+------------------------+
+|      6       |          100           |
++--------------+------------------------+
+
+
+• This table is used for offline characters checking.
+
+• Other checks must be queried inside existing core tables (or in 
+  other modules like CXS/AXS).
+
+• Note: Previous name was amas_player_info but we can just name 
+  it “amas” like the table “characters”, it is more 
+  straightforward.
+

@@ -1,0 +1,55 @@
+YHOOL-AMAS: Introduction
+
+Table of Contents
+
+1 INTRODUCTION
+1.1 Technical sheet
+1.2 Concept
+1.3 Inspiration
+1.4 Goal
+
+
+1 INTRODUCTION
+
+1.1 Technical sheet
+
+• Name: yhool-amas
+
+• Full name: Anti-Multi Account System
+
+1.2 Concept
+
+Detect multi-account users.
+
+• The system must perform checks on certain data and attribute a 
+  rating to the result (in the form of points).
+
+• The points should be easily configurable/tweakable in a config 
+  file
+
+• After all checks have been done, an account which have a rating 
+  of 110 points means it's a highly suspicious account (suspected 
+  of multi account usage) and a warning is sent to GMs and stored 
+  in the DB. We might even automatically ban accounts with high 
+  rating but we wont tell the player the exact reasons of the ban 
+  of course.
+
+• If the account has a rating of 50, the account might be on 
+  watch.
+
+• If the account has a rating of 10 points, it probably is a 
+  normal account, so no problem.
+
+• More points = more suspicious = bad!
+
+We should find a formula for most checks to compare to an average 
+or a predetermined value.
+
+1.3 Inspiration
+
+Gmail spam filter :P
+
+1.4 Goal
+
+Multi account completely ruins the immersion and the gameplay.
+

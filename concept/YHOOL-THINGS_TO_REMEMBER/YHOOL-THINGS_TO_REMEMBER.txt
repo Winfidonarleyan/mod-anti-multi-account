@@ -1,0 +1,15 @@
+YHOOL - THINGS TO REMEMBER
+
+1. The server is YHOOL: http://yhool.gg
+
+2. It has permanent death, so only 1 life
+
+3. There is only one character per account on YHOOL.
+
+4. There is no flight master actually, so can't check which 
+  flight paths have been discovered.
+
+5. Some skills are automatically learnt on character creation on 
+  YHOOL (like defense, weapons and maybe later some crafting 
+  skills).
+

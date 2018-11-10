@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="generator" content="http://www.nongnu.org/elyxer/"/>
+<meta name="create-date" content="2018-11-11"/>
+<link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
+<title>YHOOL-AMAS: Introduction</title>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+<body>
+<div id="globalWrapper">
+<script type="math/tex">
+\newcommand{\lyxlock}{}
+</script>
+<noscript>
+<div class="warning">
+Warning: <a href="http://www.mathjax.org/">MathJax</a> requires JavaScript to correctly process the mathematics on this page. Please enable JavaScript on your browser.
+</div><hr/>
+</noscript>
+<h1 class="title">
+YHOOL-AMAS: Introduction
+</h1>
+<div class="fulltoc">
+<div class="tocheader">
+Table of Contents
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Section-1">Section 1: INTRODUCTION</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.1">Subsection 1.1: Technical sheet</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.2">Subsection 1.2: Concept</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.3">Subsection 1.3: Inspiration</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.4">Subsection 1.4: Goal</a>
+</div>
+</div>
+</div>
+
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-1">1</a> INTRODUCTION
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-1.1">1.1</a> Technical sheet
+</h2>
+<ul>
+<li>
+Name: yhool-amas
+</li>
+<li>
+Full name: Anti-Multi Account System
+</li>
+
+</ul>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-1.2">1.2</a> Concept
+</h2>
+<div class="Unindented">
+Detect multi-account users.
+</div>
+<ul>
+<li>
+The system must perform checks on certain data and attribute a rating to the result (in the form of points).
+</li>
+<li>
+The points should be easily configurable/tweakable in a config file
+</li>
+<li>
+After all checks have been done, an account which have a rating of 110 points means it’s a highly suspicious account (suspected of multi account usage) and a warning is sent to GMs and stored in the DB. We might even automatically ban accounts with high rating but we wont tell the player the exact reasons of the ban of course.
+</li>
+<li>
+If the account has a rating of 50, the account might be on watch.
+</li>
+<li>
+If the account has a rating of 10 points, it probably is a normal account, so no problem.
+</li>
+<li>
+More points = more <b>suspicious</b> = bad!
+</li>
+
+</ul>
+<div class="Unindented">
+We should find a formula for most checks to compare to an average or a predetermined value.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-1.3">1.3</a> Inspiration
+</h2>
+<div class="Unindented">
+Gmail spam filter :P
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-1.4">1.4</a> Goal
+</h2>
+<div class="Unindented">
+Multi account completely ruins the immersion and the gameplay.
+</div>
+
+</div>
+</body>
+</html>
