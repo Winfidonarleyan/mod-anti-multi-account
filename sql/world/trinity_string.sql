@@ -81,7 +81,7 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 24, CONCAT(@logo, "Comment deleted.", @n, @logo, "CommentID:", @r, " %u.", @n, @logo, "Comment:", @r, @red, "%s", @r, "."), CONCAT(@logo, "Удалён комментарий. Номер:", @r, " %u. ", @green, "Сообщение:", @r, @red, "%s", @r)),
 (@FirstID + 25, CONCAT(@logo, "Edited comment. CommentID:", @r, " %u. ", @green, "CommentTexts: ", @r, @red, "%s", @r, " -> ", @red, "%s", @r), CONCAT(@logo, "Замена комментария. Номер:", @r, " %u. ", @green, "Сообщение:", @r, @red, "%s", @r)),
 (@FirstID + 26, CONCAT(@logo, "List comments for character", @r, " %s."), CONCAT(@logo, "Список комментариев для игрока", @r, "%s")),
-(@FirstID + 27, CONCAT(@logo, "CommentID:", @r, " %u | ", @green, "Commenter:", @r, " %s | ", @green, "Date:", @r, " %s |", @green, "Comment: ", @r, " %s"), CONCAT(@logo, "Номер:", @r, " %u. ", @green, "Автор:", @r, " %s. ", @green, "Дата:", @r, " %s. ", @green, "Комментарий:", @r, "%s.")),
+(@FirstID + 27, CONCAT(@logo, "CommentID:", @r, " %u | ", @green, "Commenter:", @r, " %s | ", @green, "Date:", @r, " %s | ", @green, "Comment: ", @r, " %s"), CONCAT(@logo, "Номер:", @r, " %u. ", @green, "Автор:", @r, " %s. ", @green, "Дата:", @r, " %s. ", @green, "Комментарий:", @r, "%s.")),
 
 -- AMAS same ip
 (@FirstID + 28, " PERFECT MATCH with account ", " Совпадение с акками "),
