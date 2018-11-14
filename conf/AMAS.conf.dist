@@ -8,8 +8,13 @@
 #     	Description: Enable or disable this system.
 #     	Default: 1 - Enable
 #
+#	AMAS.DetectGM.Enable
+#		Description: Enable detection on GM accounts (for debugging only)
+#		Default: 1 - Enable
+#
 
 AMAS.Enable = 1
+AMAS.DetectGM.Enable = 1
 
 #
 #	SYSTEM SETTINGS: ACCOUNT
@@ -194,40 +199,42 @@ AMAS.WP.Diff.Character = 5
 
 #	SYSTEM SETTINGS: CONFIRMED MULTI ACCOUNT
 #
-#	AMAS.Confirmed.Min.Points
-#		Description: Minimum warning points player, for Confirmed Multi Account
+#	AMAS.Guilty.MinAMAP
+#		Description:  Minimum points before a player is considered a multi-account user.
 #		Default: 100
 #
-#	AMAS.Confirmed.Action
-#		Description: 1 = Ban
+#	AMAS.Guilty.Action
+#		Description: Action when confirmed guilty (ban or notify GMs)
+#                    1 = Ban
 #                    2 = Notify GM
 #                    3 = Ban + Notify GM
 #		Default: 2
 #
-#	AMAS.Confirmed.Action.Ban.RandomInterval.Min
+#	AMAS.Guilty.BanRandom.Interval.Min
 #		Description: Minimum time for ban interval (sec)
 #		Default: 86440 (1 day)
 #
-#	AMAS.Confirmed.Action.Ban.RandomInterval
+#	AMAS.Guilty.BanRandom.Interval.Max
 #		Description: Maximum time for ban interval (sec)
 #		Default: 172880 (2 days)
 #
-#	AMAS.Confirmed.Action.Ban.Reason
+#	AMAS.Guilty.BanRandom.Reason
 #		Description: Ban reason 
 #		Default: "This account has been banned for using multiple accounts"
 #
 
-AMAS.Confirmed.Min.Points = 100
-AMAS.Confirmed.Action = 2
-AMAS.Confirmed.Ban.RandomInterval.Min = 86440
-AMAS.Confirmed.Ban.RandomInterval.Max = 172880
-AMAS.Confirmed.Ban.Reason = "This account has been banned for using multiple accounts"
+AMAS.Guilty.MinAMAP = 100
+AMAS.Guilty.Action = 2
+AMAS.Guilty.BanRandom.Interval.Min = 86440
+AMAS.Guilty.BanRandom.Interval.Max = 172880
+AMAS.Guilty.BanRandom.Reason = "This account has been banned for using multiple accounts"
 
 #
 #	SYSTEM SETTINGS: OTHER
 #
-#	AMAS.Suspicious.Account.Min.Points
-#		Description: Minimum warning points player, for suspicious
+#	AMAS.Suspicious.MinAMAP
+#		Description: Minimum points before a player is considered suspicious (to be watched by GMs).
+#                    Notify GMs on login and store AMAP in the database.
 #		Default: 15
 #
 #	AMAS.Low.GMLevel
@@ -246,10 +253,6 @@ AMAS.Confirmed.Ban.Reason = "This account has been banned for using multiple acc
 #		Description: Min diff time (last save and now) for save history to DB (sec)
 #		Default: 43200 (12 h)
 #
-#	AMAS.GM.Check.Enable
-#		Description: Enable check GM's account
-#		Default: 1 - Enable
-#
 #	AMAS.Full.IP.Check.Enable
 #		Description: Enable full check ip (online and offline) or only online
 #		Default: 1 - Enable
@@ -259,12 +262,11 @@ AMAS.Confirmed.Ban.Reason = "This account has been banned for using multiple acc
 #		Default: 300 - 5 min
 #
 
-AMAS.Suspicious.Account.Min.Points = 20
+AMAS.Suspicious.MinAMAP = 15
 AMAS.Low.GMLevel = 2
 AMAS.High.GMLevel = 3
 AMAS.Warning.Interval = 1800
 AMAS.Min.Time.For.DB.History = 43200
-AMAS.GM.Check.Enable = 1
 AMAS.Full.IP.Check.Enable = 1
 AMAS.Time.Check.Ban.Random = 300
 

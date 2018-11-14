@@ -8,8 +8,9 @@
 
 void AMASConfig::LoadConfig()
 {
-    // AMAS general
+    // SYSTEM SETTINGS: GENERAL
     m_bool[conf::AMAS_ENABLE]                           = sConfigMgr->GetBoolDefault("AMAS.Enable", true);
+    m_bool[conf::AMAS_GM_CHECK_ENABLE]                  = sConfigMgr->GetBoolDefault("AMAS.DetectGM.Enable", false);
     
     // SYSTEM SETTINGS: ACCOUNT
     m_int[conf::AMAS_MIN_TOTAL_TIME_ACC]                = sConfigMgr->GetIntDefault("AMAS.Min.Total.Time.Account", DAY);
@@ -62,19 +63,18 @@ void AMASConfig::LoadConfig()
     m_int[conf::AMAS_MIN_TIME_AVG_SESSION_POINT]         = sConfigMgr->GetIntDefault("AMAS.WP.Min.Average.Session", 10);
 
     // SYSTEM SETTINGS: CONFIRMED MULTI ACCOUNT
-    m_int[conf::AMAS_CONFIRMED_MIN_POINT]               = sConfigMgr->GetIntDefault("AMAS.Confirmed.Min.Points", 20);
-    m_int[conf::AMAS_CONFIRMED_ACTION]                  = sConfigMgr->GetIntDefault("AMAS.Confirmed.Action", 2);
-    m_int[conf::AMAS_CONFIRMED_BAN_INTERVAL_MIN]        = sConfigMgr->GetIntDefault("AMAS.Confirmed.Ban.RandomInterval.Min", 20);
-    m_int[conf::AMAS_CONFIRMED_BAN_INTERVAL_MAX]        = sConfigMgr->GetIntDefault("AMAS.Confirmed.Ban.RandomInterval.Max", 20);
-    m_string[conf::AMAS_BAN_REASON]                     = sConfigMgr->GetStringDefault("AMAS.Confirmed.Ban.Reason", "This account has been banned for using multiple accounts");
+    m_int[conf::AMAS_CONFIRMED_MIN_POINT]               = sConfigMgr->GetIntDefault("AMAS.Guilty.MinAMAP", 20);
+    m_int[conf::AMAS_CONFIRMED_ACTION]                  = sConfigMgr->GetIntDefault("AMAS.Guilty.Action", 2);
+    m_int[conf::AMAS_CONFIRMED_BAN_INTERVAL_MIN]        = sConfigMgr->GetIntDefault("AMAS.Guilty.BanRandom.Interval.Min", 20);
+    m_int[conf::AMAS_CONFIRMED_BAN_INTERVAL_MAX]        = sConfigMgr->GetIntDefault("AMAS.Guilty.BanRandom.Interval.Max", 20);
+    m_string[conf::AMAS_BAN_REASON]                     = sConfigMgr->GetStringDefault("AMAS.Guilty.BanRandom.Reason", "This account has been banned for using multiple accounts");
 
     // SYSTEM SETTINGS: OTHER
-    m_int[conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT]      = sConfigMgr->GetIntDefault("AMAS.Suspicious.Account.Min.Points", 50);
+    m_int[conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT]      = sConfigMgr->GetIntDefault("AMAS.Suspicious.MinAMAP", 50);
     m_int[conf::AMAS_LOW_GMLEVEL]                       = sConfigMgr->GetIntDefault("AMAS.Low.GMLevel", 20);
     m_int[conf::AMAS_HIGH_GMLEVEL]                      = sConfigMgr->GetIntDefault("AMAS.High.GMLevel", 20);
     m_int[conf::AMAS_WARNING_INTERVAL]                  = sConfigMgr->GetIntDefault("AMAS.Warning.Interval", 20);
     m_int[conf::AMAS_MIN_TIME_TO_DB_HISTORY]            = sConfigMgr->GetIntDefault("AMAS.Min.Time.For.DB.History", DAY / 2);
-    m_bool[conf::AMAS_GM_CHECK_ENABLE]                  = sConfigMgr->GetBoolDefault("AMAS.GM.Check.Enable", false);
 	m_bool[conf::AMAS_FULL_IP_CHECK_ENABLE]     		= sConfigMgr->GetBoolDefault("AMAS.Full.IP.Check.Enable", false);
 	
 	m_int[conf::AMAS_TIME_CHECK_RND_BAN]        		= sConfigMgr->GetIntDefault("AMAS.Time.Check.Ban.Random", MINUTE * 5);
