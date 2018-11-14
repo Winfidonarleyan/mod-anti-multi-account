@@ -705,7 +705,7 @@ uint32 AMAS::GetIPCount(std::string IP, bool IsFirstByte /*= false*/)
 
     if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE) && IsFirstByte)
     {
-        result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%s%%'", this->GetFirstByteIP(IP));
+        result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%s%%'", this->GetFirstBytesIP(IP));
         if (result)
             return (uint32)result->Fetch()->GetUInt64();
 

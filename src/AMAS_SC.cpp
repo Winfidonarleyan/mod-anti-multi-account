@@ -641,7 +641,7 @@ public:
 		
 		uint32 SameIpCountFull = sAMAS->GetIPCount(PlayerIP);
         uint32 SameIpCountFirstByte = sAMAS->GetIPCount(PlayerIP, true);
-        std::string IPInfo = handler->GetTrinityString(lang::AMAS_IP_IS_UNIQUE);
+        std::string IPInfo = handler->GetTrinityString(amas::AMAS_IP_IS_UNIQUE);
 
         if (SameIpCountFull > 1)
             IPInfo = handler->GetTrinityString(amas::AMAS_IP_IS_PERFECT);
