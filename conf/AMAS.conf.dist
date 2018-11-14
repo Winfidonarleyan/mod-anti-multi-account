@@ -154,6 +154,20 @@ AMAS.WP.Professions = 10
 AMAS.IP.PerfectMatch.Points = 20
 
 #
+#	SYSTEM SETTINGS: AVERAGE SESSION
+#
+#	AMAS.Min.Average.Session
+#		Description: Min average duration session in seconds
+#		Default: 30000 (5 min)
+#
+#	AMAS.WP.Min.Average.Session
+#		Description: Warning point at check AMAS.WP.Min.Average.Session
+#		Default: 10
+
+AMAS.Min.Average.Session = 300000
+AMAS.WP.Min.Average.Session = 10
+
+#
 #	SYSTEM SETTINGS: CREATION DATE
 #
 #	AMAS.Min.Diff.Account.Create 
@@ -177,20 +191,6 @@ AMAS.Min.Diff.Account.Create = 86400
 AMAS.Min.Diff.Character.Create = 86400
 AMAS.WP.Diff.Account = 10
 AMAS.WP.Diff.Character = 5
-
-#
-#	SYSTEM SETTINGS: AVERAGE SESSION
-#
-#	AMAS.Min.Average.Session
-#		Description: Min average duration session in seconds
-#		Default: 30000 (5 min)
-#
-#	AMAS.WP.Min.Average.Session
-#		Description: Warning point at check AMAS.WP.Min.Average.Session
-#		Default: 10
-
-AMAS.Min.Average.Session = 300000
-AMAS.WP.Min.Average.Session = 10
 
 #	SYSTEM SETTINGS: CONFIRMED MULTI ACCOUNT
 #
