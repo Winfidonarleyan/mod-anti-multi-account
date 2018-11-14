@@ -35,7 +35,7 @@ void AMASConfig::LoadConfig()
     m_int[conf::AMAS_NULL_HONOR_AND_KILLS]              = sConfigMgr->GetIntDefault("AMAS.WP.NULL.Honor.And.Kills", 10);
     
     // SYSTEM SETTINGS: MONEY
-    m_int[conf::AMAS_MAX_COUNT_MONEY]                   = sConfigMgr->GetIntDefault("AMAS.Max.Count.Money", 2) * GOLD;
+    m_int[conf::AMAS_MAX_COUNT_MONEY]                   = sConfigMgr->GetIntDefault("AMAS.Max.Count.Money", 2);
     m_int[conf::AMAS_MAX_COUNT_MONEY_POINT]             = sConfigMgr->GetIntDefault("AMAS.WP.Max.Count.Money", 5);    
     
     // SYSTEM SETTINGS: SPELLS
