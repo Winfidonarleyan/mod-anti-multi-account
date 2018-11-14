@@ -10,7 +10,7 @@ SET
 @logo = CONCAT(@red, "#", @r, " ", @green), -- Winfi logo
 @sytemlogo = CONCAT("[", @red, "AMAS", @r, "]", @green, " "); -- AMAS logo
 
-DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 31;
+DELETE FROM `trinity_string` WHERE `entry` BETWEEN @FirstID AND @FirstID + 34;
 INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 
 -- AMAS general
@@ -29,7 +29,7 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 @red, "%.2f", @r, " - Friend count: %u", @n,
 @red, "%.2f", @r, " - Money: %s", @n,
 @red, "%.2f", @r, " - Honor: %u. Kills: %u", @n,
-@red, "%.2f", @r, " - IP: %s. Unique? (%s).%s%s", @n,
+@red, "%.2f", @r, " - IP: %s --> %s", @n,
 @red, "%.2f", @r, " - Missing trainer spells: %u", @n,
 @red, "%.2f", @r, " - Current zone: %u - %s%s", @n,
 @red, "%.2f", @r, " - Profession count: %u", @n,
@@ -44,7 +44,7 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 @red, "%.2f", @r, " - Количество друзей: %u", @n,
 @red, "%.2f", @r, " - Деньги: %s", @n,
 @red, "%.2f", @r, " - Очки чести: %u. Убийства: %u", @n,
-@red, "%.2f", @r, " - Айпи: %s. Унивальное? (%s).%s%s", @n,
+@red, "%.2f", @r, " - Айпи: %s --> %s", @n,
 @red, "%.2f", @r, " - Не изученных заклинаний: %u", @n,
 @red, "%.2f", @r, " - Находится в зоне: %u - %s%s", @n,
 @red, "%.2f", @r, " - Количество профессий: %u", @n,
@@ -84,11 +84,12 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 (@FirstID + 27, CONCAT(@logo, "CommentID:", @r, " %u | ", @green, "Commenter:", @r, " %s | ", @green, "Date:", @r, " %s | ", @green, "Comment: ", @r, " %s"), CONCAT(@logo, "Номер:", @r, " %u. ", @green, "Автор:", @r, " %s. ", @green, "Дата:", @r, " %s. ", @green, "Комментарий:", @r, "%s.")),
 
 -- AMAS same ip
-(@FirstID + 28, " PERFECT MATCH with account ", " Совпадение с акками "),
-(@FirstID + 29, " Same first byte ip ", " Cовпадение первых цифр айпи"),
+(@FirstID + 28, " Unique ", " Уникальный "),
+(@FirstID + 29, " Perfect match ", " Полное совпадение "),
+(@FirstID + 30, " Partial match ", " Cовпадение первых байтов "),
 
 -- AMAS confirmed
-(@FirstID + 30, CONCAT(
+(@FirstID + 31, CONCAT(
 @separator,
 @sytemlogo, @red, "MULTI-ACCOUNT USER CONFIRMED! \n",
 @sytemlogo, @green, "Character Name:", @r, " %s \n",
@@ -96,5 +97,7 @@ INSERT INTO `trinity_string`(`entry`, `content_default`, `content_loc8`) VALUES
 @sytemlogo, @green, "AMAS maximum points before confirmation: ", @r, " %u \n"),
 CONCAT(@sytemlogo, @green, "Подтверждённый игрок", @r, " %s ", @green, "имеет", @r, " %.2f ", @green, "очков подозрительности. Это больше минимума", @r, " %u")),
 
--- AMAS mail
-(@FirstID + 31, CONCAT("Recipient %s", @n, "- Money: %u", @n, "- Item: %u", @n, "- Only Text: %u", @n, "- Auction House: %u", @n, "- Account: %s - %u"), CONCAT("Получатель %s", @n, "- Деньги: %u", @n, "- Итемы: %u", @n, "- Только текст: %u", @n, "- Аукционный дом: %u", @n, "- Аккаунт: %s - %u"));
+-- Amas mail
+(@FirstID + 32, CONCAT('History of sending letters for character %s'), CONCAT('История отправления писем от персонажа %s')),
+(@FirstID + 33, CONCAT('Recipient %s. Gold: %u, Items: %u, Text: %u, Mails: %u.'), CONCAT('Получатель %s. Золото: %u, Вещи: %u, Только текст: %u, Всего писем: %u.')),
+(@FirstID + 34, CONCAT('Player %s not send mails'), CONCAT('Персонаж %s ещё не отправлял письма'));

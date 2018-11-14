@@ -6,6 +6,20 @@
 #include "Chat.h"
 #include <ace/Singleton.h>
 
+struct AMASIP
+{
+    AMASIP()
+        : first(0), second(0), third(0), fourth(0) { }
+
+    AMASIP(uint8 const _first, uint8 const _second, uint8 const _third, uint8 const _fourth)
+        : first(_first), second(_second), third(_third), fourth(_fourth) { }
+
+    uint8 first;
+    uint8 second;
+    uint8 third;
+    uint8 fourth;
+};
+
 namespace amas
 {
     enum Language
@@ -51,8 +65,9 @@ namespace amas
         AMAS_COMMENT_LIST_FOR,
 
         // AMAS same ip
-        AMAS_IS_SAME_IP_FULL,
-        AMAS_IS_SAME_IP_FIRST,
+        AMAS_IP_IS_UNIQUE,
+        AMAS_IP_IS_PERFECT,
+        AMAS_IP_IS_PARTIAL,
 		
 		// Amas confirmed
         AMAS_GM_ANNOUNCE_CONFIRMED,
@@ -95,7 +110,6 @@ public:
     uint32 GetDateUnixJoinAccount(uint32 AccountID);
     uint32 GetDateUnixJoinCharacter(uint32 PlayerGuid);
 	uint32 GetCommentCount(uint64 PlayerGuid);
-    int8 GetFirstByteIP(std::string IP);
 	uint32 GetIPCount(std::string IP, bool IsFirstByte = false);
 	uint32 GetAverageSessionTime(uint64 PlayerGuid);
 	uint32 GetTotalTimePlayer(uint64 PlayerGuid);
@@ -120,10 +134,13 @@ public:
 
     bool IsWarningZoneExist();
     bool IsWarningZone(uint32 ZoneID);
-	bool IsFirstByteIPSame(std::string IP1, std::string IP2);
+	bool IsFirstBytesIPSame(std::string IP1, std::string IP2);
 	bool IsFoundInfoInDB(uint64 PlayerGuid);
 	
 	std::string GetListAccountForIP(std::string IP);
+    std::string GetFirstBytesIP(std::string IP);
+
+    AMASIP GetIPFromString(std::string IP);
 
     WarningZoneContainer &GetWarningZone() { return _warningZoneStore; }
 

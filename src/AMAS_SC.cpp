@@ -641,21 +641,12 @@ public:
 		
 		uint32 SameIpCountFull = sAMAS->GetIPCount(PlayerIP);
         uint32 SameIpCountFirstByte = sAMAS->GetIPCount(PlayerIP, true);
-        std::string IsUniqueIP = handler->GetTrinityString(LANG_YES);
-        std::string AccountListSameIP;
-        std::string IsSameIp;
+        std::string IPInfo = handler->GetTrinityString(lang::AMAS_IP_IS_UNIQUE);
 
         if (SameIpCountFull > 1)
-        {
-            IsUniqueIP = handler->GetTrinityString(LANG_NO);
-            IsSameIp = handler->GetTrinityString(amas::AMAS_IS_SAME_IP_FULL);
-            AccountListSameIP = "(" + sAMAS->GetListAccountForIP(PlayerIP) + ")";
-        }
+            IPInfo = handler->GetTrinityString(amas::AMAS_IP_IS_PERFECT);
         else if (SameIpCountFirstByte > 1)
-        {
-            IsUniqueIP = handler->GetTrinityString(LANG_NO);
-            IsSameIp = handler->GetTrinityString(amas::AMAS_IS_SAME_IP_FIRST);
-        }	
+            IPInfo = handler->GetTrinityString(amas::AMAS_IP_IS_PARTIAL);
 
         handler->PSendSysMessage(amas::AMAS_INFO,
             PlayerName.c_str(), WPAll,
@@ -666,7 +657,7 @@ public:
             WPFriend, FriendCount,
             WPMoney, MoneyStr.c_str(),
             WPHonorAndKills, TotalHonorPoint, TotalKill,
-            WPIp, PlayerIP.c_str(), IsUniqueIP.c_str(), IsSameIp.c_str(), AccountListSameIP.c_str(),
+            WPIp, PlayerIP.c_str(), IPInfo.c_str(),
             WPTrainerSpells, MissingTrainerSpells,
             WPWarningZone, CurrentZone, ZoneName.c_str(), IsWarningZone.c_str(),
             WPProfession, ProfCount,

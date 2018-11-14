@@ -116,8 +116,8 @@ float AMAS::GetWPIP(std::string IP)
     int8 IPCount = this->GetIPCount(IP);
     int8 SameFirstByteIpCount = this->GetIPCount(IP, true);
     
-    uint32 WPSameIpFull = CONF_INT(conf::AMAS_MORE_IP_POINT_FULL);
-    uint32 WPSameIpFirsByte = CONF_INT(conf::AMAS_MORE_IP_POINT_FIRST_BYTE);
+    uint32 WPSameIpFull = CONF_INT(conf::AMAS_IP_PERFECT_MATCH_POINTS);
+    uint32 WPSameIpFirsByte = WPSameIpFull / 2;
 
     if (IPCount > 1)
         return float(WPSameIpFull);
@@ -638,25 +638,59 @@ uint32 AMAS::GetCommentCount(uint64 PlayerGuid)
     return 0;
 }
 
-int8 AMAS::GetFirstByteIP(std::string IP)
+AMASIP AMAS::GetIPFromString(std::string IP)
 {
     std::string Buff;
+    uint8 Count = 0;
+    AMASIP _ip;
 
     for (size_t i = 0; i < IP.size() + 1; i++)
     {
-        if (!(IP[i] == '.'))
+        if (Count == 3)
+        {
             Buff += IP[i];
+            if (i == (IP.size()))
+                _ip.fourth = atoi(Buff.c_str());
+        }
         else
-            break;
+        {
+            if (!(IP[i] == '.'))
+                Buff += IP[i];
+            else
+            {
+                if (!Count)
+                    _ip.first = atoi(Buff.c_str());
+                else if (Count == 1)
+                    _ip.second = atoi(Buff.c_str());
+                else if (Count == 2)
+                    _ip.third = atoi(Buff.c_str());
+
+                Buff = "";
+                Count++;
+            }
+        }
     }
 
-    return (int8)atoi(Buff.c_str());
+    return _ip;
 }
 
-bool AMAS::IsFirstByteIPSame(std::string IP1, std::string IP2)
+std::string AMAS::GetFirstBytesIP(std::string IP)
 {
-    int8 FirsByteIP1 = this->GetFirstByteIP(IP1);
-    int8 FirsByteIP2 = this->GetFirstByteIP(IP2);
+    std::string _buff = "";
+    AMASIP _ip = this->GetIPFromString(IP);
+    _buff += std::to_string(_ip.first);
+    _buff += ".";
+    _buff += std::to_string(_ip.second);
+    _buff += ".";
+    _buff += std::to_string(_ip.third);
+
+    return _buff;
+}
+
+bool AMAS::IsFirstBytesIPSame(std::string IP1, std::string IP2)
+{
+    std::string FirsByteIP1 = this->GetFirstBytesIP(IP1);
+    std::string FirsByteIP2 = this->GetFirstBytesIP(IP2);
 
     return FirsByteIP1 == FirsByteIP2;
 }
@@ -671,7 +705,7 @@ uint32 AMAS::GetIPCount(std::string IP, bool IsFirstByte /*= false*/)
 
     if (CONF_BOOL(conf::AMAS_FULL_IP_CHECK_ENABLE) && IsFirstByte)
     {
-        result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%i%%'", this->GetFirstByteIP(IP));
+        result = LoginDatabase.PQuery("SELECT COUNT(*) FROM `account` WHERE `last_ip` LIKE '%s%%'", this->GetFirstByteIP(IP));
         if (result)
             return (uint32)result->Fetch()->GetUInt64();
 
@@ -694,7 +728,7 @@ uint32 AMAS::GetIPCount(std::string IP, bool IsFirstByte /*= false*/)
             if (!itr->second && !itr->second->GetPlayer() && !itr->second->GetPlayer()->IsInWorld())
                 continue;
 
-            if (this->IsFirstByteIPSame(itr->second->GetRemoteAddress(), IP))
+            if (this->IsFirstBytesIPSame(itr->second->GetRemoteAddress(), IP))
                 IPCount++;
         }
 

@@ -146,17 +146,12 @@ AMAS.WP.Professions = 10
 #
 #	SYSTEM SETTINGS: IP
 #
-#	AMAS.WP.More.IP.Full
-#		Description: Warning point at check all playes ip (full ip) in world > 1
+#	AMAS.IP.PerfectMatch.Points
+#		Description: Points awarded for a perfect IP match
 #		Default: 20
 #
-#	AMAS.WP.More.IP.First
-#		Description: Warning point at check all playes ip (first byte) in world > 1
-#		Default: 10
-#
 
-AMAS.WP.More.IP.Full = 20
-AMAS.WP.More.IP.FirstByte = 10
+AMAS.IP.PerfectMatch.Points = 20
 
 #
 #	SYSTEM SETTINGS: CREATION DATE
