@@ -15,7 +15,7 @@ float AMAS::GetWPTotalTimeAccount(uint32 TotalTimeAccount)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	TotalTimeAccount += 1;
 
     uint32 MinTimeAccount = CONF_INT(conf::AMAS_MIN_TOTAL_TIME_ACC);
@@ -30,7 +30,7 @@ float AMAS::GetWPAverageItemLevel(float AverageItemLevel)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 MinAVGILvl = CONF_INT(conf::AMAS_MIN_AVG_ILVL);
     uint32 WP = CONF_INT(conf::AMAS_MIN_AVG_ILVL_POINT);
 
@@ -44,11 +44,11 @@ float AMAS::GetWPFreeTalent(uint32 FreeTalent)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 WP = CONF_INT(conf::AMAS_FREE_TALENT_POINT);
 
-    if (FreeTalent > 0)
-        return float(WP);
+    if (FreeTalent)
+        return float(WP * FreeTalent);
 
     return 0.0f;
 }
@@ -57,7 +57,7 @@ float AMAS::GetWPCompletedQuestCount(uint32 CompleteQuest)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 MinQuestCount = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST);
     uint32 WP = CONF_INT(conf::AMAS_MIN_COUNT_REWARDED_QUEST_POINT);
 
@@ -71,7 +71,7 @@ float AMAS::GetWPFriend(uint32 FriendCount)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 MinFriendCount = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND);
     uint32 WP = CONF_INT(conf::AMAS_MIN_COUNT_FRIEND_POINT);
 
@@ -85,7 +85,7 @@ float AMAS::GetWPMoney(uint32 Money)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 MaxMoneyCount = CONF_INT(conf::AMAS_MAX_COUNT_MONEY) * GOLD;
     uint32 WP = CONF_INT(conf::AMAS_MAX_COUNT_MONEY_POINT);
 
@@ -99,7 +99,7 @@ float AMAS::GetWPHonorAndKills(uint32 Honor, uint32 Kills)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 WP = CONF_INT(conf::AMAS_NULL_HONOR_AND_KILLS);
 
     if (!Honor && !Kills)
@@ -115,7 +115,7 @@ float AMAS::GetWPIP(std::string IP)
 
     int8 IPCount = this->GetIPCount(IP);
     int8 SameFirstByteIpCount = this->GetIPCount(IP, true);
-    
+
     uint32 WPSameIpFull = CONF_INT(conf::AMAS_IP_PERFECT_MATCH_POINTS);
     uint32 WPSameIpFirsByte = WPSameIpFull / 2;
 
@@ -131,7 +131,7 @@ float AMAS::GetWPTrainerSpells(uint32 MissingTrainerSpells)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 WP = CONF_INT(conf::AMAS_MISSING_TRAINER_SPELL_POINT);
     uint32 MinMissingSpells = CONF_INT(conf::AMAS_MIN_TRAINER_SPELL_MISSING);
 
@@ -145,7 +145,7 @@ float AMAS::GetWPWarningZone(uint32 ZoneID)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 WP = CONF_INT(conf::AMAS_WARNING_ZONE_POINT);
 
     if (this->IsWarningZone(ZoneID))
@@ -158,7 +158,7 @@ float AMAS::GetWPProfession(uint32 ProfCount)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 WP = CONF_INT(conf::AMAS_PROFESSION_POINT);
     uint32 MinProf = CONF_INT(conf::AMAS_MIN_PROFESSION);
 
@@ -172,7 +172,7 @@ float AMAS::GetWPJoinAccount(uint32 DateUnix)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_ACC_CREATE);
     uint32 WP = CONF_INT(conf::AMAS_DIFF_ACC_CREATE_POINT);
 
@@ -186,7 +186,7 @@ float AMAS::GetWPJoinCharacter(uint32 DateUnix)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0.0f;
-	
+
 	uint32 MinDiff = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE);
     uint32 WP = CONF_INT(conf::AMAS_DIFF_CHAR_CREATE_POINT);
 
@@ -278,7 +278,7 @@ void AMAS::AddWarningZone(uint32 ZoneID, bool IsDB)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return;
-	
+
 	_warningZoneStore.push_back(ZoneID);
 
     if (!IsDB)
@@ -299,7 +299,7 @@ void AMAS::DeleteWarningZone(uint32 ZoneID, bool IsDB)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return;
-	
+
 	_warningZoneStore.erase(std::remove(_warningZoneStore.begin(), _warningZoneStore.end(), ZoneID), _warningZoneStore.end());
 
     if (!IsDB)
@@ -338,7 +338,7 @@ void AMAS::LogoutPlayer(Player * player)
 
     if (!CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity()))
         return;
-	
+
     this->PushDBPlayerInfo(player);
 }
 
@@ -350,7 +350,7 @@ void AMAS::LoginPlayer(Player * player)
     if (!CONF_BOOL(conf::AMAS_GM_CHECK_ENABLE) && !AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity()))
         return;
 
-    uint32 MinWP = CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT);    
+    uint32 MinWP = CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT);
     float PlayerWP = sAMAS->GetAllWarningPoint(player);
 
     if (PlayerWP > float(MinWP))
@@ -363,7 +363,7 @@ void AMAS::CheckConfirmed(Player* player)
 {
     if (!player || !CONF_BOOL(conf::AMAS_ENABLE))
         return;
-    
+
     uint32 MinWPConfirmed = CONF_INT(conf::AMAS_CONFIRMED_MIN_POINT);
     float PlayerWP = sAMAS->GetAllWarningPoint(player);
 
@@ -399,7 +399,7 @@ void AMAS::PushDBPlayerInfo(Player* player)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return;
-	
+
 	uint64 PlayerGUID = player->GetGUID();
     uint32 AVGILvl = this->GetAverageItemLevel(player);
     uint32 FreeTalent = player->GetFreeTalentPoints();
@@ -543,7 +543,7 @@ void AMAS::GetTopWPOnlineList(ChatHandler * handler)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return;
-	
+
 	std::map<uint64, float> WPMap;
 
     int8 Count = 0;
@@ -594,7 +594,7 @@ void AMAS::GetTopWPOfflineList(ChatHandler * handler)
 {
 	if (!CONF_BOOL(conf::AMAS_ENABLE))
         return;
-	
+
 	QueryResult result = CharacterDatabase.PQuery("SELECT PlayerGUID, TotalWarningPoint FROM `amas_player_info` WHERE TotalWarningPoint > %u ORDER BY `TotalWarningPoint` DESC LIMIT 0, 20", CONF_INT(conf::AMAS_SUSPICIOUS_ACCOUNT_MIN_POINT));
     if (!result)
     {
@@ -630,7 +630,7 @@ uint32 AMAS::GetCommentCount(uint64 PlayerGuid)
 {
     if (!CONF_BOOL(conf::AMAS_ENABLE))
         return 0;
-	
+
 	QueryResult result = CharacterDatabase.PQuery("SELECT COUNT(*) FROM `amas_player_comment` WHERE `PlayerGuid` = %u", PlayerGuid);
     if (result)
         return (uint32)result->Fetch()->GetUInt64();
@@ -761,7 +761,7 @@ std::string AMAS::GetListAccountForIP(std::string IP)
 
     std::string Buff;
 
-    do 
+    do
     {
         if (!Buff.empty())
             Buff += ", ";
